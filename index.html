@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FleetHive — Know Where Your Vehicle Is. Know What It's Doing.</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0D2137">
+<meta name="description" content="FleetHive is a vehicle tracking and intelligence platform that gives owners visibility, security and control.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+  <nav class="wrap navbar">
+    <a href="index.html" class="logo">
+      <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
+      <span class="logo-text">FLEET<span class="hive">HIVE</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="active-link">Home</a>
+      <a href="how-it-works.html">How FleetHive Works</a>
+      <a href="about.html">About Us</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="partners.html">Become a Partner</a>
+      <a href="contact.html">Contact</a>
+      <a href="blog.html">Blog</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+        <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
+      </button>
+      <a href="https://app.fleethive.in" class="btn btn-outline" style="padding:11px 22px; font-size:12px;">Login</a>
+      <button class="mobile-toggle" id="mobileToggleBtn" onclick="fhToggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-panel" id="mp">
+<a href="index.html">Home</a>
+  <a href="how-it-works.html">How FleetHive Works</a>
+  <a href="about.html">About Us</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="partners.html">Become a Partner</a>
+  <a href="contact.html">Contact</a>
+  <a href="blog.html">Blog</a>
+  <a href="https://app.fleethive.in">Login</a>
+  <div class="mp-actions">
+    <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle light/dark mode" style="width:46px;height:46px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
+    </button>
+    <a href="pricing.html" class="btn btn-primary" style="flex:1; justify-content:center;">Get Started</a>
+  </div>
+</div>
+
+<!-- ===================== SIDE SECTION INDICATOR ===================== -->
+<div class="side-indicator">
+  <div class="si-item active" data-target="hero"><span class="si-label">01 WELCOME</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="intelligence"><span class="si-label">02 INTELLIGENCE</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="problem"><span class="si-label">03 PROBLEM</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="solutions"><span class="si-label">04 SOLUTIONS</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="numbers"><span class="si-label">05 NUMBERS</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="how-it-works"><span class="si-label">06 HOW IT WORKS</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="platform"><span class="si-label">07 PLATFORM</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="why"><span class="si-label">08 WHY FLEETHIVE</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="pricing"><span class="si-label">09 PRICING</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="stories"><span class="si-label">10 STORIES</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="cta"><span class="si-label">11 GET STARTED</span><span class="si-dot"></span></div>
+</div>
+
+<div class="side-indicator-mobile" id="sideIndicatorMobile">
+  <span class="sim-dot active" data-target="hero"></span>
+  <span class="sim-dot" data-target="intelligence"></span>
+  <span class="sim-dot" data-target="problem"></span>
+  <span class="sim-dot" data-target="solutions"></span>
+  <span class="sim-dot" data-target="numbers"></span>
+  <span class="sim-dot" data-target="how-it-works"></span>
+  <span class="sim-dot" data-target="platform"></span>
+  <span class="sim-dot" data-target="why"></span>
+  <span class="sim-dot" data-target="pricing"></span>
+  <span class="sim-dot" data-target="stories"></span>
+  <span class="sim-dot" data-target="cta"></span>
+</div>
+
+<!-- ===================== 1. HERO / WELCOME ===================== -->
+<section class="hero" id="hero">
+  <div class="hero-truck-bg"></div>
+  <div class="hero-bg-tracking">
+    <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+      <path class="hbt-route" d="M-20,520 C200,480 300,300 520,340 C700,370 780,180 1000,220 C1100,240 1150,180 1220,150"/>
+      <path class="hbt-route-glow" d="M-20,520 C200,480 300,300 520,340 C700,370 780,180 1000,220 C1100,240 1150,180 1220,150"/>
+      <circle class="hbt-node" cx="200" cy="480"/><circle class="hbt-node" cx="520" cy="340"/>
+      <circle class="hbt-node-pulse" cx="780" cy="180"/><circle class="hbt-node" cx="1000" cy="220"/>
+      <path class="hbt-route" d="M-20,120 C150,160 260,60 480,110 C620,140 700,60 900,90" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="bg-pattern bg-dots"></div>
+  <div class="wrap hero-grid">
+    <div class="reveal in">
+      <span class="eyebrow">Vehicle Tracking &amp; Intelligence</span>
+      <h1>Know Where Your Vehicle Is. Know What It's Doing.</h1>
+      <p class="lead">FleetHive helps you know where your vehicle is, understand what it is doing and stay in control without having to guess.</p>
+      <div class="hero-actions">
+        <a href="pricing.html" class="btn btn-primary">Get Started <span class="arrow">→</span></a>
+        <a href="partners.html" class="btn btn-outline">Become a Partner</a>
+      </div>
+    </div>
+
+    <div class="reveal in">
+      <div class="hero-carousel" id="heroCarousel">
+        <div class="hc-glow"></div>
+        <button class="hc-arrow left" aria-label="Previous">‹</button>
+        <button class="hc-arrow right" aria-label="Next">›</button>
+        <div class="hc-track">
+          <div class="hc-slide active"><img src="assets/chs-1.png" alt="FleetHive live tracking app view"></div>
+          <div class="hc-slide"><img src="assets/chs-2.png" alt="FleetHive app view"></div>
+          <div class="hc-slide"><img src="assets/chs-3.png" alt="FleetHive app view"></div>
+          <div class="hc-slide"><img src="assets/chs-4.png" alt="FleetHive app view"></div>
+        </div>
+      </div>
+      <div class="hc-dots"><span class="hc-dot active"></span><span class="hc-dot"></span><span class="hc-dot"></span><span class="hc-dot"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 2. INTELLIGENCE STRIP ===================== -->
+<div class="strip" id="intelligence">
+  <div class="strip-scan"></div>
+  <div class="strip-diag">
+    <div class="strip-marquee">
+      <span class="item filled">TRACK</span><span class="item"><span class="sep"></span></span>
+      <span class="item">MONITOR</span><span class="item"><span class="sep"></span></span>
+      <span class="item filled">ALERT</span><span class="item"><span class="sep"></span></span>
+      <span class="item">ANALYSE</span><span class="item"><span class="sep"></span></span>
+      <span class="item filled">CONTROL</span><span class="item"><span class="sep"></span></span>
+      <span class="item filled">TRACK</span><span class="item"><span class="sep"></span></span>
+      <span class="item">MONITOR</span><span class="item"><span class="sep"></span></span>
+      <span class="item filled">ALERT</span><span class="item"><span class="sep"></span></span>
+      <span class="item">ANALYSE</span><span class="item"><span class="sep"></span></span>
+      <span class="item filled">CONTROL</span><span class="item"><span class="sep"></span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 3. THE PROBLEM ===================== -->
+<section id="problem">
+  <div class="bg-pattern bg-grid"></div>
+  <div class="wrap">
+    <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
+      <span class="eyebrow">The problem</span>
+      <h2>You shouldn't have to guess what your vehicle is doing.</h2>
+    </div>
+    <div class="problem-grid reveal-stagger">
+      <div class="problem-card">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <svg class="problem-wave w2" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C50,40 90,0 150,20 C210,40 250,0 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="problem-top">
+          <div class="problem-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="2.5"/><line x1="3" y1="3" x2="21" y2="21"/></svg></div>
+          <span class="problem-idx">01</span>
+        </div>
+        <h4>No visibility</h4><p>Not knowing where your vehicle is right now.</p>
+      </div>
+      <div class="problem-card">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <svg class="problem-wave w2" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C50,40 90,0 150,20 C210,40 250,0 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="problem-top">
+          <div class="problem-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <span class="problem-idx">02</span>
+        </div>
+        <h4>Unauthorised movement</h4><p>A vehicle moving when it shouldn't be.</p>
+      </div>
+      <div class="problem-card">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <svg class="problem-wave w2" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C50,40 90,0 150,20 C210,40 250,0 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="problem-top">
+          <div class="problem-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8"><path d="M4 12h16M14 6l6 6-6 6"/></svg></div>
+          <span class="problem-idx">03</span>
+        </div>
+        <h4>Overspeeding</h4><p>No way to know if a vehicle is being driven too fast.</p>
+      </div>
+      <div class="problem-card">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <svg class="problem-wave w2" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C50,40 90,0 150,20 C210,40 250,0 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="problem-top">
+          <div class="problem-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+          <span class="problem-idx">04</span>
+        </div>
+        <h4>Unknown activity</h4><p>Vehicle activity you have no way of confirming.</p>
+      </div>
+      <div class="problem-card">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <svg class="problem-wave w2" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C50,40 90,0 150,20 C210,40 250,0 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="problem-top">
+          <div class="problem-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <span class="problem-idx">05</span>
+        </div>
+        <h4>Missing important alerts</h4><p>Important events happening without you knowing.</p>
+      </div>
+      <div class="problem-card">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <svg class="problem-wave w2" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C50,40 90,0 150,20 C210,40 250,0 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="problem-top">
+          <div class="problem-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
+          <span class="problem-idx">06</span>
+        </div>
+        <h4>No clear trip history</h4><p>No clear record of where a vehicle has been.</p>
+      </div>
+      <div class="problem-card" style="grid-column:1 / -1; max-width:390px; margin:0 auto;">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <svg class="problem-wave w2" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C50,40 90,0 150,20 C210,40 250,0 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="problem-top">
+          <div class="problem-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8"><circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M2 20c0-3 2.5-5 5-5s5 2 5 5M12 20c0-3 2.5-5 5-5s5 2 5 5"/></svg></div>
+          <span class="problem-idx">07</span>
+        </div>
+        <h4>Difficulty managing multiple vehicles</h4><p>Hard to manage more than one vehicle at once.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 4. OUR SOLUTIONS ===================== -->
+<section id="solutions" class="section-deep sol-section">
+  <div class="bg-pattern bg-lines">
+    <svg viewBox="0 0 1200 400" preserveAspectRatio="none"><path d="M0,300 C300,250 400,350 700,280 C900,230 1000,320 1200,260" stroke="#3B7DDD" stroke-width="1.5" fill="none"/><path d="M0,120 C250,180 500,60 800,140 C950,180 1050,90 1200,130" stroke="#6FA3F0" stroke-width="1" fill="none"/></svg>
+  </div>
+  <div class="sol-bg-installer"></div>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Our solutions</span>
+      <h2>Everything you need to stay in control.</h2>
+    </div>
+    <div class="sol-grid reveal-stagger">
+      <div class="sol-card"><span class="sol-num">01</span>
+        <div class="sol-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B7DDD" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5" fill="#3B7DDD" stroke="none"/></svg></div>
+        <h3>Live Vehicle Tracking</h3><p>Know where your vehicle is without having to keep calling the driver.</p></div>
+      <div class="sol-card"><span class="sol-num">02</span>
+        <div class="sol-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B7DDD" stroke-width="1.7"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
+        <h3>Trips &amp; Activity</h3><p>See where your vehicle has been and understand how it is being used.</p></div>
+      <div class="sol-card"><span class="sol-num">03</span>
+        <div class="sol-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B7DDD" stroke-width="1.7"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+        <h3>Smart Alerts</h3><p>Get notified when something important happens so you can act quickly.</p></div>
+      <div class="sol-card"><span class="sol-num">04</span>
+        <div class="sol-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B7DDD" stroke-width="1.7"><path d="M12 2C8 2 5 5 5 9c0 6 7 13 7 13s7-7 7-13c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+        <h3>Smart Zones</h3><p>Know when your vehicle enters or leaves places that matter to you.</p></div>
+      <div class="sol-card"><span class="sol-num">05</span>
+        <div class="sol-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B7DDD" stroke-width="1.7"><path d="M4 12h4l2-6 4 12 2-6h4"/></svg></div>
+        <h3>Vehicle Intelligence</h3><p>Understand how your vehicles are being used so you can make better decisions.</p></div>
+      <div class="sol-card"><span class="sol-num">06</span>
+        <div class="sol-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B7DDD" stroke-width="1.7"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg></div>
+        <h3>Asset &amp; Tracking Order - Fleet Tag</h3><p>Keep an eye on packages, valuable items and other assets while they are moving, using a reusable FleetTag.</p></div>
+    </div>
+    <div class="hero-actions" style="justify-content:center; margin-top:36px;">
+      <a href="how-it-works.html" class="btn btn-outline">Explore Solutions</a>
+      <a href="pricing.html" class="btn btn-primary">Get Started <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 5. NUMBERS ===================== -->
+<section id="numbers">
+  <div class="wrap">
+    <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
+      <span class="eyebrow">FleetHive by the numbers</span>
+      <h2>Traction you can see.</h2>
+    </div>
+    <div class="numbers-panel reveal">
+      <div class="numbers-grid">
+        <div class="num-item">
+          <div class="num-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FA3F0" stroke-width="1.7"><rect x="2" y="9" width="14" height="7" rx="1.5"/><path d="M16 11h3l3 3v2h-6z"/><circle cx="6.5" cy="18" r="1.6"/><circle cx="16.5" cy="18" r="1.6"/></svg></div>
+          <div class="num-value" data-target="2000" data-suffix="+">0</div>
+          <div class="num-label">Vehicles Tracked</div>
+        </div>
+        <div class="num-item">
+          <div class="num-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FA3F0" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M2 20c0-3 2.5-5 7-5s7 2 7 5M15 20c0-2.2 1.6-3.8 4-4.4"/></svg></div>
+          <div class="num-value" data-target="150" data-suffix="+">0</div>
+          <div class="num-label">Active Fleets</div>
+        </div>
+        <div class="num-item">
+          <div class="num-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FA3F0" stroke-width="1.7"><path d="M6 3h9l3 3v15H6z"/><path d="M9 12h6M9 16h4"/></svg></div>
+          <div class="num-value" data-target="12" data-suffix="%">0</div>
+          <div class="num-label">Avg Fuel Savings</div>
+        </div>
+        <div class="num-item">
+          <div class="num-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FA3F0" stroke-width="1.7"><path d="M4 19V10M10 19V5M16 19v-7M22 19H2"/></svg></div>
+          <div class="num-value" data-target="99" data-suffix="%">0</div>
+          <div class="num-label">Uptime Guarantee</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 6. HOW IT WORKS ===================== -->
+<section id="how-it-works" class="section-deep">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">How it works</span>
+      <h2>From installation to insight, FleetHive keeps you in control.</h2>
+    </div>
+    <div class="hiw-layout reveal" id="hiwCarousel">
+      <div class="hiw-steplist">
+        <div class="hiw-li active"><div class="hiw-num">01</div><div><h4>Install</h4><p>Install the FleetHive tracking device.</p></div></div>
+        <div class="hiw-connector"></div>
+        <div class="hiw-li"><div class="hiw-num">02</div><div><h4>Connect</h4><p>Connect the vehicle to the FleetHive platform.</p></div></div>
+        <div class="hiw-connector"></div>
+        <div class="hiw-li"><div class="hiw-num">03</div><div><h4>Monitor</h4><p>Track location, trips, activity and alerts.</p></div></div>
+        <div class="hiw-connector"></div>
+        <div class="hiw-li"><div class="hiw-num">04</div><div><h4>Act</h4><p>Use the information to make smarter decisions.</p></div></div>
+      </div>
+      <div class="hiw-visual2" id="hiwVisual">
+        <div class="hiw-scanline"></div>
+        <div class="hiw-slide active"><img src="assets/hiw-install.png" alt="Install the FleetHive tracking device"></div>
+        <div class="hiw-slide"><img src="assets/hiw-connect.png" alt="Connect the vehicle to the FleetHive platform"></div>
+        <div class="hiw-slide"><img src="assets/hiw-monitor.png" alt="Monitor location, trips, activity and alerts"></div>
+        <div class="hiw-slide"><img src="assets/hiw-act.png" alt="Act on the information"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 7. FLEETHIVE PLATFORM ===================== -->
+<section id="platform">
+  <div class="bg-pattern bg-dots"></div>
+  <div class="wrap">
+    <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
+      <span class="eyebrow">FleetHive platform</span>
+      <h2>See everything. Control what matters.</h2>
+    </div>
+    <div class="platform-carousel reveal" id="platformCarousel">
+      <div class="pc-stage" id="pcStage">
+        <div class="pc-scanline"></div>
+        <button class="pc-arrow left" aria-label="Previous">‹</button>
+        <button class="pc-arrow right" aria-label="Next">›</button>
+        <div class="pc-slide active"><img src="assets/platform-1-live-tracking.png" alt="Live Tracking UI"></div>
+        <div class="pc-slide"><img src="assets/platform-2-trip-intelligence.png" alt="Trip Intelligence UI"></div>
+        <div class="pc-slide"><img src="assets/platform-3-smart-alert.png" alt="Smart Alert UI"></div>
+        <div class="pc-slide"><img src="assets/platform-4-smart-zones.png" alt="Smart Zones UI"></div>
+        <div class="pc-slide"><img src="assets/platform-5-vehicle-intelligence.png" alt="Vehicle Intelligence UI"></div>
+      </div>
+      <div class="pc-caption">
+        <span class="pcc-num" id="pcCounter">01 / 05</span>
+        <h3 id="pcCaption">LIVE TRACKING</h3>
+      </div>
+      <div class="pc-dots">
+        <span class="pc-dot active"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 8. WHY FLEETHIVE ===================== -->
+<section id="why" class="section-deep">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Why FleetHive</span>
+      <h2>More than tracking. Built for control.</h2>
+    </div>
+    <div class="why-grid reveal-stagger">
+      <div class="why-card">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="why-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6FA3F0" stroke-width="1.7"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <h4>Real-Time Visibility</h4><p>Know where your vehicle is and what it is doing.</p></div>
+      <div class="why-card">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="why-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6FA3F0" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg></div>
+        <h4>Smarter Security</h4><p>Stay ahead of unusual vehicle activity.</p></div>
+      <div class="why-card">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="why-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6FA3F0" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M2 20c0-3 2.5-5 7-5s7 2 7 5M15 20c0-2.2 1.6-3.8 4-4.4"/></svg></div>
+        <h4>Built For You</h4><p>Designed for private car owners and business vehicle owners.</p></div>
+      <div class="why-card">
+        <svg class="problem-wave" viewBox="0 0 300 40" preserveAspectRatio="none"><path d="M0,20 C40,0 80,40 150,20 C220,0 260,40 300,20 L300,60 L0,60 Z"/></svg>
+        <div class="why-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6FA3F0" stroke-width="1.7"><path d="M4 12h4l2-6 4 12 2-6h4"/></svg></div>
+        <h4>Actionable Intelligence</h4><p>Turn vehicle activity into useful decisions.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 9. PRICING ===================== -->
+<section id="pricing">
+  <div class="bg-pattern bg-grid"></div>
+  <div class="wrap">
+    <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
+      <span class="eyebrow">Pricing</span>
+      <h2>Choose the right level of control.</h2>
+    </div>
+    <div class="price-toggle reveal">
+      <span class="pt-label active" id="ptMonthly">Monthly</span>
+      <div class="pt-switch" id="priceToggle"><div class="pt-knob"></div></div>
+      <span class="pt-label" id="ptAnnual">Annual</span>
+      <span class="pt-save">Save with annual</span>
+    </div>
+    <div class="price-grid cols-4 reveal-stagger">
+      <div class="price-card feat">
+        <span class="price-badge">Best Seller</span>
+        <div class="price-name">Lite</div>
+        <div class="price-amt-wrap" data-plan="lite"><div class="price-amt">₦4,000<span>/mo</span></div></div>
+        <ul class="price-feats" style="margin-top:22px;">
+          <li>Real-time GPS tracking</li><li>Trip history &amp; playback</li><li>Basic geofencing</li><li>Single-user dashboard</li>
+        </ul>
+        <button class="btn btn-primary" onclick="fhChoosePlan('lite')">Choose a Plan</button>
+      </div>
+      <div class="price-card" style="position:relative;">
+        <span class="price-badge" style="background:var(--grad);">Most Recommended</span>
+        <div class="price-name">Pro</div>
+        <div class="price-amt-wrap" data-plan="pro"><div class="price-amt">₦6,000<span>/mo</span></div></div>
+        <ul class="price-feats" style="margin-top:22px;">
+          <li>Everything in Lite</li><li>Fuel intelligence &amp; theft detection</li><li>Driver behaviour scoring</li><li>Multi-user analytics</li>
+        </ul>
+        <button class="btn btn-outline" onclick="fhChoosePlan('pro')">Choose a Plan</button>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Prime</div>
+        <div class="price-amt-wrap" data-plan="prime"><div class="price-amt">₦12,000<span>/mo</span></div></div>
+        <ul class="price-feats" style="margin-top:22px;">
+          <li>Everything in Pro</li><li>Managed fleet support</li><li>Monthly operational reports</li><li>Priority escalation</li>
+        </ul>
+        <button class="btn btn-outline" onclick="fhChoosePlan('prime')">Choose a Plan</button>
+      </div>
+      <div class="price-card tag-card">
+        <div class="price-name">Tag Plan</div>
+        <p class="tag-card-desc">Track packages, orders and assets with a reusable FleetTag.</p>
+        <div class="price-amt-wrap" data-plan="tagplan"><div class="price-amt">₦3,000<span>/mo</span></div></div>
+        <div class="price-save-note" style="display:none;">Save ₦6,000</div>
+        <div class="price-note">Starts at ₦35,000 one-time — first 3 months free.</div>
+        <ul class="price-feats" style="margin-top:22px;">
+          <li>Reusable FleetTag</li><li>Track vehicles, assets, parcels or orders</li><li>3 months free subscription</li><li>Technical setup &amp; configuration</li>
+        </ul>
+        <button class="btn btn-outline" onclick="fhChoosePlan('tagplan')">Get a FleetTag</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 10. CUSTOMER STORIES ===================== -->
+<section id="stories" class="section-deep">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Customer stories</span>
+      <h2>Trusted by people who want more control.</h2>
+    </div>
+    <div class="sc-tabs reveal">
+      <button class="sc-tab active" data-group="all">All</button>
+      <button class="sc-tab" data-group="private">Private Owners</button>
+      <button class="sc-tab" data-group="business">Business Owners</button>
+      <button class="sc-tab" data-group="tag">Fleet Tag</button>
+    </div>
+    <div class="stories-carousel reveal">
+      <div class="sc-track" id="storiesTrack">
+        <div class="story-card" data-group="private">
+          <p class="story-quote">I like that I can check where my car is without having to call anyone. FleetHive gives me that peace of mind.</p>
+          <div class="story-who"><div class="story-avatar" style="background:#3B7DDD;">OJ</div><div><div class="story-name">Owoeye J.</div><div class="story-role">Private Car Owner</div></div></div>
+        </div>
+        <div class="story-card" data-group="private">
+          <p class="story-quote">The trip history is one of my favourite features. I can actually see where the car has been and when.</p>
+          <div class="story-who"><div class="story-avatar" style="background:#1B4F8A;">CN</div><div><div class="story-name">Chiamaka Nwosu</div><div class="story-role">Private Car Owner</div></div></div>
+        </div>
+        <div class="story-card" data-group="private">
+          <p class="story-quote">Before FleetHive, I honestly didn't pay much attention to how my car was being used. Now I have visibility whenever I need it.</p>
+          <div class="story-who"><div class="story-avatar" style="background:#6FA3F0;">FA</div><div><div class="story-name">Femi Adeyemi</div><div class="story-role">Private Car Owner</div></div></div>
+        </div>
+        <div class="story-card" data-group="private">
+          <p class="story-quote">The alerts make a big difference. I don't have to constantly check my car — FleetHive lets me know when something needs my attention.</p>
+          <div class="story-who"><div class="story-avatar" style="background:#10B981;">TA</div><div><div class="story-name">Tolu Adebayo</div><div class="story-role">Private Car Owner</div></div></div>
+        </div>
+        <div class="story-card" data-group="business">
+          <p class="story-quote">FleetHive gives me a clearer picture of where our vehicles are and how they are being used. It makes managing the team much easier.</p>
+          <div class="story-who"><div class="story-avatar" style="background:#F59E0B;">EO</div><div><div class="story-name">Emeka Okafor</div><div class="story-role">Logistics Business Owner</div></div></div>
+        </div>
+        <div class="story-card" data-group="business">
+          <p class="story-quote">I don't have to keep calling drivers for updates anymore. I can check the vehicle activity myself and know what's happening.</p>
+          <div class="story-who"><div class="story-avatar" style="background:#EF4444;">AB</div><div><div class="story-name">Amina Bello</div><div class="story-role">Business Owner</div></div></div>
+        </div>
+        <div class="story-card" data-group="tag">
+          <p class="story-quote">Fleet Tag gives us another layer of visibility. We can track our moving assets and know where they are without relying entirely on phone calls.</p>
+          <div class="story-who"><div class="story-avatar" style="background:#3B7DDD;">DA</div><div><div class="story-name">David Adekunle</div><div class="story-role">Business Owner · Fleet Tag</div></div></div>
+        </div>
+      </div>
+      <div class="sc-arrows">
+        <button class="sc-arrow left" aria-label="Scroll left">‹</button>
+        <button class="sc-arrow right" aria-label="Scroll right">›</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 11. GET STARTED / BECOME A PARTNER ===================== -->
+<section id="cta" class="final-cta">
+  <div class="bg-pattern bg-grid"></div>
+  <div class="wrap reveal">
+    <h2>Your vehicle is already moving.<br>Start knowing what's happening.</h2>
+    <p class="lead">Get the visibility, security and intelligence you need to stay in control.</p>
+    <div class="hero-actions">
+      <a href="pricing.html" class="btn btn-cta-primary">Get Started <span class="arrow">→</span></a>
+      <a href="partners.html" class="btn btn-cta-outline">Become a Partner</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand" style="max-width:300px;">
+        <div class="logo">
+          <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
+          <span class="logo-text">FLEET<span class="hive">HIVE</span></span>
+        </div>
+        <p>Mobility intelligence, simplified.</p>
+        <div class="foot-social">
+          <a href="https://www.instagram.com/fleethive_in?igsh=MTgycDF4bTFsbmJmdA==" aria-label="Instagram" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="https://x.com/FleetHiveIn" aria-label="X" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.4 8.5L23 22h-6.8l-5.3-6.9L4.8 22H1.7l7.9-9.1L1 2h6.9l4.8 6.4L18.9 2z"/></svg></a>
+          <a href="https://www.tiktok.com/@fleethivein?_r=1&_t=ZS-974kRxDl597" aria-label="TikTok" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.2c-.9-.8-1.5-2-1.6-3.2h-3.1v13.9c0 1.6-1.3 2.9-2.9 2.9s-2.9-1.3-2.9-2.9 1.3-2.9 2.9-2.9c.3 0 .6.05.9.14v-3.2a6 6 0 0 0-.9-.07 6 6 0 1 0 6 6V9.2c1.2.9 2.7 1.4 4.2 1.4V7.5c-.9 0-1.9-.3-2.6-.9z"/></svg></a>
+          <a href="https://www.linkedin.com/company/fleethivein/" aria-label="LinkedIn" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.6c0-1.34-.02-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V21H9z"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Navigate</h4>
+          <a href="index.html">Home</a>
+          <a href="how-it-works.html">How FleetHive Works</a>
+          <a href="about.html">About Us</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="partners.html">Become a Partner</a>
+          <a href="contact.html">Contact</a>
+          <a href="blog.html">Blog</a>
+        </div>
+        <div class="foot-col">
+          <h4>Solutions</h4>
+          <a href="how-it-works.html#tracking">Vehicle Tracking</a>
+          <a href="how-it-works.html#trips">Trips &amp; Activity</a>
+          <a href="how-it-works.html#alerts">Smart Alerts</a>
+          <a href="how-it-works.html#zones">Smart Zones</a>
+          <a href="how-it-works.html#intelligence">Vehicle Intelligence</a>
+          <a href="how-it-works.html#fleet-tags">Fleet Tags</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 FleetHive Innovation Ltd. All rights reserved.</span></div>
+  </div>
+</footer>
+
+<!-- ===================== EXIT-INTENT NEWSLETTER POPUP ===================== -->
+<div class="exit-popup-overlay" id="exitPopup">
+  <div class="exit-popup">
+    <button class="exit-popup-close" id="exitPopupClose" aria-label="Close">&times;</button>
+    <form class="exit-popup-form" id="exitPopupForm">
+      <h4>Stay in the FleetHive Network</h4>
+      <p>Get useful updates on mobility, vehicle security, fleet management and FleetHive.</p>
+      <input type="text" id="exitPopupName" placeholder="Full name" autocomplete="name">
+      <input type="email" id="exitPopupEmail" placeholder="Email address" autocomplete="email" required>
+      <button type="submit" class="btn btn-primary">Get Updates</button>
+    </form>
+    <div class="exit-popup-success">
+      <h4>You're on the list.</h4>
+      <p>Thanks for joining the FleetHive network — watch your inbox for updates.</p>
+    </div>
+  </div>
+</div>
+
+<script src="global-floating.js"></script>
+<script src="bree-knowledge.js"></script>
+<script src="site.js"></script>
+</body>
+</html>

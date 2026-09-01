@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How FleetHive Works — FleetHive</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0D2137">
+<meta name="description" content="See what FleetHive does, how it solves real vehicle problems, and how to get started — vehicle tracking, trips, alerts, zones, intelligence and Fleet Tags explained simply.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+  <nav class="wrap navbar">
+    <a href="index.html" class="logo">
+      <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
+      <span class="logo-text">FLEET<span class="hive">HIVE</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="how-it-works.html" class="active-link">How FleetHive Works</a>
+      <a href="about.html">About Us</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="partners.html">Become a Partner</a>
+      <a href="contact.html">Contact</a>
+      <a href="blog.html">Blog</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+        <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
+      </button>
+      <a href="https://app.fleethive.in" class="btn btn-outline" style="padding:11px 22px; font-size:12px;">Login</a>
+      <button class="mobile-toggle" id="mobileToggleBtn" onclick="fhToggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-panel" id="mp">
+<a href="index.html">Home</a>
+  <a href="how-it-works.html">How FleetHive Works</a>
+  <a href="about.html">About Us</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="partners.html">Become a Partner</a>
+  <a href="contact.html">Contact</a>
+  <a href="blog.html">Blog</a>
+  <a href="https://app.fleethive.in">Login</a>
+  <div class="mp-actions">
+    <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle light/dark mode" style="width:46px;height:46px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
+    </button>
+    <a href="pricing.html" class="btn btn-primary" style="flex:1; justify-content:center;">Get Started</a>
+  </div>
+</div>
+
+<!-- ===================== SIDE SECTION INDICATOR ===================== -->
+<div class="side-indicator">
+  <div class="si-item active" data-target="hiwHero"><span class="si-label">01 OVERVIEW</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="tracking"><span class="si-label">02 TRACKING</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="trips"><span class="si-label">03 TRIPS</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="alerts"><span class="si-label">04 ALERTS</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="zones"><span class="si-label">05 ZONES</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="intelligence"><span class="si-label">06 INTELLIGENCE</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="fleet-tags"><span class="si-label">07 FLEET TAGS</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="steps"><span class="si-label">08 HOW IT WORKS</span><span class="si-dot"></span></div>
+  <div class="si-item" data-target="hiwFinalCta"><span class="si-label">09 GET STARTED</span><span class="si-dot"></span></div>
+</div>
+<div class="side-indicator-mobile" id="sideIndicatorMobile">
+  <span class="sim-dot active" data-target="hiwHero"></span>
+  <span class="sim-dot" data-target="tracking"></span>
+  <span class="sim-dot" data-target="trips"></span>
+  <span class="sim-dot" data-target="alerts"></span>
+  <span class="sim-dot" data-target="zones"></span>
+  <span class="sim-dot" data-target="intelligence"></span>
+  <span class="sim-dot" data-target="fleet-tags"></span>
+  <span class="sim-dot" data-target="steps"></span>
+  <span class="sim-dot" data-target="hiwFinalCta"></span>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero hiw-hero" id="hiwHero">
+  <div class="hero-truck-bg"></div>
+  <div class="hero-bg-tracking">
+    <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+      <path class="hbt-route" d="M-20,520 C200,480 300,300 520,340 C700,370 780,180 1000,220 C1100,240 1150,180 1220,150"/>
+      <path class="hbt-route-glow" d="M-20,520 C200,480 300,300 520,340 C700,370 780,180 1000,220 C1100,240 1150,180 1220,150"/>
+      <circle class="hbt-node" cx="200" cy="480"/><circle class="hbt-node" cx="520" cy="340"/>
+      <circle class="hbt-node-pulse" cx="780" cy="180"/><circle class="hbt-node" cx="1000" cy="220"/>
+    </svg>
+  </div>
+  <div class="bg-pattern bg-dots"></div>
+  <div class="wrap reveal in" style="max-width:760px; text-align:center; margin:0 auto;">
+    <span class="eyebrow">How FleetHive works</span>
+    <h1>Know More. Control More.</h1>
+    <p class="lead" style="margin:16px auto 0;">FleetHive helps you keep track of your vehicles, understand what they are doing and make better decisions without the guesswork.</p>
+    <div class="hero-actions" style="justify-content:center;">
+      <a href="pricing.html" class="btn btn-primary">Get Started <span class="arrow">→</span></a>
+      <a href="partners.html" class="btn btn-outline">Become a Partner</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SOLUTIONS INTRO ===================== -->
+<section style="position:relative;">
+  <div class="sol-page-bg-installer"></div>
+  <div class="wrap" style="position:relative; z-index:2;">
+    <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
+      <span class="eyebrow">What FleetHive gives you</span>
+      <h2>Six simple ways to know more and control more.</h2>
+      <p>Every FleetHive solution answers the same question in a different way — what is happening with my vehicle right now, and what should I do about it.</p>
+    </div>
+  </div>
+
+  <!-- SOLUTION 1 — VEHICLE TRACKING -->
+  <div class="wrap" id="tracking" style="position:relative; z-index:2;">
+    <div class="solution-block reveal">
+      <div class="sb-panel" style="padding:14px;">
+        <img src="assets/platform-1-live-tracking.png" alt="FleetHive live vehicle tracking screen" style="width:100%; border-radius:14px; display:block;">
+      </div>
+      <div class="sb-content">
+        <span class="sb-eyebrow">01 · Vehicle Tracking</span>
+        <h3>Know where your vehicle is, right now.</h3>
+        <div class="sb-row"><span class="sb-label">In simple terms</span><p>FleetHive shows you where your vehicle is while it is moving, on a simple map you can check anytime.</p></div>
+        <div class="sb-row"><span class="sb-label">Real life example</span><p>Instead of calling your driver to ask where he is, you open FleetHive and see the vehicle's current location and movement straight away.</p></div>
+        <div class="sb-row"><span class="sb-label">Why it matters</span><p>You get current location, movement, trip history and visibility across every vehicle you manage, so you always know what is going on.</p></div>
+        <p style="font-weight:700; color:var(--heading); margin-top:14px;">Stop guessing where your vehicle is. Know.</p>
+        <div class="sb-cta"><a href="pricing.html" class="btn btn-primary">Start Tracking <span class="arrow">→</span></a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLUTION 2 — TRIPS & ACTIVITY -->
+  <div class="wrap" id="trips" style="position:relative; z-index:2;">
+    <div class="solution-block reverse reveal">
+      <div class="sb-panel" style="padding:14px;">
+        <img src="assets/platform-2-trip-intelligence.png" alt="FleetHive trip history screen" style="width:100%; border-radius:14px; display:block;">
+      </div>
+      <div class="sb-content">
+        <span class="sb-eyebrow">02 · Trips &amp; Activity</span>
+        <h3>See where your vehicle has been.</h3>
+        <div class="sb-row"><span class="sb-label">In simple terms</span><p>FleetHive keeps a record of every trip, so you can understand how a vehicle has actually been used, not just where it is right now.</p></div>
+        <div class="sb-row"><span class="sb-label">Real life example</span><p>You can look back at a trip and see where the vehicle went and when it moved, from start to finish.</p></div>
+        <div class="sb-row"><span class="sb-label">Why it matters</span><p>Trip playback, journey history and activity records give you a clear picture of vehicle usage over time.</p></div>
+        <div class="sb-cta"><a href="pricing.html" class="btn btn-outline">Get Started</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLUTION 3 — SMART ALERTS -->
+  <div class="wrap" id="alerts" style="position:relative; z-index:2;">
+    <div class="solution-block reveal">
+      <div class="sb-panel" style="padding:14px;">
+        <img src="assets/platform-3-smart-alert.png" alt="FleetHive smart alerts screen" style="width:100%; border-radius:14px; display:block;">
+      </div>
+      <div class="sb-content">
+        <span class="sb-eyebrow">03 · Smart Alerts</span>
+        <h3>Never miss something important.</h3>
+        <div class="sb-row"><span class="sb-label">In simple terms</span><p>FleetHive sends you an alert the moment something worth knowing happens with your vehicle.</p></div>
+        <div class="sb-row"><span class="sb-label">Real life example</span><p>If a vehicle moves unexpectedly or starts overspeeding, you get notified straight away instead of finding out later.</p></div>
+        <div class="sb-row"><span class="sb-label">Why it matters</span><p>Unexpected movement, overspeeding and other important activity are flagged automatically, so you can act quickly.</p></div>
+        <p style="font-weight:700; color:var(--heading); margin-top:14px;">Know when something needs your attention.</p>
+        <div class="sb-cta"><a href="pricing.html" class="btn btn-primary">Choose a Plan <span class="arrow">→</span></a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLUTION 4 — SMART ZONES -->
+  <div class="wrap" id="zones" style="position:relative; z-index:2;">
+    <div class="solution-block reverse reveal">
+      <div class="sb-panel" style="padding:14px;">
+        <img src="assets/platform-4-smart-zones.png" alt="FleetHive smart zones screen" style="width:100%; border-radius:14px; display:block;">
+      </div>
+      <div class="sb-content">
+        <span class="sb-eyebrow">04 · Smart Zones</span>
+        <h3>Know when a place that matters is entered or left.</h3>
+        <div class="sb-row"><span class="sb-label">In simple terms</span><p>FleetHive lets you mark important areas, such as your office, depot, home or a customer location, and get notified when a vehicle enters or leaves them.</p></div>
+        <div class="sb-row"><span class="sb-label">Real life example</span><p>You set up a zone around your depot and get an alert the moment a vehicle leaves it, without watching the map yourself.</p></div>
+        <div class="sb-row"><span class="sb-label">Why it matters</span><p>Smart Zones give you better visibility over vehicle movement around the places that matter most to you.</p></div>
+        <div class="sb-cta"><a href="pricing.html" class="btn btn-outline">Start Tracking</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLUTION 5 — VEHICLE INTELLIGENCE -->
+  <div class="wrap" id="intelligence" style="position:relative; z-index:2;">
+    <div class="solution-block reveal">
+      <div class="sb-panel" style="padding:14px;">
+        <img src="assets/platform-5-vehicle-intelligence.png" alt="FleetHive vehicle intelligence screen" style="width:100%; border-radius:14px; display:block;">
+      </div>
+      <div class="sb-content">
+        <span class="sb-eyebrow">05 · Vehicle Intelligence</span>
+        <h3>Turn vehicle activity into information you can actually use.</h3>
+        <div class="sb-row"><span class="sb-label">In simple terms</span><p>FleetHive does not just show where a vehicle is. It helps you understand vehicle activity and turn that into decisions you can act on.</p></div>
+        <div class="sb-row"><span class="sb-label">Real life example</span><p>Instead of scrolling through raw trip data, you get simple summaries and reports that show how your vehicles are actually being used.</p></div>
+        <div class="sb-row"><span class="sb-label">Why it matters</span><p>Depending on your plan and hardware, this can include usage patterns, driver activity, fleet reports and operational insights, so you can make better decisions with confidence.</p></div>
+        <div class="sb-cta"><a href="pricing.html" class="btn btn-primary">View Pricing <span class="arrow">→</span></a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION 6 — FLEET TAGS (FT.png background) -->
+<section class="section-deep" style="position:relative;" id="fleet-tags">
+  <div class="sol-page-bg-tag"></div>
+  <div class="wrap" style="position:relative; z-index:2;">
+    <div class="solution-block reverse reveal">
+      <div class="sb-panel">
+        <div class="sol-icon" style="margin-bottom:18px;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3B7DDD" stroke-width="1.6"><rect x="3" y="7" width="13" height="13" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg></div>
+        <p style="font-size:13.5px;">Beyond vehicles — assets, parcels and orders, tracked with one small reusable tag.</p>
+      </div>
+      <div class="sb-content">
+        <span class="sb-eyebrow">06 · Fleet Tags</span>
+        <h3>Keep an eye on what's moving, not just who's driving.</h3>
+        <div class="sb-row"><span class="sb-label">In simple terms</span><p>A Fleet Tag is a small, reusable device you attach to whatever needs tracking, whether that is a vehicle, an asset, a parcel or an order.</p></div>
+        <div class="sb-row"><span class="sb-label">Real life example</span><p>A business attaches a Fleet Tag to an order in transit and can see its status and location until it is delivered.</p></div>
+        <div class="sb-row"><span class="sb-label">Why it matters</span><p>Fleet Tags give you an additional, flexible way to track what matters, alongside the Lite, Pro and Prime vehicle tracking plans, not instead of them.</p></div>
+        <div class="sb-cta"><a href="pricing.html?plan=tagplan" class="btn btn-outline">View Tag Plan</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS — 4 STEPS ===================== -->
+<section id="steps">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">How it works</span>
+      <h2>Install. Connect. Monitor. Act.</h2>
+      <p>From the moment your device is installed to the moment you act on what FleetHive shows you — here is exactly what happens.</p>
+    </div>
+    <div class="hiw-layout reveal" id="hiwCarousel">
+      <div class="hiw-steplist">
+        <div class="hiw-li active"><div class="hiw-num">01</div><div><h4>Install</h4><p>A FleetHive technician installs the tracking device in your vehicle. You do not need any technical knowledge — we handle the setup for you.</p></div></div>
+        <div class="hiw-connector"></div>
+        <div class="hiw-li"><div class="hiw-num">02</div><div><h4>Connect</h4><p>Once the device is installed, your vehicle is connected to the FleetHive platform and linked to your account, ready to use.</p></div></div>
+        <div class="hiw-connector"></div>
+        <div class="hiw-li"><div class="hiw-num">03</div><div><h4>Monitor</h4><p>Log in anytime to see your vehicle's location, trips, activity and alerts, all in one simple dashboard.</p></div></div>
+        <div class="hiw-connector"></div>
+        <div class="hiw-li"><div class="hiw-num">04</div><div><h4>Act</h4><p>Use what FleetHive shows you to respond to unusual activity, understand trips, protect your vehicle and make informed decisions.</p></div></div>
+      </div>
+      <div class="hiw-visual2" id="hiwVisual">
+        <div class="hiw-scanline"></div>
+        <div class="hiw-slide active"><img src="assets/hiw-install.png" alt="A FleetHive technician installing the tracking device"></div>
+        <div class="hiw-slide"><img src="assets/hiw-connect.png" alt="Vehicle connected to the FleetHive platform"></div>
+        <div class="hiw-slide"><img src="assets/hiw-monitor.png" alt="Monitoring location, trips, activity and alerts"></div>
+        <div class="hiw-slide"><img src="assets/hiw-act.png" alt="Acting on FleetHive information"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS CTA ===================== -->
+<section class="final-cta page-final-cta">
+  <div class="bg-pattern bg-grid"></div>
+  <div class="wrap reveal">
+    <h2>Ready to take control of your vehicle?</h2>
+    <p class="lead">See plans built for private car owners and businesses, or build your own tracking business with FleetHive.</p>
+    <div class="hero-actions">
+      <a href="pricing.html" class="btn btn-cta-primary">Get Started <span class="arrow">→</span></a>
+      <a href="partners.html" class="btn btn-cta-outline">Become a Partner</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PRICING + PARTNER CONNECTION ===================== -->
+<section class="section-deep" id="hiwFinalCta">
+  <div class="wrap">
+    <div class="mv-grid reveal-stagger">
+      <div class="mv-card">
+        <span class="eyebrow">See what it costs</span>
+        <p>Compare Lite, Pro, Prime and the Tag Plan, and pick the one that fits your vehicles and assets.</p>
+        <div class="sb-cta" style="margin-top:16px;"><a href="pricing.html" class="btn btn-primary">View Pricing <span class="arrow">→</span></a></div>
+      </div>
+      <div class="mv-card">
+        <span class="eyebrow">Build your own business</span>
+        <p>You can also build your own tracking business using FleetHive.</p>
+        <div class="sb-cta" style="margin-top:16px;"><a href="partners.html" class="btn btn-outline">Become a Partner</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap explore-fh-wrap"><a href="index.html" class="explore-fh">Explore FleetHive <span class="arrow">→</span></a></div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand" style="max-width:300px;">
+        <div class="logo">
+          <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
+          <span class="logo-text">FLEET<span class="hive">HIVE</span></span>
+        </div>
+        <p>Mobility intelligence, simplified.</p>
+        <div class="foot-social">
+          <a href="https://www.instagram.com/fleethive_in?igsh=MTgycDF4bTFsbmJmdA==" aria-label="Instagram" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="https://x.com/FleetHiveIn" aria-label="X" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.4 8.5L23 22h-6.8l-5.3-6.9L4.8 22H1.7l7.9-9.1L1 2h6.9l4.8 6.4L18.9 2z"/></svg></a>
+          <a href="https://www.tiktok.com/@fleethivein?_r=1&_t=ZS-974kRxDl597" aria-label="TikTok" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.2c-.9-.8-1.5-2-1.6-3.2h-3.1v13.9c0 1.6-1.3 2.9-2.9 2.9s-2.9-1.3-2.9-2.9 1.3-2.9 2.9-2.9c.3 0 .6.05.9.14v-3.2a6 6 0 0 0-.9-.07 6 6 0 1 0 6 6V9.2c1.2.9 2.7 1.4 4.2 1.4V7.5c-.9 0-1.9-.3-2.6-.9z"/></svg></a>
+          <a href="https://www.linkedin.com/company/fleethivein/" aria-label="LinkedIn" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.6c0-1.34-.02-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V21H9z"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Navigate</h4>
+          <a href="index.html">Home</a>
+          <a href="how-it-works.html">How FleetHive Works</a>
+          <a href="about.html">About Us</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="partners.html">Become a Partner</a>
+          <a href="contact.html">Contact</a>
+          <a href="blog.html">Blog</a>
+        </div>
+        <div class="foot-col">
+          <h4>Solutions</h4>
+          <a href="how-it-works.html#tracking">Vehicle Tracking</a>
+          <a href="how-it-works.html#trips">Trips &amp; Activity</a>
+          <a href="how-it-works.html#alerts">Smart Alerts</a>
+          <a href="how-it-works.html#zones">Smart Zones</a>
+          <a href="how-it-works.html#intelligence">Vehicle Intelligence</a>
+          <a href="how-it-works.html#fleet-tags">Fleet Tags</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 FleetHive Innovation Ltd. All rights reserved.</span></div>
+  </div>
+</footer>
+
+<!-- ===================== EXIT-INTENT NEWSLETTER POPUP ===================== -->
+<div class="exit-popup-overlay" id="exitPopup">
+  <div class="exit-popup">
+    <button class="exit-popup-close" id="exitPopupClose" aria-label="Close">&times;</button>
+    <form class="exit-popup-form" id="exitPopupForm">
+      <h4>Stay in the FleetHive Network</h4>
+      <p>Get useful updates on mobility, vehicle security, fleet management and FleetHive.</p>
+      <input type="text" id="exitPopupName" placeholder="Full name" autocomplete="name">
+      <input type="email" id="exitPopupEmail" placeholder="Email address" autocomplete="email" required>
+      <button type="submit" class="btn btn-primary">Get Updates</button>
+    </form>
+    <div class="exit-popup-success">
+      <h4>You're on the list.</h4>
+      <p>Thanks for joining the FleetHive network — watch your inbox for updates.</p>
+    </div>
+  </div>
+</div>
+
+<script src="global-floating.js"></script>
+<script src="bree-knowledge.js"></script>
+<script src="site.js"></script>
+</body>
+</html>

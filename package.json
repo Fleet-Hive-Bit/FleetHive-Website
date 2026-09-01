@@ -1,0 +1,8 @@
+{
+  "name": "fleethive-website",
+  "private": true,
+  "description": "FleetHive static site + Netlify Functions (email, Paystack payments).",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

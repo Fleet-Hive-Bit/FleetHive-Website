@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Fleet Intelligence for a Moving Africa | FleetHive</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0D2137">
+<meta name="description" content="Practical insights on vehicle tracking, fleet management, mobility technology and smarter transportation across Nigeria and Africa — from FleetHive.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+  <nav class="wrap navbar">
+    <a href="index.html" class="logo">
+      <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
+      <span class="logo-text">FLEET<span class="hive">HIVE</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="how-it-works.html">How FleetHive Works</a>
+      <a href="about.html">About Us</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="partners.html">Become a Partner</a>
+      <a href="contact.html">Contact</a>
+      <a href="blog.html" class="active-link">Blog</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+        <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
+      </button>
+      <a href="https://app.fleethive.in" class="btn btn-outline" style="padding:11px 22px; font-size:12px;">Login</a>
+      <button class="mobile-toggle" id="mobileToggleBtn" onclick="fhToggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-panel" id="mp">
+<a href="index.html">Home</a>
+  <a href="how-it-works.html">How FleetHive Works</a>
+  <a href="about.html">About Us</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="partners.html">Become a Partner</a>
+  <a href="contact.html">Contact</a>
+  <a href="blog.html">Blog</a>
+  <a href="https://app.fleethive.in">Login</a>
+  <div class="mp-actions">
+    <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle light/dark mode" style="width:46px;height:46px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
+    </button>
+    <a href="pricing.html" class="btn btn-primary" style="flex:1; justify-content:center;">Get Started</a>
+  </div>
+</div>
+
+<!-- ===================== BLOG HERO ===================== -->
+<section class="page-hero">
+  <div class="bg-pattern bg-dots page-hero-bg"></div>
+  <div class="wrap reveal in">
+    <span class="eyebrow">Blog</span>
+    <h1>Fleet Intelligence for a Moving Africa</h1>
+    <p class="lead">Practical insights on vehicle tracking, fleet management, mobility technology and smarter transportation.</p>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+
+    <!-- ---- CATEGORIES ---- -->
+    <div class="blog-cats" id="blogCats">
+      <button class="blog-cat-pill active" data-cat="all">All</button>
+      <button class="blog-cat-pill" data-cat="Fleet Management">Fleet Management</button>
+      <button class="blog-cat-pill" data-cat="Vehicle Tracking">Vehicle Tracking</button>
+      <button class="blog-cat-pill" data-cat="Smart Mobility">Smart Mobility</button>
+      <button class="blog-cat-pill" data-cat="Driver Safety">Driver Safety</button>
+      <button class="blog-cat-pill" data-cat="Logistics & Delivery">Logistics &amp; Delivery</button>
+      <button class="blog-cat-pill" data-cat="Fleet Technology">Fleet Technology</button>
+      <button class="blog-cat-pill" data-cat="Asset Tracking">Asset Tracking</button>
+      <button class="blog-cat-pill" data-cat="African Mobility">African Mobility</button>
+    </div>
+
+    <!-- ---- FEATURED ARTICLE ---- -->
+    <a href="blog-fleet-management.html" class="blog-featured reveal in" data-cat="Fleet Management" style="text-decoration:none; color:inherit;">
+      <div class="blog-featured-img">
+        <img src="assets/db-fleet-management.jpg" alt="Fleet manager reviewing dashboard data for a vehicle fleet" loading="lazy">
+      </div>
+      <div class="blog-featured-body">
+        <div class="blog-meta">
+          <span class="blog-cat-badge">Fleet Management</span>
+          <span class="blog-dot"></span><span>August 25, 2026</span>
+          <span class="blog-dot"></span><span>6 min read</span>
+        </div>
+        <h2>What Is Fleet Management and Why Does It Matter?</h2>
+        <p>A practical introduction to fleet management for Nigerian and African business owners — vehicle visibility, driver management, maintenance, fuel monitoring and how technology fits in.</p>
+        <span class="blog-card-link">Read the article →</span>
+      </div>
+    </a>
+
+    <!-- ---- ARTICLE GRID ---- -->
+    <div class="blog-grid reveal-stagger" id="blogGrid">
+
+      <a href="blog-vehicle-tracking-africa.html" class="blog-card" data-cat="Vehicle Tracking">
+        <div class="blog-card-img"><img src="assets/platform-1-live-tracking.png" alt="Live vehicle tracking map interface" loading="lazy"></div>
+        <div class="blog-card-body">
+          <div class="blog-meta"><span class="blog-cat-badge">Vehicle Tracking</span><span class="blog-dot"></span><span>Aug 18, 2026</span><span class="blog-dot"></span><span>5 min read</span></div>
+          <h3>Why Vehicle Tracking Is Becoming Essential for African Businesses</h3>
+          <p>Security, location visibility, trip history and driver activity — why more African fleet owners are turning to tracking technology.</p>
+          <span class="blog-card-link">Read more →</span>
+        </div>
+      </a>
+
+      <a href="blog-reduce-unnecessary-costs.html" class="blog-card" data-cat="Fleet Management">
+        <div class="blog-card-img"><img src="assets/platform-2-trip-intelligence.png" alt="Trip intelligence dashboard showing route data" loading="lazy"></div>
+        <div class="blog-card-body">
+          <div class="blog-meta"><span class="blog-cat-badge">Fleet Management</span><span class="blog-dot"></span><span>Aug 11, 2026</span><span class="blog-dot"></span><span>5 min read</span></div>
+          <h3>How Vehicle Tracking Can Help Businesses Reduce Unnecessary Costs</h3>
+          <p>How visibility into trips, usage and routes can help identify avoidable costs — without promising savings that aren't guaranteed.</p>
+          <span class="blog-card-link">Read more →</span>
+        </div>
+      </a>
+
+      <a href="blog-tracking-vs-fleet-intelligence.html" class="blog-card" data-cat="Fleet Technology">
+        <div class="blog-card-img"><img src="assets/platform-5-vehicle-intelligence.png" alt="Vehicle intelligence analytics interface" loading="lazy"></div>
+        <div class="blog-card-body">
+          <div class="blog-meta"><span class="blog-cat-badge">Fleet Technology</span><span class="blog-dot"></span><span>Aug 4, 2026</span><span class="blog-dot"></span><span>4 min read</span></div>
+          <h3>Vehicle Tracking vs Fleet Intelligence: What's the Difference?</h3>
+          <p>"Where is my vehicle?" is only the beginning. Here's how fleet intelligence goes further than basic tracking.</p>
+          <span class="blog-card-link">Read more →</span>
+        </div>
+      </a>
+
+      <a href="blog-fleettag-packages-assets.html" class="blog-card" data-cat="Asset Tracking">
+        <div class="blog-card-img"><img src="assets/ft-bg.png" alt="FleetTag reusable tracking device" loading="lazy"></div>
+        <div class="blog-card-body">
+          <div class="blog-meta"><span class="blog-cat-badge">Asset Tracking</span><span class="blog-dot"></span><span>Jul 28, 2026</span><span class="blog-dot"></span><span>4 min read</span></div>
+          <h3>How Fleet Tags Can Help Businesses Track Packages and Assets</h3>
+          <p>Reusable FleetTags for packages, orders and assets — and how they extend visibility beyond just vehicles.</p>
+          <span class="blog-card-link">Read more →</span>
+        </div>
+      </a>
+
+      <a href="blog-future-smart-mobility-africa.html" class="blog-card" data-cat="African Mobility">
+        <div class="blog-card-img"><img src="assets/hiw-connect.png" alt="Connected mobility technology concept" loading="lazy"></div>
+        <div class="blog-card-body">
+          <div class="blog-meta"><span class="blog-cat-badge">African Mobility</span><span class="blog-dot"></span><span>Jul 21, 2026</span><span class="blog-dot"></span><span>5 min read</span></div>
+          <h3>The Future of Smart Mobility in Africa</h3>
+          <p>Connected vehicles, digital transportation and fleet intelligence — a realistic look at where African mobility is headed.</p>
+          <span class="blog-card-link">Read more →</span>
+        </div>
+      </a>
+
+    </div>
+
+  </div>
+</section>
+
+<div class="wrap explore-fh-wrap"><a href="index.html" class="explore-fh">Explore FleetHive <span class="arrow">→</span></a></div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand" style="max-width:300px;">
+        <div class="logo">
+          <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
+          <span class="logo-text">FLEET<span class="hive">HIVE</span></span>
+        </div>
+        <p>Mobility intelligence, simplified.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>Navigate</h4>
+          <a href="index.html">Home</a>
+          <a href="how-it-works.html">How FleetHive Works</a>
+          <a href="about.html">About Us</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="partners.html">Become a Partner</a>
+          <a href="contact.html">Contact</a>
+          <a href="blog.html">Blog</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 FleetHive Innovation Ltd. All rights reserved.</span></div>
+  </div>
+</footer>
+
+<!-- ===================== EXIT-INTENT NEWSLETTER POPUP ===================== -->
+<div class="exit-popup-overlay" id="exitPopup">
+  <div class="exit-popup">
+    <button class="exit-popup-close" id="exitPopupClose" aria-label="Close">&times;</button>
+    <form class="exit-popup-form" id="exitPopupForm">
+      <h4>Stay in the FleetHive Network</h4>
+      <p>Get useful updates on mobility, vehicle security, fleet management and FleetHive.</p>
+      <input type="text" id="exitPopupName" placeholder="Full name" autocomplete="name">
+      <input type="email" id="exitPopupEmail" placeholder="Email address" autocomplete="email" required>
+      <button type="submit" class="btn btn-primary">Get Updates</button>
+    </form>
+    <div class="exit-popup-success">
+      <h4>You're on the list.</h4>
+      <p>Thanks for joining the FleetHive network — watch your inbox for updates.</p>
+    </div>
+  </div>
+</div>
+
+<script src="global-floating.js"></script>
+<script src="bree-knowledge.js"></script>
+<script src="site.js"></script>
+<script>
+(function(){
+  var cats = document.querySelectorAll('#blogCats .blog-cat-pill');
+  var cards = document.querySelectorAll('#blogGrid .blog-card');
+  var featured = document.querySelector('.blog-featured');
+  cats.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      cats.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var cat = btn.getAttribute('data-cat');
+      cards.forEach(function(card){
+        card.style.display = (cat === 'all' || card.getAttribute('data-cat') === cat) ? '' : 'none';
+      });
+      if(featured){
+        featured.style.display = (cat === 'all' || featured.getAttribute('data-cat') === cat) ? '' : 'none';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
