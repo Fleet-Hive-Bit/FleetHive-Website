@@ -16,6 +16,7 @@
 
 const { getSecretKey } = require('./_paystack');
 const { saveOrder } = require('./_store');
+const { computeExpectedTotal } = require('./_pricing');
 
 exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') {
@@ -40,6 +41,42 @@ exports.handler = async function (event) {
 
   if (!email || !amount || amount <= 0) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing/invalid email or amount' }) };
+  }
+
+  const meta = metadata || {};
+
+  // Amount-integrity check, step 1 — never trust the price sent from the
+  // browser. Independently recompute what the FULL order total should be
+  // from the structured selections (plan, vehicle type/year/count, add-on
+  // ids, tag count, added plans, Hive Credits) using the server-side
+  // pricing table in _pricing.js — the same table pricing.js uses, kept in
+  // sync by hand. If the browser's metadata describes a recognized plan,
+  // its self-reported `totalAmount` must match this recomputed total.
+  const recomputedTotal = computeExpectedTotal(meta);
+  if (recomputedTotal !== null) {
+    const totalTolerance = 5; // naira, to allow for rounding
+    if (typeof meta.totalAmount !== 'number' || Math.abs(recomputedTotal - meta.totalAmount) > totalTolerance) {
+      console.error(`paystack-initialize totalAmount mismatch: recomputed ${recomputedTotal}, browser sent ${meta.totalAmount}`, meta);
+      return { statusCode: 400, body: JSON.stringify({ error: 'Order total does not match FleetHive pricing. Please refresh and try again.' }) };
+    }
+  } else {
+    // Metadata didn't describe a plan we recognize (e.g. missing planType,
+    // or a plan code that isn't Lite/Pro/Prime/Tag) — there's nothing to
+    // recompute against, so this checkout can't be trusted at all.
+    console.error('paystack-initialize: could not verify order total — unrecognized plan/metadata', meta);
+    return { statusCode: 400, body: JSON.stringify({ error: 'Could not verify this order. Please refresh and try again.' }) };
+  }
+
+  // Amount-integrity check, step 2 — the amount actually being charged
+  // TODAY must correctly reflect the (now-verified) total and the
+  // Flexible Payment split: full total normally, or ~50% of it when
+  // Flexible Payment is selected. This catches e.g. someone paying the
+  // 50% flexible rate for what should be a full-price checkout.
+  const expectedDueNow = meta.flexible ? Math.round(meta.totalAmount / 2) : meta.totalAmount;
+  const dueTolerance = 5; // naira, to allow for rounding
+  if (Math.abs(expectedDueNow - amount) > dueTolerance) {
+    console.error(`paystack-initialize amount mismatch: expected ~${expectedDueNow}, got ${amount}`, meta);
+    return { statusCode: 400, body: JSON.stringify({ error: 'Amount does not match the expected order total. Please refresh and try again.' }) };
   }
 
   const amountKobo = Math.round(amount * 100);

@@ -99,7 +99,7 @@
       <div class="price-card feat is-selected" data-card="lite">
         <span class="price-badge">Best Seller</span>
         <div class="price-name">Lite</div>
-        <div class="price-amt-wrap" data-plan="lite"><div class="price-amt">₦4,000<span>/mo</span></div></div>
+        <div class="price-amt-wrap" data-plan="lite"><div class="price-amt">₦4,000<span>/mo</span></div><div class="price-save-note" style="display:none;">Save ₦6,000/yr</div></div>
         <ul class="price-feats" style="margin-top:22px;">
           <li>Know where your vehicle is</li><li>See where it has been</li><li>Stay informed with alerts</li><li>Single-user dashboard</li>
         </ul>
@@ -108,7 +108,7 @@
       <div class="price-card" style="position:relative;" data-card="pro">
         <span class="price-badge" style="background:var(--grad);">Most Recommended</span>
         <div class="price-name">Pro</div>
-        <div class="price-amt-wrap" data-plan="pro"><div class="price-amt">₦6,000<span>/mo</span></div></div>
+        <div class="price-amt-wrap" data-plan="pro"><div class="price-amt">₦6,000<span>/mo</span></div><div class="price-save-note" style="display:none;">Save ₦12,000/yr</div></div>
         <ul class="price-feats" style="margin-top:22px;">
           <li>Everything in Lite</li><li>Fuel intelligence &amp; theft detection</li><li>Driver behaviour scoring</li><li>Multi-user analytics</li>
         </ul>
@@ -116,22 +116,19 @@
       </div>
       <div class="price-card" data-card="prime">
         <div class="price-name">Prime</div>
-        <div class="price-amt-wrap" data-plan="prime"><div class="price-amt">₦12,000<span>/mo</span></div></div>
+        <div class="price-amt-wrap" data-plan="prime"><div class="price-amt">₦12,000<span>/mo</span></div><div class="price-save-note" style="display:none;">Save ₦24,000/yr</div></div>
         <ul class="price-feats" style="margin-top:22px;">
           <li>Everything in Pro</li><li>Managed fleet support</li><li>Monthly operational reports</li><li>Priority escalation</li>
         </ul>
         <button class="btn btn-outline" onclick="selectPlan('prime')">Choose Prime</button>
       </div>
       <div class="price-card tag-card" data-card="tagplan">
-        <div class="price-name">Tag Plan</div>
-        <p class="tag-card-desc">Track packages, orders and assets with a reusable FleetTag.</p>
-        <div class="price-amt-wrap" data-plan="tagplan"><div class="price-amt">₦3,000<span>/mo</span></div></div>
-        <div class="price-save-note" style="display:none;">Save ₦6,000</div>
-        <div class="price-note">Starts at ₦35,000 one-time — first 3 months free.</div>
+        <div class="price-name">Tag</div>
+        <div class="price-amt-wrap" data-plan="tagplan"><div class="price-amt">₦3,000<span>/mo</span></div><div class="price-save-note" style="display:none;">Save ₦6,000/yr</div></div>
         <ul class="price-feats" style="margin-top:22px;">
           <li>Reusable FleetTag</li><li>Track vehicles, assets, parcels or orders</li><li>3 months free subscription</li><li>Technical setup &amp; configuration</li>
         </ul>
-        <button class="btn btn-outline" onclick="selectPlan('tagplan')">Choose Tag Plan</button>
+        <button class="btn btn-outline" onclick="selectPlan('tagplan')">Choose Tag</button>
       </div>
     </div>
   </div>
@@ -146,19 +143,17 @@
     <!-- ---- SUBSCRIPTION PATH (Lite / Pro / Prime) ---- -->
     <div id="subFlow" style="display:none;">
       <h2 class="form-page-title">Start Tracking with FleetHive</h2>
-      <p class="form-intro" style="margin-top:-10px; margin-bottom:22px;">Complete this form to activate your tracking subscription. Your selected package is already applied below.</p>
+      <p class="form-intro" style="margin-top:22px; margin-bottom:26px;">Complete this form to activate your tracking subscription. Your selected package is already applied below.</p>
 
       <div class="journey-wrap">
         <h4>What to expect</h4>
         <div class="journey-strip">
-          <div class="journey-card"><img src="assets/journey/journey-1.jpg" alt="Selected plan step in the FleetHive sign-up flow" loading="lazy"><span>Selected Plan</span></div>
-          <div class="journey-card"><img src="assets/journey/journey-2.jpg" alt="Customer information step" loading="lazy"><span>Your Info</span></div>
-          <div class="journey-card"><img src="assets/journey/journey-3.jpg" alt="Installation details step" loading="lazy"><span>Installation</span></div>
-          <div class="journey-card"><img src="assets/journey/journey-4.jpg" alt="Number of vehicles step" loading="lazy"><span>Vehicles</span></div>
-          <div class="journey-card"><img src="assets/journey/journey-5.jpg" alt="Hardware add-ons step" loading="lazy"><span>Add-Ons</span></div>
-          <div class="journey-card"><img src="assets/journey/journey-6.jpg" alt="More add-on options" loading="lazy"><span>More Add-Ons</span></div>
-          <div class="journey-card"><img src="assets/journey/journey-7.jpg" alt="Software add-ons step" loading="lazy"><span>Software</span></div>
-          <div class="journey-card"><img src="assets/journey/journey-8.jpg" alt="Agreement step" loading="lazy"><span>Agreement</span></div>
+          <div class="journey-card"><span class="journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></span><span>Plan</span></div>
+          <div class="journey-card"><span class="journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.6-3.6 5-5.5 7.5-5.5s5.9 1.9 7.5 5.5"/></svg></span><span>Your Info</span></div>
+          <div class="journey-card"><span class="journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13l2-6a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 6"/><rect x="3" y="13" width="18" height="6" rx="1.5"/><circle cx="7.5" cy="19" r="1.4"/><circle cx="16.5" cy="19" r="1.4"/></svg></span><span>Vehicle</span></div>
+          <div class="journey-card"><span class="journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 14.5h4"/></svg></span><span>Payment</span></div>
+          <div class="journey-card"><span class="journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></span><span>Activation</span></div>
+          <div class="journey-card"><span class="journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg></span><span>Confirmation</span></div>
         </div>
       </div>
 
@@ -405,7 +400,7 @@
           <div class="bank-row"><span class="br-label">Account Number</span><span class="br-val" id="bankAcctNum">8137832012</span><button class="copy-btn" id="copyAcct">Copy</button></div>
           <div class="bank-row"><span class="br-label">Bank</span><span class="br-val">Moniepoint MFB</span></div>
         </div>
-        <p class="form-help" style="margin:14px 0;">Transfer the exact amount shown above using your mobile banking app or bank transfer.</p>
+        <p class="form-help" id="bankAmountNote" style="margin:14px 0;">Transfer the exact amount shown above using your mobile banking app or bank transfer.</p>
         <button class="btn btn-outline" id="btnBankDone" style="width:100%; justify-content:center;">I Have Made the Transfer</button>
         <p class="form-help" id="bankMsg" style="margin-top:10px;"></p>
       </div>

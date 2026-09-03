@@ -955,19 +955,44 @@ document.addEventListener('DOMContentLoaded', function(){
     askNext();
   }
 
+  // Local time greeting, with a genuine night bucket — previously anything before
+  // noon (including 12am-4am) was mislabelled "Good morning".
   function timeGreeting(){
     var h = new Date().getHours();
-    if(h < 12) return 'Good morning';
-    if(h < 17) return 'Good afternoon';
-    if(h < 21) return 'Good evening';
-    return "Hello! Hope you're having a good evening";
+    if(h >= 5 && h < 12) return 'Good morning';
+    if(h >= 12 && h < 17) return 'Good afternoon';
+    if(h >= 17 && h < 21) return 'Good evening';
+    return "Hope you're having a good night"; // 9pm–5am
   }
+
+  // ---------- Page awareness (section 10) — Bree knows what page she's on ----------
+  function currentPageKey(){
+    var p = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    if(p === '' || p === 'index.html') return 'home';
+    if(p.indexOf('pricing') === 0) return 'pricing';
+    if(p.indexOf('how-it-works') === 0) return 'howItWorks';
+    if(p.indexOf('partners') === 0) return 'partner';
+    if(p.indexOf('contact') === 0) return 'contact';
+    return 'other';
+  }
+  var PAGE_INTROS = {
+    pricing: "Since you're on the pricing page, want me to help you compare Lite, Pro, Prime and the Tag Plan?",
+    howItWorks: "I can walk you through exactly how FleetHive works, step by step, if that's useful.",
+    partner: "Looks like you're checking out the Partner Program \u2014 want details on how it works and how to apply?",
+    contact: "Looks like you're after support \u2014 I can connect you with the team right away, or answer a quick question first."
+  };
 
   launcher.addEventListener('click', function(){
     panel.classList.add('open');
     if(!body.dataset.greeted){
       body.dataset.greeted = '1';
-      addMsg(timeGreeting() + " \ud83d\udc4b I'm Bree from FleetHive. Tell me a bit about your vehicle or fleet, or ask about plans, Tag Plan, or becoming a partner.", 'bot');
+      addMsg(timeGreeting() + " \ud83d\udc4b I'm Bree from FleetHive. I can help you understand our plans, tracking solutions, pricing, partnerships and how to get started.", 'bot');
+      var pageIntro = PAGE_INTROS[currentPageKey()];
+      if(pageIntro){
+        setTimeout(function(){ addMsg(pageIntro, 'bot'); }, 300);
+      } else {
+        setTimeout(function(){ addMsg("What are you looking to track today?", 'bot'); }, 300);
+      }
     }
   });
   closeBtn.addEventListener('click', function(){ panel.classList.remove('open'); });

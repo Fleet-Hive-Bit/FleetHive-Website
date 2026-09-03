@@ -16,7 +16,9 @@
   var TAGPLAN_SETUP_PORTION = 10000;  // Technical setup & configuration
   var TAGPLAN_RENEW_M = 3000;
   var TAGPLAN_RENEW_Y = 30000;
-  var FLEXI_FEE = 10000;
+  // Flexible Payment: 50% due today, remaining 50% split across 3 months.
+  // No separate fee — the split is calculated automatically off the order
+  // subtotal (see splitFlexible()).
 
   // Internal vehicle/device pricing — never shown to the customer directly.
   var VEHICLE_PRICES = {
@@ -302,25 +304,37 @@
   function flexiBaseAmount(){
     return computeSubtotal();
   }
+  // Total -> 50% due today, remaining 50% split evenly across 3 months.
+  // Calculated automatically off whatever the current subtotal is — never
+  // hard-coded — so it works the same way for every plan (Lite/Pro/Prime
+  // subscriptions and the Tag Plan alike).
+  function splitFlexible(total){
+    var dueNow = Math.round(total / 2);
+    var remaining = total - dueNow;
+    var monthly = Math.floor(remaining / 3);
+    var lastMonth = remaining - (monthly * 2); // absorbs any rounding remainder
+    return { total: total, dueNow: dueNow, remaining: remaining, monthly: monthly, lastMonth: lastMonth };
+  }
   function renderFlexiBox(){
     var wrap = state.plan === 'tagplan' ? qs('tagFlexiWrap') : qs('subFlexiWrap');
     var otherWrap = state.plan === 'tagplan' ? qs('subFlexiWrap') : qs('tagFlexiWrap');
     if(otherWrap) otherWrap.innerHTML = '';
     if(!wrap || !state.plan) return;
     var base = flexiBaseAmount();
-    var half = Math.round((base + FLEXI_FEE) / 2);
+    var split = splitFlexible(base);
     wrap.innerHTML =
       '<div class="flexi-box">' +
         '<div class="flexi-head"><span class="flexi-title">Flexible Payment Plan</span>' +
         '<div class="fh-switch' + (state.flexible ? ' on' : '') + '" id="flexiSwitch"></div></div>' +
-        '<p>Pay 50% upfront and spread the remaining 50% over three months. Flexible payment includes a ' + fmt(FLEXI_FEE) + ' fee. ' +
-        'The tracking device remains the property of FleetHive until full payment is received. ' +
-        'If payment is not completed as agreed, FleetHive may suspend the service and recover the device in line with the service agreement.</p>' +
+        '<p>Pay 50% today and spread the remaining 50% across the next 3 months. ' +
+        'The tracking device remains FleetHive property until the full required payment has been completed. ' +
+        'If the agreed payment is not completed, FleetHive reserves the right to recover or remove the device and take the necessary action in line with the applicable Terms &amp; Conditions.</p>' +
         '<div class="form-check" id="flexiAgreeWrap" style="' + (state.flexible ? '' : 'display:none;') + '">' +
           '<input type="checkbox" id="flexiAgree"><label for="flexiAgree">I understand and agree to the Flexible Payment terms.</label>' +
         '</div>' +
         '<p id="flexiPreview" style="' + (state.flexible ? '' : 'display:none;') + ' font-weight:700; color:var(--heading);">' +
-          'First payment today: ' + fmt(half) + ' — then ' + fmt(half) + ' more over the next 3 months.' +
+          'Due today: ' + fmt(split.dueNow) + ' — then ' + fmt(split.monthly) + '/month for 3 months' +
+          (split.lastMonth !== split.monthly ? ' (final month ' + fmt(split.lastMonth) + ')' : '') + '.' +
         '</p>' +
       '</div>';
     var sw = qs('flexiSwitch');
@@ -500,11 +514,20 @@
       total += addedPlanAmount(entry);
     });
 
-    if(state.flexible){ lines.push(['Flexible Payment Fee', fmt(FLEXI_FEE)]); total += FLEXI_FEE; }
-
     var html = '<h3>Order Summary</h3>';
     lines.forEach(function(l){ html += '<div class="order-line"><span>' + l[0] + '</span><span>' + l[1] + '</span></div>'; });
     html += '<div class="order-total"><span class="ot-label">' + (state.plan === 'tagplan' ? 'Total One-Time Cost' : 'Total to Pay') + '</span><span class="ot-amt">' + fmt(total) + '</span></div>';
+
+    var dueNow = total;
+    if(state.flexible){
+      var split = splitFlexible(total);
+      dueNow = split.dueNow;
+      html += '<div class="tag-price-breakdown" style="margin-top:14px;">' +
+        '<div class="tpb-row tpb-now"><span class="tpb-label">Due Today <span class="tpb-tag">Flexible Payment</span></span><span class="tpb-amt">' + fmt(split.dueNow) + '</span></div>' +
+        '<div class="tpb-row"><span class="tpb-label">Remaining Balance</span><span class="tpb-amt">' + fmt(split.remaining) + '</span></div>' +
+        '<div class="tpb-row"><span class="tpb-label">Monthly Installment (3 months)</span><span class="tpb-amt">' + fmt(split.monthly) + '/mo' + (split.lastMonth !== split.monthly ? ' <span>(final month ' + fmt(split.lastMonth) + ')</span>' : '') + '</span></div>' +
+      '</div>';
+    }
 
     if(state.plan === 'tagplan'){
       html += '<div class="tag-price-breakdown" style="margin-top:14px;">' +
@@ -518,9 +541,17 @@
     }
     box.innerHTML = html;
     box.dataset.total = total;
+    box.dataset.dueNow = dueNow;
 
     // Keep the flexible-payment preview amount current
     if(state.flexible) renderFlexiBox();
+
+    var bankNote = qs('bankAmountNote');
+    if(bankNote){
+      bankNote.textContent = state.flexible
+        ? 'Transfer ' + fmt(dueNow) + ' (50% due today) using your mobile banking app or bank transfer. The remaining ' + fmt(total - dueNow) + ' is spread across the next 3 months as agreed in the Flexible Payment terms.'
+        : 'Transfer the exact amount shown above (' + fmt(total) + ') using your mobile banking app or bank transfer.';
+    }
   }
 
   // ---------------- Payment method tabs ----------------
@@ -603,10 +634,11 @@
 
   function buildOrderPayload(cust){
     var total = Number(qs('orderSummary').dataset.total || 0);
+    var dueNow = Number(qs('orderSummary').dataset.dueNow || total);
     var addons = [];
     HARDWARE_ADDONS.forEach(function(a){ if(state.hardwareAddons[a.id]) addons.push(a.label); });
     SOFTWARE_ADDONS.forEach(function(a){ if(state.softwareAddons[a.id]) addons.push(a.label + ' (software)'); });
-    return {
+    var payload = {
       planType: state.plan,
       plan: state.plan === 'tagplan' ? 'Tag Plan' : PLANS[state.plan].name,
       billing: state.plan === 'tagplan' ? 'One-time + free trial' : state.billing,
@@ -624,6 +656,14 @@
       flexiblePayment: state.flexible,
       timestamp: new Date().toLocaleString()
     };
+    if(state.flexible){
+      var split = splitFlexible(total);
+      payload.amountDueNow = fmt(split.dueNow);
+      payload.remainingBalance = fmt(split.remaining);
+      payload.monthlyInstallment = fmt(split.monthly);
+      payload.remainingMonths = 3;
+    }
+    return payload;
   }
 
   // ---------------- Paystack ----------------
@@ -635,20 +675,55 @@
       if(!validate(cust)) return;
       var total = Number(qs('orderSummary').dataset.total || 0);
       if(!total){ alert('Please select a plan first.'); return; }
+      // CRITICAL: when Flexible Payment is on, only charge 50% of the total
+      // at checkout today — never the full amount. dueNow already reflects
+      // this (see updateSummary/splitFlexible); it equals total when
+      // Flexible Payment is off.
+      var dueNow = Number(qs('orderSummary').dataset.dueNow || total);
 
       btn.disabled = true; btn.textContent = 'Redirecting to Paystack…';
       var payload = buildOrderPayload(cust);
+
+      // hardwareAddonIds / softwareAddonIds / addedPlansData carry the raw
+      // selection ids/structure (not just the human-readable label strings
+      // in `addons` / `addedPlans`) so paystack-initialize.js can
+      // independently recompute the order total server-side via
+      // _pricing.js instead of trusting `totalAmount` on its own.
+      var hardwareAddonIds = [];
+      HARDWARE_ADDONS.forEach(function(a){ if(state.hardwareAddons[a.id]) hardwareAddonIds.push(a.id); });
+      var softwareAddonIds = [];
+      SOFTWARE_ADDONS.forEach(function(a){ if(state.softwareAddons[a.id]) softwareAddonIds.push(a.id); });
+      var addedPlansData = state.addedPlans.map(function(entry){
+        return entry.plan === 'tagplan'
+          ? { plan:'tagplan', count: entry.count }
+          : { plan: entry.plan, vehicleType: entry.vehicleType, vehicleYear: entry.vehicleYear, count: entry.count, billing: state.billing };
+      });
+
+      var metadata = {
+        plan: payload.plan, planType: state.plan, billing: payload.billing,
+        customerName: [cust.surname, cust.firstName].filter(Boolean).join(' '), phone: cust.phone,
+        totalAmount: total, flexible: state.flexible,
+        vehicleType: cust.vehicleType || null, vehicleYear: cust.vehicleYear || null, vehCount: cust.vehCount || null,
+        tagCount: cust.tagCount || null, tagUse: cust.tagUse || null,
+        location: [cust.city || cust.installCity, cust.state].filter(Boolean).join(', ') || cust.address || null,
+        addons: payload.addons || null, addedPlans: payload.addedPlans || null,
+        hardwareAddonIds: hardwareAddonIds, softwareAddonIds: softwareAddonIds, addedPlansData: addedPlansData,
+        hiveCredits: state.hiveCredits || null
+      };
+      if(state.flexible){
+        var split = splitFlexible(total);
+        metadata.remainingBalance = split.remaining;
+        metadata.monthlyInstallment = split.monthly;
+        metadata.remainingMonths = 3;
+      }
 
       fetch('/.netlify/functions/paystack-initialize', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
           email: cust.email,
-          amount: total,
+          amount: dueNow,
           callback_url: window.location.origin + window.location.pathname + '?plan=' + state.plan,
-          metadata: {
-            plan: payload.plan, planType: state.plan, billing: payload.billing,
-            customerName: [cust.surname, cust.firstName].filter(Boolean).join(' '), phone: cust.phone
-          }
+          metadata: metadata
         })
       }).then(function(res){ return res.json().then(function(data){ return {ok:res.ok, data:data}; }); })
         .then(function(r){
@@ -672,11 +747,22 @@
         var wrap = qs('resultPanelWrap');
         if(!wrap) return;
         if(data.success){
+          var meta = data.metadata || {};
+          var flexRows = '';
+          if(meta.flexible){
+            flexRows =
+              '<div class="order-line"><span>Total Order Amount</span><span>' + fmt(meta.totalAmount) + '</span></div>' +
+              '<div class="order-line"><span>Amount Paid Today</span><span>' + fmt(data.amount) + '</span></div>' +
+              '<div class="order-line"><span>Remaining Balance</span><span>' + fmt(meta.remainingBalance) + '</span></div>' +
+              '<div class="order-line"><span>Monthly Installment</span><span>' + fmt(meta.monthlyInstallment) + '/mo for ' + (meta.remainingMonths || 3) + ' months</span></div>';
+          }
           wrap.innerHTML =
-            '<div class="result-panel"><div class="rp-icon">🎉</div><h2>Payment Successful</h2>' +
-            '<p>Your FleetHive order has been received. For installation requests, our team will contact you within 24 hours.</p>' +
+            '<div class="result-panel"><div class="rp-icon">🎉</div><h2>Payment Successful. Welcome to FleetHive!</h2>' +
+            '<p>Your FleetHive ' + (meta.plan || 'order') + ' has been received. For installation requests, our team will contact you within 24 hours. A confirmation email with your order details is on its way to your inbox.</p>' +
             '<div class="rp-details">' +
-              '<div class="order-line"><span>Amount</span><span>' + fmt(data.amount) + '</span></div>' +
+              '<div class="order-line"><span>Plan</span><span>' + (meta.plan || '—') + '</span></div>' +
+              '<div class="order-line"><span>Amount Paid</span><span>' + fmt(data.amount) + '</span></div>' +
+              flexRows +
               '<div class="order-line"><span>Reference</span><span>' + data.reference + '</span></div>' +
             '</div>' +
             '<a href="index.html" class="btn btn-primary" style="margin-top:18px; justify-content:center;">Continue to FleetHive</a>' +

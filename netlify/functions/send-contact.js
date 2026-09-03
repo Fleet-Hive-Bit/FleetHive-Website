@@ -39,5 +39,15 @@ exports.handler = async function (event) {
   if (!result.ok) {
     return { statusCode: result.status, body: JSON.stringify({ error: result.error }) };
   }
+
+  // Customer acknowledgment — best-effort.
+  await sendEmail({
+    subject: `We've received your message — FleetHive`,
+    intro: `Hi ${msg.name}, thanks for reaching out. We've received your message and someone from our team will get back to you shortly.`,
+    rows: [['Subject', msg.subject], ['Message', msg.message]],
+    toEmail: msg.email,
+    replyTo: 'support@fleethive.in',
+  });
+
   return { statusCode: 200, body: JSON.stringify({ ok: true }) };
 };

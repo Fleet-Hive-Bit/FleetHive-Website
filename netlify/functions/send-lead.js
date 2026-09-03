@@ -14,6 +14,8 @@
 //                      domain you've verified in Resend, or their shared
 //                      test sender while you're setting things up)
 
+const { sendEmail } = require('./_email');
+
 exports.handler = async function (event) {
   // Only accept POST
   if (event.httpMethod !== 'POST') {
@@ -32,15 +34,6 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing name/email' }) };
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.error('RESEND_API_KEY is not set in Netlify environment variables');
-    return { statusCode: 500, body: JSON.stringify({ error: 'Email service not configured' }) };
-  }
-
-  const toEmail = process.env.LEAD_TO_EMAIL || 'support@fleethive.in';
-  const fromEmail = process.env.LEAD_FROM_EMAIL || 'FleetHive Leads <onboarding@resend.dev>';
-
   const subject = `New FleetHive lead — ${lead.name || 'Website visitor'} [${lead.intent || 'UNKNOWN'}]`;
 
   const rows = [
@@ -58,53 +51,15 @@ exports.handler = async function (event) {
     ['Date/time', lead.timestamp || new Date().toLocaleString()],
   ];
 
-  const textBody =
-    rows.map(([k, v]) => `${k}: ${v || 'Not provided'}`).join('\n') +
-    '\n\nCaptured via Bree on the FleetHive homepage.';
+  const result = await sendEmail({
+    subject,
+    rows,
+    replyTo: lead.email,
+    intro: 'Captured via Bree on the FleetHive homepage.',
+  });
 
-  const htmlRows = rows
-    .map(
-      ([k, v]) =>
-        `<tr><td style="padding:6px 12px;color:#64748B;font-weight:600;">${k}</td><td style="padding:6px 12px;">${
-          v || 'Not provided'
-        }</td></tr>`
-    )
-    .join('');
-
-  const htmlBody = `
-    <div style="font-family:sans-serif;max-width:520px;">
-      <h2 style="color:#0D2137;">New FleetHive lead</h2>
-      <table style="border-collapse:collapse;width:100%;">${htmlRows}</table>
-      <p style="color:#94A3B8;font-size:12px;margin-top:16px;">Captured via Bree on the FleetHive homepage.</p>
-    </div>
-  `;
-
-  try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: fromEmail,
-        to: [toEmail],
-        subject,
-        text: textBody,
-        html: htmlBody,
-        reply_to: lead.email || undefined,
-      }),
-    });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error('Resend API error:', res.status, errText);
-      return { statusCode: 502, body: JSON.stringify({ error: 'Email provider rejected the request' }) };
-    }
-
-    return { statusCode: 200, body: JSON.stringify({ ok: true }) };
-  } catch (err) {
-    console.error('send-lead function failed:', err);
-    return { statusCode: 500, body: JSON.stringify({ error: 'Unexpected server error' }) };
+  if (!result.ok) {
+    return { statusCode: result.status, body: JSON.stringify({ error: result.error }) };
   }
+  return { statusCode: 200, body: JSON.stringify({ ok: true }) };
 };

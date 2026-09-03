@@ -68,5 +68,20 @@ exports.handler = async function (event) {
   if (!result.ok) {
     return { statusCode: result.status, body: JSON.stringify({ error: result.error }) };
   }
+
+  // Customer acknowledgment — best-effort.
+  const custIntro = isPaymentUpdate
+    ? `Hi${app.firstName ? ' ' + app.firstName : ''}, thanks — we've recorded your payment. Your application remains PENDING REVIEW until our team verifies it.`
+    : `Hi${app.firstName ? ' ' + app.firstName : ''}, thanks for applying to become a FleetHive partner. Your application is now under review — our partnerships team will follow up soon.`;
+  await sendEmail({
+    subject: isPaymentUpdate ? `We've recorded your payment — FleetHive Partners` : `We've received your partner application — FleetHive`,
+    intro: custIntro,
+    rows: isPaymentUpdate
+      ? [['Payment method', app.paymentMethod], ['Amount due', app.amountDue]]
+      : [['Partnership type', app.partnershipType], ['Business name', app.businessName]],
+    toEmail: app.email,
+    replyTo: 'support@fleethive.in',
+  });
+
   return { statusCode: 200, body: JSON.stringify({ ok: true }) };
 };

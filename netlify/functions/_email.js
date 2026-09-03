@@ -10,7 +10,22 @@
 //   LEAD_TO_EMAIL   — defaults to support@fleethive.in
 //   LEAD_FROM_EMAIL — defaults to Resend's shared test sender
 
-async function sendEmail({ subject, rows, replyTo, toEmail }) {
+// Escapes a value before it's interpolated into the HTML email body.
+// Customer-supplied fields (name, message, address, etc.) flow straight
+// into these emails from public forms — without this, someone could
+// submit HTML/script markup as their "name" or "message" and have it
+// render in the FleetHive team's or their own inbox. Values shown in the
+// plain-text body don't need this — only the HTML version is at risk.
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (ch) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[ch]));
+}
+
+// intro (optional): a short plain-English paragraph shown above the details
+// table — used for customer-facing emails ("Thanks for your order...").
+// Internal team notifications omit it and just get the raw details table.
+async function sendEmail({ subject, rows, replyTo, toEmail, intro }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error('RESEND_API_KEY is not set in Netlify environment variables');
@@ -20,20 +35,22 @@ async function sendEmail({ subject, rows, replyTo, toEmail }) {
   const to = toEmail || process.env.LEAD_TO_EMAIL || 'support@fleethive.in';
   const from = process.env.LEAD_FROM_EMAIL || 'FleetHive <onboarding@resend.dev>';
 
-  const textBody = rows.map(([k, v]) => `${k}: ${v || 'Not provided'}`).join('\n');
+  const textBody =
+    (intro ? intro + '\n\n' : '') + rows.map(([k, v]) => `${k}: ${v || 'Not provided'}`).join('\n');
 
   const htmlRows = rows
     .map(
       ([k, v]) =>
-        `<tr><td style="padding:6px 12px;color:#64748B;font-weight:600;white-space:nowrap;">${k}</td><td style="padding:6px 12px;">${
-          v || 'Not provided'
+        `<tr><td style="padding:6px 12px;color:#64748B;font-weight:600;white-space:nowrap;">${escapeHtml(k)}</td><td style="padding:6px 12px;">${
+          v ? escapeHtml(v) : 'Not provided'
         }</td></tr>`
     )
     .join('');
 
   const htmlBody = `
     <div style="font-family:sans-serif;max-width:560px;">
-      <h2 style="color:#0D2137;">${subject}</h2>
+      <h2 style="color:#0D2137;">${escapeHtml(subject)}</h2>
+      ${intro ? `<p style="color:#334155;">${escapeHtml(intro)}</p>` : ''}
       <table style="border-collapse:collapse;width:100%;">${htmlRows}</table>
       <p style="color:#94A3B8;font-size:12px;margin-top:16px;">Sent automatically from the FleetHive website.</p>
     </div>

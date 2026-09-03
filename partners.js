@@ -204,7 +204,7 @@
       fetch('/.netlify/functions/send-partner', {
         method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
       }).then(function(res){
-        btn.disabled = false; btn.textContent = '🤝 APPLY TO BECOME A FLEETHIVE PARTNER';
+        btn.disabled = false; btn.textContent = 'APPLY TO BECOME A FLEETHIVE PARTNER';
         if(res.ok){
           state.submitted = true;
           showSubmitted(data);
@@ -212,7 +212,7 @@
           msg.innerHTML = "We couldn't submit this automatically. <a href='" + mailtoHref + "' style='color:var(--sky);'>Click here to email us directly.</a>";
         }
       }).catch(function(){
-        btn.disabled = false; btn.textContent = '🤝 APPLY TO BECOME A FLEETHIVE PARTNER';
+        btn.disabled = false; btn.textContent = 'APPLY TO BECOME A FLEETHIVE PARTNER';
         msg.innerHTML = "We couldn't submit this automatically. <a href='" + mailtoHref + "' style='color:var(--sky);'>Click here to email us directly.</a>";
       });
     });

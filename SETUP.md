@@ -16,6 +16,7 @@ and the Contact / Become a Partner forms.
 | `paystack-verify.js` | Confirms a Paystack transaction server-side (called by the browser after redirect), then emails an order confirmation | `PAYSTACK_SECRET_KEY`, `RESEND_API_KEY` |
 | `paystack-webhook.js` | Same confirmation, triggered server-to-server by Paystack instead of the browser — the reliable fallback if a customer closes their tab before the redirect completes | `PAYSTACK_SECRET_KEY`, `RESEND_API_KEY` |
 | `_paystack.js` | Shared helper: test-mode guard, webhook signature check, transaction verification, and the idempotent "finalize" logic used by both `paystack-verify.js` and `paystack-webhook.js` | — |
+| `_pricing.js` | Server-side mirror of FleetHive's pricing table, used by `paystack-initialize.js` to independently recompute and verify the order total instead of trusting the browser's number | — |
 | `_store.js` | Persists each order (reference, amount, status, plan/customer metadata) using Netlify Blobs, and makes verification idempotent | — (Netlify Blobs needs no setup/keys) |
 
 All of the email-sending functions share one helper, `_email.js`, so the
@@ -203,15 +204,27 @@ both fire for the same payment without double-activating anything. If you
 later want a proper admin view of orders (not just email + Blobs), that's
 a further step — flag it and we can add a simple orders list page.
 
-**Amount integrity:** `paystack-initialize.js` records the exact amount
-FleetHive asked Paystack to charge, at the moment checkout starts.
-`paystack-verify.js` / `paystack-webhook.js` compare that against what
-Paystack confirms was actually paid, and refuse to mark the order
-PAID/ACTIVE (emailing the team an alert instead) if they don't match. This
-guards the handoff between initialize and confirmation; it does not
-independently recompute FleetHive's pricing rules (vehicle type/year,
-add-ons, Hive Credits, etc.) from scratch server-side — see "What remains"
-below.
+**Amount integrity:** the browser is never trusted with the final price.
+`paystack-initialize.js` independently recomputes the full order total
+server-side, from the structured selections the browser sends (plan,
+vehicle type/year/count, add-on ids, Tag count, added plans, Hive
+Credits), using `netlify/functions/_pricing.js` — a server-side mirror of
+the pricing table in `pricing.js`. If the browser's self-reported total
+doesn't match what FleetHive's own price list says it should be, checkout
+is rejected before Paystack is ever contacted. It then separately checks
+that the amount being charged today correctly reflects that (now-verified)
+total and the Flexible Payment split (50% today, or the full total
+otherwise). Finally, `paystack-verify.js` / `paystack-webhook.js` compare
+what Paystack confirms was actually paid against what was asked for at
+initialize time, and refuse to mark the order PAID/ACTIVE (emailing the
+team an alert instead) if they don't match.
+
+**Keeping prices in sync:** `_pricing.js` duplicates the price constants
+at the top of `pricing.js` (plan prices, vehicle/device prices, add-on
+prices, Tag Plan cost) so it can check the browser's numbers without
+trusting the browser's arithmetic. If you ever change a price in
+`pricing.js`, make the same change in `_pricing.js` — otherwise checkout
+will start rejecting genuine orders as a "mismatch."
 
 ### Bank Transfer
 
