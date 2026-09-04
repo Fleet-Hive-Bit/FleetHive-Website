@@ -11,7 +11,7 @@
 //   NEWSLETTER_TO_EMAIL — defaults to support@fleethive.in
 //   LEAD_FROM_EMAIL      — shared "from" sender used across FleetHive functions
 
-const { sendEmail } = require('./_email');
+const { sendEmail, sendWelcomeEmail } = require('./_email');
 
 exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') {
@@ -48,5 +48,19 @@ exports.handler = async function (event) {
   if (!result.ok) {
     return { statusCode: result.status, body: JSON.stringify({ error: result.error }) };
   }
+
+  // Best-effort welcome email back to the subscriber. This is separate from
+  // the internal notification above, so a hiccup here (bad address, Resend
+  // blip, etc.) never fails the signup itself — the person already
+  // successfully subscribed as far as the site and the team are concerned.
+  try {
+    const welcome = await sendWelcomeEmail({ toEmail: entry.email, name: entry.name });
+    if (!welcome.ok) {
+      console.error('Newsletter welcome email failed:', welcome.error);
+    }
+  } catch (e) {
+    console.error('Newsletter welcome email threw:', e);
+  }
+
   return { statusCode: 200, body: JSON.stringify({ ok: true }) };
 };

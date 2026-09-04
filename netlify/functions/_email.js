@@ -118,4 +118,85 @@ async function sendEmail({ subject, rows, replyTo, toEmail, intro }) {
   }
 }
 
-module.exports = { sendEmail };
+// sendWelcomeEmail: a warm, subscriber-facing confirmation — distinct from
+// sendEmail's internal "here's a new lead" notification table. This is the
+// email the *subscriber themselves* receives after signing up, so the copy
+// is narrative/welcoming rather than a data table.
+async function sendWelcomeEmail({ toEmail, name }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.error('RESEND_API_KEY is not set in Netlify environment variables');
+    return { ok: false, status: 500, error: 'Email service not configured' };
+  }
+  if (!toEmail) return { ok: false, status: 400, error: 'Missing recipient email' };
+
+  const from = process.env.LEAD_FROM_EMAIL || 'FleetHive <onboarding@resend.dev>';
+  const greetingName = name ? escapeHtml(name).split(' ')[0] : null;
+  const subject = "You're subscribed to the FleetHive newsletter";
+
+  const textBody =
+    `${greetingName ? `Hi ${greetingName},` : 'Hi there,'}\n\n` +
+    `Thanks for subscribing to the FleetHive newsletter. You're now on the list for product updates, ` +
+    `new features and useful tips on getting the most out of your vehicle tracking.\n\n` +
+    `We'll only reach out when we have something worth your time. If you ever want to stop receiving ` +
+    `these emails, just reply and let us know.\n\n` +
+    `Talk soon,\nThe FleetHive Team`;
+
+  const htmlBody = `
+  <div style="background:#EDF3FC;padding:28px 16px;font-family:'Segoe UI',Helvetica,Arial,sans-serif;">
+    <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #E2E8F0;">
+      <div style="background:${BRAND.navyDeep};background-image:linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.navyDeep} 100%);padding:26px 28px;text-align:left;">
+        <img src="${LOGO_URL}" alt="FleetHive" width="34" height="34" style="display:inline-block;vertical-align:middle;border-radius:8px;">
+        <span style="display:inline-block;vertical-align:middle;margin-left:10px;font-size:18px;font-weight:800;color:#ffffff;letter-spacing:-0.01em;">FLEET<span style="color:${BRAND.sky};">HIVE</span></span>
+      </div>
+      <div style="padding:28px;">
+        <h2 style="color:${BRAND.navy};font-size:19px;margin:0 0 14px;">${greetingName ? `Welcome, ${greetingName}!` : "You're on the list!"}</h2>
+        <p style="color:#334155;font-size:14px;line-height:1.7;margin:0 0 14px;">
+          Thanks for subscribing to the FleetHive newsletter. You're now in the loop for product updates,
+          new features, and practical tips on getting more out of your vehicle tracking.
+        </p>
+        <p style="color:#334155;font-size:14px;line-height:1.7;margin:0 0 14px;">
+          We'll only reach out when we have something genuinely useful to share &mdash; no spam, no noise.
+        </p>
+        <p style="color:#334155;font-size:14px;line-height:1.7;margin:0;">
+          Talk soon,<br>The FleetHive Team
+        </p>
+      </div>
+      <div style="background:#F8FAFC;padding:18px 28px;border-top:1px solid #E2E8F0;">
+        <p style="color:${BRAND.textMuted};font-size:12px;margin:0;">You're receiving this because you subscribed at fleethive.in.</p>
+        <p style="color:${BRAND.textMuted};font-size:12px;margin:6px 0 0;">Didn't sign up, or want to stop? Just reply to this email. &middot; FleetHive &middot; support@fleethive.in</p>
+      </div>
+    </div>
+  </div>
+  `;
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: [toEmail],
+        subject,
+        text: textBody,
+        html: htmlBody,
+        reply_to: process.env.LEAD_TO_EMAIL || 'support@fleethive.in',
+      }),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('Resend API error (welcome email):', res.status, errText);
+      return { ok: false, status: 502, error: 'Email provider rejected the request' };
+    }
+    return { ok: true, status: 200 };
+  } catch (err) {
+    console.error('sendWelcomeEmail failed:', err);
+    return { ok: false, status: 500, error: 'Unexpected server error' };
+  }
+}
+
+module.exports = { sendEmail, sendWelcomeEmail };

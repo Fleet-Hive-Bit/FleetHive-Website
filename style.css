@@ -218,27 +218,19 @@ header{
   .nav-links{gap:2px;}
   .nav-links a{padding:9px 10px; font-size:13px;}
 }
+/* GET STARTED is intentionally NOT shown in the top bar on mobile — it
+   already lives in the hamburger/mobile menu (.mp-actions .btn-primary),
+   so the header only needs the logo + theme toggle + hamburger. */
 .nav-get-started{ display:none; }
 @media (max-width:960px){
   .nav-links{display:none;}
   .mobile-toggle{display:block;}
   .nav-actions{ gap:8px; }
   .nav-actions .btn{display:none;}
-  /* GET STARTED must stay visible beside the theme toggle on every mobile width;
-     it overrides the generic ".nav-actions .btn{display:none}" rule above and is
-     never hidden behind the toggle, hamburger, or header edge. */
-  .nav-actions .btn.nav-get-started{
-    display:inline-flex; padding:9px 14px; font-size:11px; letter-spacing:0.06em;
-    white-space:nowrap; flex-shrink:0; margin-left:auto;
-  }
 }
 @media (max-width:400px){
   .nav-actions{ gap:6px; }
-  .nav-actions .btn.nav-get-started{ padding:8px 10px; font-size:9.5px; }
   .logo-text{ font-size:15px; }
-}
-@media (max-width:340px){
-  .nav-actions .btn.nav-get-started{ padding:7px 8px; font-size:9px; }
 }
 
 /* ---------- SIDE SECTION INDICATOR ---------- */
