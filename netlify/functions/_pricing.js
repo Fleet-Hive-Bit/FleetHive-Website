@@ -55,6 +55,9 @@ function vehiclePrice(plan, type, year) {
 
 // entry: { plan, vehicleType?, vehicleYear?, count, billing? } for a
 // subscription plan, or { plan:'tagplan', count } for a Tag Plan entry.
+// count === '5+' (string) means a custom fleet quote — mirrors pricing.js:
+// only the flat subscription price is charged today, no per-vehicle device
+// price, since that's quoted separately by the team.
 function planEntryTotal(entry, fallbackBilling) {
   if (!entry || !entry.plan) return 0;
   if (entry.plan === 'tagplan') {
@@ -64,6 +67,7 @@ function planEntryTotal(entry, fallbackBilling) {
   if (!p) return 0;
   const billing = entry.billing || fallbackBilling || 'monthly';
   const sub = billing === 'annual' ? p.y : p.m;
+  if (entry.count === '5+') return sub;
   const count = Number(entry.count) || 1;
   const device = vehiclePrice(entry.plan, entry.vehicleType, entry.vehicleYear);
   return sub + device * count;

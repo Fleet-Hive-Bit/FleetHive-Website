@@ -227,13 +227,28 @@
   });
 
   // ---------------- Add Another Plan ----------------
+  // Two mostly-identical UIs (one inside subFlow, one inside tagFlow) share
+  // this logic. Since only one flow is ever visible at a time, everything
+  // below resolves the active flow's element ids via flowPrefix() rather
+  // than duplicating the functions.
+  function flowPrefix(){ return state.plan === 'tagplan' ? 'tag' : 'sub'; }
+
+  var VEHICLE_TYPE_OPTIONS = [
+    'Private Car','Company Vehicle','Bike','Tricycle','Van','Bus','Truck','Heavy Equipment'
+  ];
+  var VEHICLE_YEAR_OPTIONS = [
+    ['2000-2005','2000 – 2005'], ['2006-2010','2006 – 2010'], ['2011-2015','2011 – 2015'],
+    ['2016-2019','2016 – 2019'], ['2020-2026','2020 – 2026']
+  ];
+
   function renderAddPlanOptions(){
-    var sel = qs('addPlanSelect');
+    var sel = qs(flowPrefix() + 'AddPlanSelect');
     if(!sel) return;
     var all = [
       { val:'lite', label:'Lite' }, { val:'pro', label:'Pro' },
       { val:'prime', label:'Prime' }, { val:'tagplan', label:'Tag Plan' }
     ];
+    var current = sel.value;
     sel.innerHTML = '<option value="">Select a plan to add</option>';
     all.forEach(function(o){
       if(o.val === state.plan) return; // current plan already selected
@@ -242,43 +257,196 @@
       opt.value = o.val; opt.textContent = o.label;
       sel.appendChild(opt);
     });
+    if(Array.prototype.some.call(sel.options, function(o){ return o.value === current; })) sel.value = current;
+  }
+
+  function vehicleTypeOptionsHtml(selected){
+    return '<option value="">Select vehicle type</option>' + VEHICLE_TYPE_OPTIONS.map(function(t){
+      return '<option value="' + t + '"' + (t === selected ? ' selected' : '') + '>' + t + '</option>';
+    }).join('');
+  }
+  function vehicleYearOptionsHtml(selected){
+    return '<option value="">Select vehicle year</option>' + VEHICLE_YEAR_OPTIONS.map(function(pair){
+      return '<option value="' + pair[0] + '"' + (pair[0] === selected ? ' selected' : '') + '>' + pair[1] + '</option>';
+    }).join('');
+  }
+  function countChoiceRowHtml(idPrefix, unitLabel, selected){
+    var vals = ['1','2','3','4','5+'];
+    return vals.map(function(v){
+      var label = v === '5+' ? '5+ ' + unitLabel + 's' : v + ' ' + unitLabel + (v === '1' ? '' : 's');
+      return '<button type="button" class="choice-pill' + (v === selected ? ' active' : '') + '" data-val="' + v + '" data-row="' + idPrefix + '">' + label + '</button>';
+    }).join('');
+  }
+
+  // Renders the inline detail form for whichever plan was just picked from
+  // the "Select a plan to add" dropdown — collecting the same vehicle /
+  // installation info the main plan collected, rather than silently
+  // defaulting to Private Car / 2020-2026 / 1 vehicle like before.
+  function renderApDetail(planVal){
+    var prefix = flowPrefix();
+    var panel = qs(prefix + 'ApDetail');
+    if(!panel) return;
+    if(!planVal){ panel.style.display = 'none'; panel.innerHTML = ''; return; }
+
+    var html = '';
+    if(planVal === 'tagplan'){
+      html +=
+        '<div class="form-grid">' +
+          '<div class="form-group full">' +
+            '<label class="form-label">Number of FleetTags*</label>' +
+            '<div class="choice-row" id="' + prefix + 'ApTagCountRow">' + countChoiceRowHtml('tagcount', 'FleetTag', '1') + '</div>' +
+            '<input class="form-input" id="' + prefix + 'ApTagCountCustom" placeholder="Enter number of FleetTags" style="display:none; margin-top:10px; max-width:220px;">' +
+          '</div>' +
+        '</div>' +
+        '<div class="addplan-row" style="margin-top:14px;">' +
+          '<button type="button" class="btn btn-primary" id="' + prefix + 'ApAdd" style="padding:10px 20px; font-size:12.5px;">Add to Order</button>' +
+          '<button type="button" class="btn btn-outline" id="' + prefix + 'ApCancel" style="padding:10px 20px; font-size:12.5px;">Cancel</button>' +
+        '</div>';
+    } else {
+      html +=
+        '<div class="form-grid">' +
+          '<div class="form-group"><label class="form-label">Vehicle Type*</label>' +
+            '<select class="form-select" id="' + prefix + 'ApVehicleType">' + vehicleTypeOptionsHtml('') + '</select></div>' +
+          '<div class="form-group"><label class="form-label">Vehicle Year*</label>' +
+            '<select class="form-select" id="' + prefix + 'ApVehicleYear">' + vehicleYearOptionsHtml('') + '</select></div>' +
+        '</div>' +
+        '<label class="form-label">Number of Vehicles*</label>' +
+        '<div class="choice-row" id="' + prefix + 'ApVehCountRow" style="margin:10px 0 16px;">' + countChoiceRowHtml('vehcount', 'Vehicle', '1') + '</div>' +
+        '<label class="form-label">Same installation details as above?</label>' +
+        '<div class="choice-row" id="' + prefix + 'ApInstallSameRow" style="margin:10px 0 16px;">' +
+          '<button type="button" class="choice-pill active" data-val="yes">Yes, same details</button>' +
+          '<button type="button" class="choice-pill" data-val="no">No, different</button>' +
+        '</div>' +
+        '<div id="' + prefix + 'ApInstallWrap" style="display:none;">' +
+          '<div class="form-grid">' +
+            '<div class="form-group"><label class="form-label">Preferred Installation Location*</label>' +
+              '<select class="form-select" id="' + prefix + 'ApInstallCity">' +
+                '<option value="">Select a city</option><option>Lagos</option><option>Abuja</option>' +
+                '<option>Port Harcourt</option><option>Ibadan</option><option>Kano</option><option>Enugu</option>' +
+              '</select></div>' +
+            '<div class="form-group"><label class="form-label">Installation Option*</label>' +
+              '<select class="form-select" id="' + prefix + 'ApInstallOption">' +
+                '<option value="">Select an option</option>' +
+                '<option value="Installer Visit My Location">Installer Visit My Location</option>' +
+                '<option value="I Will Visit Installation Center">I Will Visit Installation Center</option>' +
+              '</select></div>' +
+            '<div class="form-group"><label class="form-label">Preferred Installation Date*</label><input class="form-input" id="' + prefix + 'ApInstallDate" type="date"></div>' +
+            '<div class="form-group"><label class="form-label">Preferred Installation Time*</label><input class="form-input" id="' + prefix + 'ApInstallTime" type="time"></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="addplan-row" style="margin-top:4px;">' +
+          '<button type="button" class="btn btn-primary" id="' + prefix + 'ApAdd" style="padding:10px 20px; font-size:12.5px;">Add to Order</button>' +
+          '<button type="button" class="btn btn-outline" id="' + prefix + 'ApCancel" style="padding:10px 20px; font-size:12.5px;">Cancel</button>' +
+        '</div>';
+    }
+    panel.innerHTML = html;
+    panel.style.display = '';
+
+    // Count choice-rows (shared handler — click delegation on the panel)
+    panel.querySelectorAll('.choice-row[id$="TagCountRow"], .choice-row[id$="VehCountRow"]').forEach(function(row){
+      row.addEventListener('click', function(e){
+        var btn = e.target.closest('.choice-pill');
+        if(!btn) return;
+        row.querySelectorAll('.choice-pill').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        // FleetTag count has an exact custom-number field for 5+ (tags are
+        // flat-priced per unit); vehicle count intentionally doesn't — 5+
+        // vehicles is treated as a custom fleet quote, same as the main form.
+        var customInput = qs(prefix + 'ApTagCountCustom');
+        if(customInput) customInput.style.display = (btn.dataset.val === '5+') ? '' : 'none';
+      });
+    });
+
+    var sameRow = qs(prefix + 'ApInstallSameRow');
+    if(sameRow){
+      sameRow.addEventListener('click', function(e){
+        var btn = e.target.closest('.choice-pill');
+        if(!btn) return;
+        sameRow.querySelectorAll('.choice-pill').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        qs(prefix + 'ApInstallWrap').style.display = (btn.dataset.val === 'no') ? '' : 'none';
+      });
+    }
+
+    var cancelBtn = qs(prefix + 'ApCancel');
+    if(cancelBtn){
+      cancelBtn.addEventListener('click', function(){
+        qs(prefix + 'AddPlanSelect').value = '';
+        panel.style.display = 'none';
+        panel.innerHTML = '';
+      });
+    }
+
+    var addBtn = qs(prefix + 'ApAdd');
+    if(addBtn){
+      addBtn.addEventListener('click', function(){
+        var entry = { plan: planVal };
+        if(planVal === 'tagplan'){
+          var tagActive = panel.querySelector('#' + prefix + 'ApTagCountRow .choice-pill.active');
+          var tagVal = tagActive ? tagActive.dataset.val : '1';
+          entry.count = (tagVal === '5+')
+            ? Math.max(5, Number(qs(prefix + 'ApTagCountCustom').value) || 5)
+            : Number(tagVal);
+        } else {
+          entry.vehicleType = qs(prefix + 'ApVehicleType').value;
+          entry.vehicleYear = qs(prefix + 'ApVehicleYear').value;
+          var vehActive = panel.querySelector('#' + prefix + 'ApVehCountRow .choice-pill.active');
+          entry.count = vehActive ? vehActive.dataset.val : '1'; // kept as string; '5+' means custom fleet quote
+          if(!entry.vehicleType || (vehicleCategory(entry.vehicleType) === 'year' && !entry.vehicleYear)){
+            alert('Please select a vehicle type and year for this plan before adding it.');
+            return;
+          }
+          var installSameActive = panel.querySelector('#' + prefix + 'ApInstallSameRow .choice-pill.active');
+          entry.installSame = !installSameActive || installSameActive.dataset.val === 'yes';
+          if(!entry.installSame){
+            entry.installCity = qs(prefix + 'ApInstallCity').value;
+            entry.installOption = qs(prefix + 'ApInstallOption').value;
+            entry.installDate = qs(prefix + 'ApInstallDate').value;
+            entry.installTime = qs(prefix + 'ApInstallTime').value;
+            if(!entry.installCity || !entry.installOption || !entry.installDate || !entry.installTime){
+              alert('Please fill in the installation details for this plan, or choose "Same details" instead.');
+              return;
+            }
+          }
+        }
+        state.addedPlans.push(entry);
+        qs(prefix + 'AddPlanSelect').value = '';
+        panel.style.display = 'none';
+        panel.innerHTML = '';
+        renderAddedPlans();
+        renderAddPlanOptions();
+        updateSummary();
+      });
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function(){
-    var btn = qs('addPlanBtn');
-    if(!btn) return;
-    btn.addEventListener('click', function(){
-      var sel = qs('addPlanSelect');
-      var val = sel.value;
-      if(!val) return;
-      var entry = { plan: val };
-      if(val === 'tagplan'){
-        entry.count = 1;
-      } else {
-        entry.vehicleType = 'Private Car';
-        entry.vehicleYear = '2020-2026';
-        entry.count = 1;
-      }
-      state.addedPlans.push(entry);
-      renderAddedPlans();
-      renderAddPlanOptions();
-      sel.value = '';
-      updateSummary();
+    ['sub','tag'].forEach(function(prefix){
+      var sel = qs(prefix + 'AddPlanSelect');
+      if(!sel) return;
+      sel.addEventListener('change', function(){
+        renderApDetail(sel.value);
+      });
     });
   });
 
   function addedPlanLabel(entry){
     if(entry.plan === 'tagplan') return 'Tag Plan, ' + entry.count + ' FleetTag' + (entry.count > 1 ? 's' : '');
-    return PLANS[entry.plan].name + ' Plan, ' + entry.vehicleType + ', ' + entry.vehicleYear;
+    var isCustomFleet = entry.count === '5+';
+    var countLabel = isCustomFleet ? ' · 5+ vehicles (custom quote)' : (Number(entry.count) > 1 ? ' · ' + entry.count + ' vehicles' : '');
+    var installLabel = entry.installSame === false ? ' · custom installation' : '';
+    return PLANS[entry.plan].name + ' Plan, ' + entry.vehicleType + ', ' + entry.vehicleYear + countLabel + installLabel;
   }
   function addedPlanAmount(entry){
     if(entry.plan === 'tagplan') return TAGPLAN_ONE_TIME * entry.count;
     var sub = state.billing === 'annual' ? PLANS[entry.plan].y : PLANS[entry.plan].m;
+    if(entry.count === '5+') return sub; // custom fleet — device/install quoted separately by the team
     var device = vehiclePrice(entry.plan, entry.vehicleType, entry.vehicleYear);
-    return sub + device;
+    var count = Number(entry.count) || 1;
+    return sub + (device * count);
   }
   function renderAddedPlans(){
-    var wrap = qs('addedPlansList');
+    var wrap = qs(flowPrefix() + 'AddedPlansList');
     if(!wrap) return;
     wrap.innerHTML = '';
     state.addedPlans.forEach(function(entry, idx){
@@ -610,7 +778,7 @@
       return false;
     }
     var required = state.plan === 'tagplan'
-      ? [cust.surname, cust.firstName, cust.phone, cust.email, cust.state, cust.city]
+      ? [cust.surname, cust.firstName, cust.phone, cust.email, cust.state, cust.landmark]
       : [cust.surname, cust.firstName, cust.phone, cust.email, cust.address, cust.vehicleType, cust.installCity, cust.installOption, cust.installDate, cust.installTime]
           .concat(vehicleCategory(cust.vehicleType || '') === 'year' ? [cust.vehicleYear] : []);
     if(required.some(function(v){ return !v; })){

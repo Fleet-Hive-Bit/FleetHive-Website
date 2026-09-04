@@ -253,11 +253,11 @@
       <div class="form-section">
         <h3>Add Another Plan <span class="opt" style="font-weight:500;">(optional)</span></h3>
         <p class="form-intro">Managing more than one type of tracking? Add another FleetHive plan to this same order.</p>
-        <div id="addedPlansList"></div>
+        <div id="subAddedPlansList"></div>
         <div class="addplan-row">
-          <select class="form-select" id="addPlanSelect"><option value="">Select a plan to add</option></select>
-          <button type="button" class="btn btn-outline" id="addPlanBtn" style="padding:12px 20px; font-size:12.5px;">Add Plan</button>
+          <select class="form-select" id="subAddPlanSelect"><option value="">Select a plan to add</option></select>
         </div>
+        <div id="subApDetail" class="ap-detail" style="display:none;"></div>
       </div>
 
       <div id="subFlexiWrap"></div>
@@ -313,11 +313,21 @@
         <p class="form-intro">Your FleetTag will be delivered to this address.</p>
         <div class="form-grid">
           <div class="form-group"><label class="form-label">State*</label><input class="form-input" id="tagState" required></div>
-          <div class="form-group"><label class="form-label">City*</label><input class="form-input" id="tagCity" required></div>
-          <div class="form-group"><label class="form-label">House No.*</label><input class="form-input" id="tagHouseNo" required></div>
-          <div class="form-group"><label class="form-label">Street / Address*</label><input class="form-input" id="tagStreet" required></div>
-          <div class="form-group full"><label class="form-label">Delivery Point / Landmark <span class="opt">(optional)</span></label><input class="form-input" id="tagLandmark"></div>
+          <div class="form-group"><label class="form-label">City <span class="opt">(optional)</span></label><input class="form-input" id="tagCity"></div>
+          <div class="form-group"><label class="form-label">House No. <span class="opt">(optional)</span></label><input class="form-input" id="tagHouseNo"></div>
+          <div class="form-group"><label class="form-label">Street / Address <span class="opt">(optional)</span></label><input class="form-input" id="tagStreet"></div>
+          <div class="form-group full"><label class="form-label">Delivery Point / Landmark*</label><input class="form-input" id="tagLandmark" required></div>
         </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Add Another Plan <span class="opt" style="font-weight:500;">(optional)</span></h3>
+        <p class="form-intro">Managing more than one type of tracking? Add another FleetHive plan to this same order.</p>
+        <div id="tagAddedPlansList"></div>
+        <div class="addplan-row">
+          <select class="form-select" id="tagAddPlanSelect"><option value="">Select a plan to add</option></select>
+        </div>
+        <div id="tagApDetail" class="ap-detail" style="display:none;"></div>
       </div>
 
       <div class="form-section">
