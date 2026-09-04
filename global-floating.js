@@ -13,7 +13,7 @@
 // so the elements already exist by the time site.js wires up Bree's
 // behavior. It does not touch Bree's logic at all — that stays in site.js.
 (function(){
-  if(document.getElementById('breeLauncher')) return; // already injected — never duplicate
+  if(document.getElementById('breeLauncher')) return; // already injected, never duplicate
 
   var html =
     '<a href="https://wa.me/2347025771522" class="wa-float" aria-label="Chat on WhatsApp" target="_blank" rel="noopener">' +

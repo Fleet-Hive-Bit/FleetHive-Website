@@ -14,7 +14,7 @@ window.BREE_KB = {
 
   company: {
     name: 'FleetHive Innovation',
-    summary: 'FleetHive is a smart mobility and vehicle intelligence company, helping individuals and businesses understand, monitor and track their vehicles — with a broader vision for smart mobility across Africa and beyond.',
+    summary: 'FleetHive is a smart mobility and vehicle intelligence company, helping individuals and businesses understand, monitor and track their vehicles, with a broader vision for smart mobility across Africa and beyond.',
     whatWeHelpWith: [
       'Understand their vehicles',
       'Monitor vehicles',
@@ -36,24 +36,24 @@ window.BREE_KB = {
     startCost: '₦35,000 for one FleetTag',
     free: 'the first 3 months of tracking are free',
     renewal: 'then ₦3,000/mo or ₦30,000/yr (saves ₦6,000 a year)',
-    note: 'the ₦3,000/mo and ₦30,000/yr prices are renewal prices — they are not charged at purchase, only ₦35,000 per tag is charged upfront',
+    note: 'the ₦3,000/mo and ₦30,000/yr prices are renewal prices, they are not charged at purchase, only ₦35,000 per tag is charged upfront',
     uses: 'packages, orders, assets, vehicles and other trackable items',
     tagUnitCost: 35000,
     reusable: 'The FleetTag is reusable and can be attached to a vehicle, asset, parcel or other item you want to track.'
   },
 
   hiveCredits: {
-    desc: 'Hive Credits are prepaid credits for tracking and support services, separate from the Tag Plan subscription — they are not compulsory and not the same as the renewal fee',
+    desc: 'Hive Credits are prepaid credits for tracking and support services, separate from the Tag Plan subscription, they are not compulsory and not the same as the renewal fee',
     amounts: '₦5,000, ₦10,000, ₦20,000, ₦50,000 or a custom amount'
   },
 
   solutions: {
-    tracking:  'Live Vehicle Tracking — real-time location, so you know where a vehicle is without depending on phone calls.',
-    trips:     'Trips & Activity — a clear history of where a vehicle has been and how it\'s being used.',
-    alerts:    'Smart Alerts — notified the moment something needs attention, instead of finding out later.',
-    zones:     'Smart Zones — set routes and no-go areas, and get told the moment a vehicle leaves them.',
-    intel:     'Vehicle Intelligence — raw activity turned into information you can actually act on.',
-    tags:      'Fleet Tags — tracking for assets beyond vehicles, for things you move but can\'t install a full device on.'
+    tracking:  'Live Vehicle Tracking, real-time location, so you know where a vehicle is without depending on phone calls.',
+    trips:     'Trips & Activity, a clear history of where a vehicle has been and how it\'s being used.',
+    alerts:    'Smart Alerts, notified the moment something needs attention, instead of finding out later.',
+    zones:     'Smart Zones, set routes and no-go areas, and get told the moment a vehicle leaves them.',
+    intel:     'Vehicle Intelligence, raw activity turned into information you can actually act on.',
+    tags:      'Fleet Tags, tracking for assets beyond vehicles, for things you move but can\'t install a full device on.'
   },
 
   howItWorks: {
@@ -62,13 +62,13 @@ window.BREE_KB = {
   },
 
   installation: {
-    summary: 'A technician installs the FleetHive tracking device in your vehicle, it connects to the platform, and your dashboard goes live the same day — no long onboarding.',
+    summary: 'A technician installs the FleetHive tracking device in your vehicle, it connects to the platform, and your dashboard goes live the same day, no long onboarding.',
     locations: ['Lagos', 'Abuja', 'Port Harcourt', 'Ibadan', 'Kano', 'Enugu'],
     outsideLocations: "Let me connect you with the FleetHive team so we can confirm the available installation option for your location."
   },
 
   partnership: {
-    summary: 'The Partner Program is for installers, ICT consultants, mobility companies and resellers — you earn recurring revenue selling and deploying FleetHive.'
+    summary: 'The Partner Program is for installers, ICT consultants, mobility companies and resellers, you earn recurring revenue selling and deploying FleetHive.'
   },
 
   contact: {
@@ -77,8 +77,8 @@ window.BREE_KB = {
   },
 
   faq: {
-    trial: 'FleetHive does not currently advertise a free trial on subscription plans — Tag Plan includes 3 free months of tracking specifically.',
-    cancel: 'For billing or cancellation questions, the FleetHive team can help directly — best reached via the contact page, WhatsApp or support@fleethive.in.'
+    trial: 'FleetHive does not currently advertise a free trial on subscription plans, Tag Plan includes 3 free months of tracking specifically.',
+    cancel: 'For billing or cancellation questions, the FleetHive team can help directly, best reached via the contact page, WhatsApp or support@fleethive.in.'
   },
 
   // Real destinations Bree can send visitors to with a button instead of just text.

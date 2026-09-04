@@ -90,6 +90,15 @@ In the Netlify dashboard for your site:
    - `LEAD_FROM_EMAIL` → e.g. `FleetHive Leads <leads@fleethive.in>` once
      you've verified your domain in Resend. Until then, leave unset — it
      defaults to Resend's shared test sender.
+   - `SITE_URL` → your production URL (e.g. `https://fleethive.in` or your
+     `https://your-site.netlify.app` address). All outgoing emails include
+     the FleetHive logo, loaded from `${SITE_URL}/assets/logo.png` — email
+     clients can't reach a `localhost` path, so this must point at your
+     live, publicly reachable site. Defaults to `https://fleethive.in` if
+     you don't set it.
+   - `EMAIL_LOGO_URL` → only needed if the logo lives somewhere other than
+     `${SITE_URL}/assets/logo.png` (e.g. a CDN). Overrides `SITE_URL` for
+     the logo specifically.
 4. Trigger a redeploy (Netlify → Deploys → Trigger deploy) so the function
    picks up the new variable.
 

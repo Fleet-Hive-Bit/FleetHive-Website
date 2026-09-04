@@ -67,6 +67,27 @@ body{
   font-weight:400;
   transition:background .3s ease, color .3s ease;
 }
+/* ---------- Atmospheric glossy blue glow ----------
+   A very subtle, fixed backdrop glow behind the page content. Shows through
+   on sections that don't set their own solid background-color; sections that
+   do (e.g. .section-deep) simply sit on top of it, so this never competes
+   with text or turns any surface visibly blue — it's a soft light source,
+   not a tint. Light mode uses the FleetHive sky blue (#6FA3F0); dark mode
+   uses a much softer ice-blue accent (#E8F1FC) so the UI stays dark. */
+body::before{
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 62% 38% at 50% -6%, rgba(232,241,252,0.05), transparent 62%),
+    radial-gradient(ellipse 46% 30% at 100% 22%, rgba(232,241,252,0.03), transparent 66%),
+    radial-gradient(ellipse 46% 30% at 0% 78%, rgba(232,241,252,0.025), transparent 66%);
+  transition:opacity .3s ease;
+}
+[data-theme="light"] body::before{
+  background:
+    radial-gradient(ellipse 62% 38% at 50% -6%, rgba(111,163,240,0.10), transparent 62%),
+    radial-gradient(ellipse 46% 30% at 100% 22%, rgba(111,163,240,0.05), transparent 66%),
+    radial-gradient(ellipse 46% 30% at 0% 78%, rgba(111,163,240,0.045), transparent 66%);
+}
 img{display:block; max-width:100%;}
 a{color:inherit; text-decoration:none;}
 ul{list-style:none;}
@@ -191,11 +212,34 @@ header{
 .mobile-panel.open a:nth-child(8){transition-delay:.40s;}
 .mobile-panel.open a:nth-child(9){transition-delay:.45s;}
 .mobile-panel .mp-actions{display:flex; gap:10px; margin-top:20px;}
+.mobile-panel .mp-actions .btn-primary{ opacity:1; transform:none; color:var(--navy-deep); background:#fff; }
+[data-theme="light"] .mobile-panel .mp-actions .btn-primary{ color:#fff; background:var(--navy); }
 @media (max-width:1180px) and (min-width:961px){
   .nav-links{gap:2px;}
   .nav-links a{padding:9px 10px; font-size:13px;}
 }
-@media (max-width:960px){ .nav-links{display:none;} .mobile-toggle{display:block;} .nav-actions .btn{display:none;} }
+.nav-get-started{ display:none; }
+@media (max-width:960px){
+  .nav-links{display:none;}
+  .mobile-toggle{display:block;}
+  .nav-actions{ gap:8px; }
+  .nav-actions .btn{display:none;}
+  /* GET STARTED must stay visible beside the theme toggle on every mobile width;
+     it overrides the generic ".nav-actions .btn{display:none}" rule above and is
+     never hidden behind the toggle, hamburger, or header edge. */
+  .nav-actions .btn.nav-get-started{
+    display:inline-flex; padding:9px 14px; font-size:11px; letter-spacing:0.06em;
+    white-space:nowrap; flex-shrink:0; margin-left:auto;
+  }
+}
+@media (max-width:400px){
+  .nav-actions{ gap:6px; }
+  .nav-actions .btn.nav-get-started{ padding:8px 10px; font-size:9.5px; }
+  .logo-text{ font-size:15px; }
+}
+@media (max-width:340px){
+  .nav-actions .btn.nav-get-started{ padding:7px 8px; font-size:9px; }
+}
 
 /* ---------- SIDE SECTION INDICATOR ---------- */
 .side-indicator{
@@ -889,6 +933,15 @@ footer{
 .mv-card .eyebrow{ margin-bottom:10px; }
 .mv-card p{ font-size:14.5px; }
 @media (max-width:860px){ .mv-grid{ grid-template-columns:1fr; } }
+
+/* Vision / Mission — 2-up variant. Desktop/tablet: two cards side by side.
+   Mobile: full-width stacked cards so paragraph text isn't squeezed into
+   narrow columns (which is what made the cards unnecessarily tall). */
+.mv-grid.mv-grid-2col{ grid-template-columns:repeat(2,1fr); max-width:820px; margin:0 auto; }
+@media (max-width:700px){
+  .mv-grid.mv-grid-2col{ grid-template-columns:1fr; max-width:560px; gap:14px; }
+  .mv-grid.mv-grid-2col .mv-card{ padding:22px 20px; }
+}
 
 /* ---------- About — Founder story ("From the Horse's Mouth") ---------- */
 .founder-block{display:grid; grid-template-columns:0.85fr 1.35fr; gap:48px; align-items:center;}

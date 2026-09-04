@@ -15,19 +15,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-  /* Scoped to partners.html only — approval flow stepper + status pill */
+  /* Scoped to partners.html only, approval flow stepper + status pill */
   .status-pill{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:#0D2137; background:var(--sky); padding:6px 14px; border-radius:20px; }
   .approval-flow{ display:flex; flex-wrap:wrap; align-items:stretch; justify-content:center; gap:0; }
   .approval-step{ display:flex; flex-direction:column; align-items:center; text-align:center; width:150px; padding:10px 6px; }
   .approval-step .as-num{ width:38px; height:38px; border-radius:50%; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:var(--sky); background:var(--card-bg); margin-bottom:10px; flex-shrink:0; }
+  .approval-step .as-text{ display:flex; flex-direction:column; }
   .approval-step h4{ font-size:12.5px; color:var(--heading); margin-bottom:4px; }
-  .approval-step p{ font-size:11.5px; color:var(--text-secondary); line-height:1.4; }
+  .approval-step p{ font-size:11.5px; color:var(--text-secondary); line-height:1.4; margin:0; }
   .approval-arrow{ display:flex; align-items:center; justify-content:center; color:var(--silver); font-size:16px; width:22px; flex-shrink:0; }
   @media (max-width:900px){
-    .approval-flow{ flex-direction:column; align-items:stretch; }
-    .approval-step{ width:100%; flex-direction:row; text-align:left; gap:14px; padding:12px 4px; }
-    .approval-step .as-num{ margin-bottom:0; }
-    .approval-arrow{ width:auto; height:16px; transform:rotate(90deg); margin:0 auto; }
+    .approval-flow{ flex-direction:column; align-items:stretch; gap:0; }
+    .approval-step{ width:100%; flex-direction:row; align-items:flex-start; text-align:left; gap:14px; padding:12px 4px; }
+    .approval-step .as-num{ margin-bottom:0; margin-top:1px; }
+    .approval-step .as-text{ flex:1; gap:4px; padding-top:2px; }
+    .approval-arrow{ width:38px; height:16px; transform:rotate(90deg); margin:0; flex-shrink:0; }
   }
   .type-card-price{ font-size:26px; font-weight:800; color:var(--heading); margin:12px 0 2px; }
   .type-card-price span{ font-size:13px; color:var(--silver); font-weight:600; }
@@ -58,6 +60,7 @@
         <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
       </button>
       <a href="https://app.fleethive.in" class="btn btn-outline" style="padding:11px 22px; font-size:12px;">Login</a>
+      <a href="pricing.html" class="btn btn-primary nav-get-started" aria-label="Get Started">Get Started</a>
       <button class="mobile-toggle" id="mobileToggleBtn" onclick="fhToggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </nav>
@@ -85,8 +88,8 @@
   <div class="bg-pattern bg-dots page-hero-bg"></div>
   <div class="wrap reveal in">
     <span class="eyebrow">Partner with us</span>
-    <h1>Build Your Tracking Business with FleetHive.</h1>
-    <p class="lead">Use FleetHive's tracking technology and platform to provide tracking services to customers — without having to build the entire tracking system yourself.</p>
+    <h1>Build Your Tracking Business with FleetHive</h1>
+    <p class="lead">Use FleetHive's tracking technology and platform to provide tracking services to customers, without having to build the entire tracking system yourself.</p>
     <div class="hero-cta-row" style="display:flex; gap:14px; flex-wrap:wrap; margin-top:24px; justify-content:center;">
       <a href="#partner-application" class="btn btn-primary" onclick="document.getElementById('partner-application').scrollIntoView({behavior:'smooth'}); return false;">Become a Partner</a>
       <a href="contact.html" class="btn btn-outline">Talk to an Agent</a>
@@ -99,7 +102,7 @@
   <div class="wrap">
     <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
       <span class="eyebrow">Why partner with FleetHive</span>
-      <h2>Everything you need to run a tracking business.</h2>
+      <h2>Everything you need to run a tracking business</h2>
     </div>
     <div class="mv-grid reveal-stagger">
       <div class="mv-card">
@@ -135,7 +138,7 @@
   <div class="wrap">
     <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
       <span class="eyebrow">Partnership types</span>
-      <h2>Choose the structure that fits you.</h2>
+      <h2>Choose the structure that fits you</h2>
     </div>
     <div class="price-grid reveal-stagger">
       <div class="price-card" data-card="reseller">
@@ -182,7 +185,7 @@
   <div class="wrap">
     <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
       <span class="eyebrow">Compare options</span>
-      <h2>Every partnership type, side by side.</h2>
+      <h2>Every partnership type, side by side</h2>
     </div>
     <div class="compare-wrap reveal">
       <table class="compare-table">
@@ -200,7 +203,7 @@
           <tr><td>Branding</td><td>Your own brand</td><td class="hl">FleetHive brand</td><td>Mostly FleetHive, with more independence</td></tr>
           <tr><td>FleetHive relationship</td><td>Independent partner using FleetHive's platform</td><td class="hl">Works closely within FleetHive's structure</td><td>Operates under FleetHive's approval structure</td></tr>
           <tr><td>Suitable for</td><td>Building a more independent branded business</td><td class="hl">Starting out and earning locally with support close by</td><td>Deploying independently once approved</td></tr>
-          <tr><td>Revenue structure</td><td>One-time fee — you keep what you earn</td><td class="hl">30% revenue share on sales</td><td>Subscription plan (monthly, 6-month or yearly) + setup fee</td></tr>
+          <tr><td>Revenue structure</td><td>One-time fee, you keep what you earn</td><td class="hl">30% revenue share on sales</td><td>Subscription plan (monthly, 6-month or yearly) + setup fee</td></tr>
         </tbody>
       </table>
     </div>
@@ -213,7 +216,7 @@
   <div class="wrap" style="max-width:820px;">
     <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
       <span class="eyebrow">Apply</span>
-      <h2>Become a FleetHive Partner.</h2>
+      <h2>Become a FleetHive Partner</h2>
       <p>Tell us a little about yourself and how you plan to use FleetHive. Our partnership team will review your application and contact you with the next steps.</p>
     </div>
 
@@ -226,9 +229,9 @@
           <label class="form-label">Partnership Type*</label>
           <select class="form-select" id="pType" required>
             <option value="">Select a partnership type</option>
-            <option value="reseller">Reseller — $200 (One-time)</option>
-            <option value="dependent">Dependent Sub-seller — $50 + 30% revenue share</option>
-            <option value="independent">Independent Sub-seller — $15 Setup &amp; Activation</option>
+            <option value="reseller">Reseller, $200 (One-time)</option>
+            <option value="dependent">Dependent Sub-seller, $50 + 30% revenue share</option>
+            <option value="independent">Independent Sub-seller, $15 Setup &amp; Activation</option>
           </select>
         </div>
         <p class="form-help" id="typeHelper" style="display:none;"></p>
@@ -239,9 +242,9 @@
         <h3>Payment Option</h3>
         <p class="form-intro">Choose how you'd like to be billed once your Independent Sub-seller account is activated.</p>
         <div class="choice-row" id="paymentOptionRow">
-          <button type="button" class="choice-pill active" data-val="monthly">Monthly — ₦3,500/mo + $15 Setup &amp; Activation</button>
-          <button type="button" class="choice-pill" data-val="6months">6 Months — ₦18,000 + $15 Setup &amp; Activation</button>
-          <button type="button" class="choice-pill" data-val="12months">12 Months — ₦30,000/yr + $15 Setup &amp; Activation</button>
+          <button type="button" class="choice-pill active" data-val="monthly">Monthly, ₦3,500/mo + $15 Setup &amp; Activation</button>
+          <button type="button" class="choice-pill" data-val="6months">6 Months, ₦18,000 + $15 Setup &amp; Activation</button>
+          <button type="button" class="choice-pill" data-val="12months">12 Months, ₦30,000/yr + $15 Setup &amp; Activation</button>
         </div>
       </div>
 
@@ -262,7 +265,7 @@
       <!-- Experience level -->
       <div class="form-section">
         <h3>3. Experience Level</h3>
-        <p class="form-intro">No experience? No problem — FleetHive has partnership structures suitable for different starting points.</p>
+        <p class="form-intro">No experience? No problem, FleetHive has partnership structures suitable for different starting points.</p>
         <div class="form-grid">
           <div class="form-group"><label class="form-label">Do you currently work with tracking devices?*</label>
             <select class="form-select" id="pWorksWithTracking" required>
@@ -328,7 +331,7 @@
             </select>
           </div>
         </div>
-        <p class="form-help">You don't need a registered company to apply — Individual Operator is a valid option.</p>
+        <p class="form-help">You don't need a registered company to apply, Individual Operator is a valid option.</p>
       </div>
 
       <!-- Agreement -->
@@ -388,24 +391,24 @@
   <div class="wrap">
     <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
       <span class="eyebrow">How approval works</span>
-      <h2>From application to login.</h2>
+      <h2>From application to login</h2>
     </div>
     <div class="approval-flow reveal">
-      <div class="approval-step"><div class="as-num">1</div><h4>Application</h4><p>You submit your partner application.</p></div>
+      <div class="approval-step"><div class="as-num">1</div><div class="as-text"><h4>Application</h4><p>You submit your partner application.</p></div></div>
       <div class="approval-arrow">→</div>
-      <div class="approval-step"><div class="as-num">2</div><h4>Pending Review</h4><p>Your application is marked pending review.</p></div>
+      <div class="approval-step"><div class="as-num">2</div><div class="as-text"><h4>Pending Review</h4><p>Your application is marked pending review.</p></div></div>
       <div class="approval-arrow">→</div>
-      <div class="approval-step"><div class="as-num">3</div><h4>FleetHive Reviews</h4><p>Our partnerships team reviews your application.</p></div>
+      <div class="approval-step"><div class="as-num">3</div><div class="as-text"><h4>FleetHive Reviews</h4><p>Our partnerships team reviews your application.</p></div></div>
       <div class="approval-arrow">→</div>
-      <div class="approval-step"><div class="as-num">4</div><h4>Approved / Not Approved</h4><p>You're notified of the outcome.</p></div>
+      <div class="approval-step"><div class="as-num">4</div><div class="as-text"><h4>Approved / Not Approved</h4><p>You're notified of the outcome.</p></div></div>
       <div class="approval-arrow">→</div>
-      <div class="approval-step"><div class="as-num">5</div><h4>Payment Confirmed</h4><p>Where applicable, your payment is confirmed.</p></div>
+      <div class="approval-step"><div class="as-num">5</div><div class="as-text"><h4>Payment Confirmed</h4><p>Where applicable, your payment is confirmed.</p></div></div>
       <div class="approval-arrow">→</div>
-      <div class="approval-step"><div class="as-num">6</div><h4>Account Activated</h4><p>Your FleetHive Partner account is activated.</p></div>
+      <div class="approval-step"><div class="as-num">6</div><div class="as-text"><h4>Account Activated</h4><p>Your FleetHive Partner account is activated.</p></div></div>
       <div class="approval-arrow">→</div>
-      <div class="approval-step"><div class="as-num">7</div><h4>Login Access</h4><p>You receive your login details.</p></div>
+      <div class="approval-step"><div class="as-num">7</div><div class="as-text"><h4>Login Access</h4><p>You receive your login details.</p></div></div>
       <div class="approval-arrow">→</div>
-      <div class="approval-step"><div class="as-num">8</div><h4>Partner Login</h4><p>You log in and start operating.</p></div>
+      <div class="approval-step"><div class="as-num">8</div><div class="as-text"><h4>Partner Login</h4><p>You log in and start operating.</p></div></div>
     </div>
   </div>
 </section>
@@ -476,7 +479,7 @@
     </form>
     <div class="exit-popup-success">
       <h4>You're on the list.</h4>
-      <p>Thanks for joining the FleetHive network — watch your inbox for updates.</p>
+      <p>Thanks for joining the FleetHive network, watch your inbox for updates.</p>
     </div>
   </div>
 </div>

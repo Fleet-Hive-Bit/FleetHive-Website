@@ -37,6 +37,7 @@
         <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
       </button>
       <a href="https://app.fleethive.in" class="btn btn-outline" style="padding:11px 22px; font-size:12px;">Login</a>
+      <a href="pricing.html" class="btn btn-primary nav-get-started" aria-label="Get Started">Get Started</a>
       <button class="mobile-toggle" id="mobileToggleBtn" onclick="fhToggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </nav>
@@ -63,7 +64,7 @@
   <div class="bg-pattern bg-dots page-hero-bg"></div>
   <div class="wrap reveal in">
     <span class="eyebrow">Contact</span>
-    <h1>Talk to FleetHive.</h1>
+    <h1>Talk to FleetHive</h1>
     <p class="lead">Have a question about a plan, FleetTag, installation or becoming a partner? Send us a message and our team will get back to you.</p>
   </div>
 </section>
@@ -153,7 +154,7 @@
     </form>
     <div class="exit-popup-success">
       <h4>You're on the list.</h4>
-      <p>Thanks for joining the FleetHive network — watch your inbox for updates.</p>
+      <p>Thanks for joining the FleetHive network, watch your inbox for updates.</p>
     </div>
   </div>
 </div>
@@ -184,8 +185,9 @@ document.getElementById('contactForm').addEventListener('submit', function(e){
   }).then(function(res){
     btn.disabled = false; btn.textContent = 'Send Message';
     if(res.ok){
-      msg.textContent = "Thanks — your message has been sent. We'll get back to you shortly.";
+      msg.textContent = "Thanks, your message has been sent. We'll get back to you shortly.";
       document.getElementById('contactForm').reset();
+      if(window.fhTriggerPopup){ setTimeout(window.fhTriggerPopup, 1500); }
     } else {
       msg.innerHTML = "We couldn't send this automatically. <a href='" + mailtoHref + "' style='color:var(--sky);'>Click here to email us directly.</a>";
     }

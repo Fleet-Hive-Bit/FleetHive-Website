@@ -198,7 +198,7 @@
         timestamp: new Date().toLocaleString()
       };
 
-      var mailtoHref = 'mailto:support@fleethive.in?subject=' + encodeURIComponent('Partner application — ' + payload.name) +
+      var mailtoHref = 'mailto:support@fleethive.in?subject=' + encodeURIComponent('Partner application, ' + payload.name) +
         '&body=' + encodeURIComponent(Object.keys(payload).map(function(k){ return k + ': ' + payload[k]; }).join('\n'));
 
       fetch('/.netlify/functions/send-partner', {
@@ -250,7 +250,7 @@
       '<div class="order-line"><span>Partnership type</span><span>' + cfg.name + '</span></div>' +
       '<div class="order-line"><span>' + cfg.dueLabel + '</span><span>' + fmtUSD(amount) + '</span></div>' +
       extra +
-      '<p class="form-help" style="margin-top:12px;">This fee gets your application ready for review. FleetHive still reviews and approves every application separately — payment does not guarantee approval.</p>';
+      '<p class="form-help" style="margin-top:12px;">This fee gets your application ready for review. FleetHive still reviews and approves every application separately, payment does not guarantee approval.</p>';
   }
 
   function buildPaymentPayload(status, method){
@@ -300,7 +300,7 @@
             window.location.href = r.data.authorization_url;
           } else {
             btn.disabled = false; btn.textContent = 'Proceed to Payment';
-            qs('partnerPaystackMsg').textContent = 'Payment could not be started. This usually means Paystack has not been configured yet on the server — please use Bank Transfer, or contact FleetHive.';
+            qs('partnerPaystackMsg').textContent = 'Payment could not be started. This usually means Paystack has not been configured yet on the server, please use Bank Transfer, or contact FleetHive.';
           }
         }).catch(function(){
           btn.disabled = false; btn.textContent = 'Proceed to Payment';
@@ -324,13 +324,16 @@
         if(data.success){
           wrap.innerHTML =
             '<div class="result-panel"><div class="rp-icon">🎉</div><h2>Payment Successful</h2>' +
-            '<p>Your partnership fee has been received. Your application remains in review — our partnerships team will contact you within 48 hours.</p>' +
+            '<p>Your partnership fee has been received. Your application remains in review, our partnerships team will contact you within 48 hours.</p>' +
             '<div class="rp-details">' +
               '<div class="order-line"><span>Amount</span><span>$' + Number(data.amount).toLocaleString() + '</span></div>' +
               '<div class="order-line"><span>Reference</span><span>' + data.reference + '</span></div>' +
             '</div>' +
             '<a href="index.html" class="btn btn-primary" style="margin-top:18px; justify-content:center;">Continue to FleetHive</a>' +
             '</div>';
+          // Successful payment is allowed to bring the newsletter popup back
+          // sooner than usual, still subject to the 4-minute/subscribed guards.
+          if(window.fhTriggerPopup){ setTimeout(window.fhTriggerPopup, 2000); }
         } else {
           wrap.innerHTML = '<div class="result-panel pending"><div class="rp-icon">⏳</div><h2>Payment Not Confirmed</h2><p>We could not confirm this payment. If you were charged, please contact FleetHive support with your reference: ' + reference + '</p></div>';
         }
@@ -357,7 +360,7 @@
         if(res.ok){
           wrap.innerHTML =
             '<div class="result-panel pending"><div class="rp-icon">⏳</div><h2>Payment Pending Verification</h2>' +
-            '<p>Thanks — we\'ve recorded your transfer. Our team will verify payment and follow up on your application, which remains PENDING REVIEW until approved.</p>' +
+            '<p>Thanks, we\'ve recorded your transfer. Our team will verify payment and follow up on your application, which remains PENDING REVIEW until approved.</p>' +
             '<a href="index.html" class="btn btn-outline" style="margin-top:18px; justify-content:center;">Continue to FleetHive</a>' +
             '</div>';
         } else {

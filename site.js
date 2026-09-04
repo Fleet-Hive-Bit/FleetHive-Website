@@ -353,22 +353,22 @@ document.addEventListener('DOMContentLoaded', function(){
       prime: {name:"Prime", price:"₦12,000/mo (₦120,000/yr)", fit:"fleets that want FleetHive's team actively monitoring and reporting alongside them"}
     },
     solutions: {
-      tracking:  'Live Vehicle Tracking — real-time location, so you know where a vehicle is without depending on phone calls.',
-      trips:     'Trips & Activity — a clear history of where a vehicle has been and how it\'s being used.',
-      alerts:    'Smart Alerts — notified the moment something needs attention, instead of finding out later.',
-      zones:     'Smart Zones — set routes and no-go areas, and get told the moment a vehicle leaves them.',
-      intel:     'Vehicle Intelligence — raw activity turned into information you can actually act on.',
-      tags:      'Fleet Tags — tracking for assets beyond vehicles, for things you move but can\'t install a full device on.'
+      tracking:  'Live Vehicle Tracking, real-time location, so you know where a vehicle is without depending on phone calls.',
+      trips:     'Trips & Activity, a clear history of where a vehicle has been and how it\'s being used.',
+      alerts:    'Smart Alerts, notified the moment something needs attention, instead of finding out later.',
+      zones:     'Smart Zones, set routes and no-go areas, and get told the moment a vehicle leaves them.',
+      intel:     'Vehicle Intelligence, raw activity turned into information you can actually act on.',
+      tags:      'Fleet Tags, tracking for assets beyond vehicles, for things you move but can\'t install a full device on.'
     },
     tagPlan: {
       startCost: '₦35,000 for one FleetTag',
       free: 'the first 3 months of tracking are free',
       renewal: 'then ₦3,000/mo or ₦30,000/yr (saves ₦6,000 a year)',
-      note: 'the ₦3,000/mo and ₦30,000/yr prices are renewal prices — they are not charged at purchase, only ₦35,000 per tag is charged upfront',
+      note: 'the ₦3,000/mo and ₦30,000/yr prices are renewal prices, they are not charged at purchase, only ₦35,000 per tag is charged upfront',
       uses: 'packages, orders, assets, vehicles and other trackable items'
     },
     hiveCredits: {
-      desc: 'Hive Credits are prepaid credits for tracking and support services, separate from the Tag Plan subscription — they are not compulsory and not the same as the renewal fee',
+      desc: 'Hive Credits are prepaid credits for tracking and support services, separate from the Tag Plan subscription, they are not compulsory and not the same as the renewal fee',
       amounts: '₦5,000, ₦10,000, ₦20,000, ₦50,000 or a custom amount'
     },
     installation: {
@@ -519,26 +519,26 @@ document.addEventListener('DOMContentLoaded', function(){
   // ---------- Objection handling ----------
   var OBJECTIONS = [
     {t:/why (do|would) i need|why fleethive|why should i/, a:function(){
-      return "Fair question. Most people find out the hard way — a vehicle used somewhere unexpected, fuel that doesn't add up, or just not knowing where a car is right now. FleetHive replaces that guessing with a live answer whenever you check."; }},
+      return "Fair question. Most people find out the hard way, a vehicle used somewhere unexpected, fuel that doesn't add up, or just not knowing where a car is right now. FleetHive replaces that guessing with a live answer whenever you check."; }},
     {t:/expensive|too much money|can'?t afford|too costly|too pricey/, a:function(){
       return "I understand. The right option depends on what you actually need. If you're mainly looking for straightforward vehicle tracking, Lite is the simplest starting point at ₦4,000/mo. Would you like me to show you what it includes?"; }},
     {t:/only (have |own )?(one|1) (car|vehicle)/, a:function(){
       slot.customerType = 'private'; slot.fleetSize = 1;
-      return "That's exactly what Lite is built for — real-time location and trip history for a single vehicle, at ₦4,000/mo. No need for anything heavier."; }},
+      return "That's exactly what Lite is built for, real-time location and trip history for a single vehicle, at ₦4,000/mo. No need for anything heavier."; }},
     {t:/(\d{2,4})\s*vehicles|large fleet|50 vehicles/, a:function(){
-      return "For a fleet that size, Prime tends to make the most sense — it adds managed support and monthly reporting on top of everything in Pro, so you're not the only one watching it. Want me to note your fleet size for the team?"; }},
+      return "For a fleet that size, Prime tends to make the most sense, it adds managed support and monthly reporting on top of everything in Pro, so you're not the only one watching it. Want me to note your fleet size for the team?"; }},
     {t:/worth (it |paying )?monthly|is it worth/, a:function(){
-      return "Most customers tell us the value shows up in the first month — either fuel usage that suddenly makes sense, or just not having to call a driver to ask where they are. It's priced per vehicle so you only pay for what you're tracking."; }},
+      return "Most customers tell us the value shows up in the first month, either fuel usage that suddenly makes sense, or just not having to call a driver to ask where they are. It's priced per vehicle so you only pay for what you're tracking."; }},
     {t:/what makes fleethive different|why not just|competitor/, a:function(){
-      return "The honest answer: it's the combination — tracking, driver behaviour, fuel intelligence and (on Prime) an actual support team, in one dashboard instead of stitched-together tools."; }},
+      return "The honest answer: it's the combination, tracking, driver behaviour, fuel intelligence and (on Prime) an actual support team, in one dashboard instead of stitched-together tools."; }},
     {t:/how does installation work|installation/, a:function(){
-      return "A technician installs the FleetHive tracking device in your vehicle, it connects to the platform, and your dashboard goes live the same day — no long onboarding."; }},
+      return "A technician installs the FleetHive tracking device in your vehicle, it connects to the platform, and your dashboard goes live the same day, no long onboarding."; }},
     {t:/(don'?t know|not sure) which plan/, a:function(){
-      return "No problem — tell me roughly how many vehicles you're looking to track and whether it's personal or for a business, and I'll point you to the plan that fits."; }},
+      return "No problem, tell me roughly how many vehicles you're looking to track and whether it's personal or for a business, and I'll point you to the plan that fits."; }},
     {t:/how will this help my business/, a:function(){
       return "Concretely: less time chasing drivers by phone, an actual record when something goes wrong, and (on Pro/Prime) visibility into fuel use and driving behaviour you currently can't see at all."; }},
     {t:/don'?t think i need tracking/, a:function(){
-      return "That's fair if nothing's gone wrong yet — most people look into FleetHive right after something has (a vehicle went somewhere unexpected, fuel came up short). Happy to just leave the info here if that's useful later."; }}
+      return "That's fair if nothing's gone wrong yet, most people look into FleetHive right after something has (a vehicle went somewhere unexpected, fuel came up short). Happy to just leave the info here if that's useful later."; }}
   ];
 
   // ---------- Feature → benefit KB (problem -> feature -> benefit -> next step) ----------
@@ -547,10 +547,10 @@ document.addEventListener('DOMContentLoaded', function(){
       bumpIntent('INTERESTED');
       return "FleetHive is priced per vehicle: Lite ₦4,000/mo, Pro ₦6,000/mo, Prime ₦12,000/mo (annual options save a bit on each). " + planSuggestion();
     }},
-    {k:['lite','simple tracking','basic tracking','just tracking','small car','personal car','private car'], a:function(){ slot.customerType = slot.customerType || 'private'; return "Lite (₦4,000/mo): " + KNOWN.plans.lite.fit + " — real-time GPS tracking, trip history & playback, basic geofencing, single-user dashboard."; }},
-    {k:['pro','business fleet'], a:function(){ slot.customerType='business'; return "Pro (₦6,000/mo): " + KNOWN.plans.pro.fit + " — everything in Lite, plus fuel intelligence & theft detection, driver behaviour scoring, multi-user analytics."; }},
-    {k:['prime','premium','advanced tracking','advanced fleet intelligence','heavy fleet'], a:function(){ return "Prime (₦12,000/mo): " + KNOWN.plans.prime.fit + " — everything in Pro, plus managed fleet support, monthly reports, priority escalation."; }},
-    {k:['fuel monitoring','fuel intelligence','engine data'], a:function(){ bumpIntent('INTERESTED'); return "Fuel intelligence is part of Pro and Prime — you get fuel-use data alongside location and driver behaviour, not just where the vehicle is."; }},
+    {k:['lite','simple tracking','basic tracking','just tracking','small car','personal car','private car'], a:function(){ slot.customerType = slot.customerType || 'private'; return "Lite (₦4,000/mo): " + KNOWN.plans.lite.fit + ", real-time GPS tracking, trip history & playback, basic geofencing, single-user dashboard."; }},
+    {k:['pro','business fleet'], a:function(){ slot.customerType='business'; return "Pro (₦6,000/mo): " + KNOWN.plans.pro.fit + ", everything in Lite, plus fuel intelligence & theft detection, driver behaviour scoring, multi-user analytics."; }},
+    {k:['prime','premium','advanced tracking','advanced fleet intelligence','heavy fleet'], a:function(){ return "Prime (₦12,000/mo): " + KNOWN.plans.prime.fit + ", everything in Pro, plus managed fleet support, monthly reports, priority escalation."; }},
+    {k:['fuel monitoring','fuel intelligence','engine data'], a:function(){ bumpIntent('INTERESTED'); return "Fuel intelligence is part of Pro and Prime, you get fuel-use data alongside location and driver behaviour, not just where the vehicle is."; }},
     // Tag Plan keywords are checked BEFORE the generic 'track/tracking' entry and BEFORE the
     // fleet 'delivery' entry below, so package/order/customer-delivery tracking is never
     // misread as vehicle tracking or a fleet-of-drivers question.
@@ -567,9 +567,9 @@ document.addEventListener('DOMContentLoaded', function(){
       slot.customerType = slot.customerType || 'business'; bumpIntent('INTERESTED');
       var rec = recommendPlan();
       var recLine = rec ? (' ' + KNOWN.plans[rec].name + ' is the common starting point for that.') : '';
-      return "Driver monitoring comes with Pro and Prime — you get driver behaviour scoring alongside location, so you can see how a vehicle is being driven, not just where it is." + recLine;
+      return "Driver monitoring comes with Pro and Prime, you get driver behaviour scoring alongside location, so you can see how a vehicle is being driven, not just where it is." + recLine;
     }},
-    {k:['fleet manager','multiple vehicles','company vehicles','fleet management'], a:function(){ slot.customerType='business'; bumpIntent('INTERESTED'); return "For managing several vehicles, Pro is the common starting point — it adds fuel intelligence and driver oversight on top of location. Prime adds a managed team on top of that for larger fleets."; }},
+    {k:['fleet manager','multiple vehicles','company vehicles','fleet management'], a:function(){ slot.customerType='business'; bumpIntent('INTERESTED'); return "For managing several vehicles, Pro is the common starting point, it adds fuel intelligence and driver oversight on top of location. Prime adds a managed team on top of that for larger fleets."; }},
     {k:['login','log in','dashboard','password','my account'], a:function(){ bumpIntent('INTERESTED'); return "You can log in to your FleetHive dashboard from the Login link in the site menu. If you're having trouble accessing your account, I'll connect you with the team."; }},
     {k:['trip','history'], a:function(){ return KNOWN.solutions.trips; }},
     {k:['alert'], a:function(){ return KNOWN.solutions.alerts; }},
@@ -578,15 +578,15 @@ document.addEventListener('DOMContentLoaded', function(){
     {k:['hive credit'], a:function(){ bumpIntent('INTERESTED'); return KNOWN.hiveCredits.desc + '. Available amounts: ' + KNOWN.hiveCredits.amounts + '.'; }},
     {k:['fleet tag','asset','equipment'], a:function(){ return KNOWN.solutions.tags; }},
     {k:['how it works','install','setup','connect'], a:function(){ return "Four steps: Install the tracking device, Connect it to the platform, Monitor location/trips/alerts live, and Act on what you see. Most customers are live the same day."; }},
-    {k:['partner','reseller','install for'], a:function(){ slot.partnership = true; bumpIntent('INTERESTED'); return "The Partner Program is for installers, ICT consultants, mobility companies and resellers — you earn recurring revenue selling and deploying FleetHive. Want me to pass your interest to the partnerships team?"; }},
-    {k:['delivery','logistics','courier'], a:function(){ slot.customerType='business'; return "For delivery work specifically, Pro is the common fit — the fuel intelligence and driver behaviour scoring matter a lot once you've got drivers you're not riding with."; }},
-    {k:['future','roadmap','upcoming','coming soon'], a:function(){ return "I only speak to what's live today — I don't have verified detail on unreleased plans. For roadmap questions, support@fleethive.in can give you an accurate answer."; }},
-    {k:['contact','support','human','speak with someone','talk to someone','talk to an agent','agent'], a:function(){ bumpIntent('QUALIFIED'); return "Happy to connect you — I can take a few details now so the team can reach out directly, or you can message support@fleethive.in yourself."; }}
+    {k:['partner','reseller','install for'], a:function(){ slot.partnership = true; bumpIntent('INTERESTED'); return "The Partner Program is for installers, ICT consultants, mobility companies and resellers, you earn recurring revenue selling and deploying FleetHive. Want me to pass your interest to the partnerships team?"; }},
+    {k:['delivery','logistics','courier'], a:function(){ slot.customerType='business'; return "For delivery work specifically, Pro is the common fit, the fuel intelligence and driver behaviour scoring matter a lot once you've got drivers you're not riding with."; }},
+    {k:['future','roadmap','upcoming','coming soon'], a:function(){ return "I only speak to what's live today, I don't have verified detail on unreleased plans. For roadmap questions, support@fleethive.in can give you an accurate answer."; }},
+    {k:['contact','support','human','speak with someone','talk to someone','talk to an agent','agent'], a:function(){ bumpIntent('QUALIFIED'); return "Happy to connect you, I can take a few details now so the team can reach out directly, or you can message support@fleethive.in yourself."; }}
   ];
 
   function planSuggestion(){
     var p = recommendPlan();
-    if(!p) return "What would you like to track — a personal vehicle, a business fleet, or packages/deliveries? That'll help me point you to the right plan.";
+    if(!p) return "What would you like to track, a personal vehicle, a business fleet, or packages/deliveries? That'll help me point you to the right plan.";
     var reason = p === 'lite' ? "since it sounds like one vehicle for personal use" :
                  p === 'prime' ? "given the fleet size you mentioned" :
                  "since this sounds like business use with more than one vehicle";
@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(!/\btags?\b/.test(m)) return null;
     if(!slot.tagCount) return null;
     bumpIntent('INTERESTED');
-    return "Got it — " + tagPlanCost(slot.tagCount) + " upfront (₦35,000 per FleetTag). The first 3 months of tracking are free on each; after that it's ₦3,000/mo or ₦30,000/yr per tag.";
+    return "Got it, " + tagPlanCost(slot.tagCount) + " upfront (₦35,000 per FleetTag). The first 3 months of tracking are free on each; after that it's ₦3,000/mo or ₦30,000/yr per tag.";
   }
 
   // "Do you install in <city>?" — answers only from KNOWN.installation.locations, never invents coverage.
@@ -618,7 +618,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     if(cityHit){
       slot.location = cityHit;
-      return "Yes — FleetHive currently installs in " + cityHit + ". Would you like me to help you get started?";
+      return "Yes, FleetHive currently installs in " + cityHit + ". Would you like me to help you get started?";
     }
     return OUTSIDE_INSTALL_MSG;
   }
@@ -687,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var ctx = contextSummary();
     addCTA('contact');
     addCTA('whatsapp', ctx ? {context: ctx} : null);
-    var subject = encodeURIComponent('FleetHive website enquiry' + (slot.name ? ' — ' + slot.name : ''));
+    var subject = encodeURIComponent('FleetHive website enquiry' + (slot.name ? ', ' + slot.name : ''));
     var mailBody = encodeURIComponent((ctx ? ctx + '\n\n' : '') + 'Captured via Bree on the FleetHive website.');
     addLink('Email Support', 'mailto:' + ((KNOWN.contact && KNOWN.contact.email) || 'support@fleethive.in') + '?subject=' + subject + '&body=' + mailBody);
 
@@ -771,7 +771,7 @@ document.addEventListener('DOMContentLoaded', function(){
       timestamp: new Date().toLocaleString()
     };
 
-    var subject = encodeURIComponent('New FleetHive lead — ' + (slot.name || 'Website visitor') + ' [' + intent + ']');
+    var subject = encodeURIComponent('New FleetHive lead, ' + (slot.name || 'Website visitor') + ' [' + intent + ']');
     var summary =
       'Name: ' + (slot.name || 'Not provided') +
       '\nLocation: ' + (slot.location || 'Not provided') +
@@ -789,7 +789,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var bodyText = encodeURIComponent(summary);
     var mailtoHref = 'mailto:support@fleethive.in?subject=' + subject + '&body=' + bodyText;
 
-    var greet = (slot.name ? "Thanks, " + slot.name.split(' ')[0] + " — " : "Thanks — ");
+    var greet = (slot.name ? "Thanks, " + slot.name.split(' ')[0] + ", " : "Thanks, ");
 
     fetch('/.netlify/functions/send-lead', {
       method: 'POST',
@@ -799,11 +799,11 @@ document.addEventListener('DOMContentLoaded', function(){
       if(res.ok){
         addMsg(greet + "I've sent this straight to the FleetHive team, including " + recommended + " as the fit based on what you've shared. Someone will follow up shortly.", 'bot');
       } else {
-        addMsg(greet + "I couldn't reach FleetHive's server just now, so I've prepared an email instead — tap below to send it yourself.", 'bot');
+        addMsg(greet + "I couldn't reach FleetHive's server just now, so I've prepared an email instead, tap below to send it yourself.", 'bot');
         addLink('Send to FleetHive', mailtoHref);
       }
     }).catch(function(){
-      addMsg(greet + "I couldn't reach FleetHive's server just now, so I've prepared an email instead — tap below to send it yourself.", 'bot');
+      addMsg(greet + "I couldn't reach FleetHive's server just now, so I've prepared an email instead, tap below to send it yourself.", 'bot');
       addLink('Send to FleetHive', mailtoHref);
     });
   }
@@ -827,7 +827,7 @@ document.addEventListener('DOMContentLoaded', function(){
       if(slot.partnership || isPartnerIntent(text)){
         slot.partnership = true;
         bumpIntent('QUALIFIED');
-        addMsg("Absolutely — the Partner Program is for installers, ICT consultants, mobility companies and resellers who earn recurring revenue selling and deploying FleetHive. I can get you started.", 'bot');
+        addMsg("Absolutely, the Partner Program is for installers, ICT consultants, mobility companies and resellers who earn recurring revenue selling and deploying FleetHive. I can get you started.", 'bot');
         addCTA('partner');
         return;
       }
@@ -835,10 +835,10 @@ document.addEventListener('DOMContentLoaded', function(){
       if(epk){
         bumpIntent('QUALIFIED');
         var shortMsg = {
-          lite: "Perfect — I can help you get started with Lite.",
-          pro: "Great — let's get you set up with Pro.",
-          prime: "Great — let's get you set up with Prime.",
-          tagplan: "Perfect — let's get your Tag Plan order started."
+          lite: "Perfect, I can help you get started with Lite.",
+          pro: "Great, let's get you set up with Pro.",
+          prime: "Great, let's get you set up with Prime.",
+          tagplan: "Perfect, let's get your Tag Plan order started."
         }[epk];
         addMsg(shortMsg, 'bot');
         addCTA(epk === 'tagplan' ? 'getTagPlan' : epk);
@@ -934,10 +934,10 @@ document.addEventListener('DOMContentLoaded', function(){
       bumpIntent('QUALIFIED');
       var rp = recommendPlan();
       if(rp){
-        addMsg("Happy to help you get started — based on what you've told me, " + KNOWN.plans[rp].name + " looks like the right fit.", 'bot');
+        addMsg("Happy to help you get started, based on what you've told me, " + KNOWN.plans[rp].name + " looks like the right fit.", 'bot');
         addCTA(rp);
       } else {
-        addMsg("Happy to help you get started — tell me a little about what you're looking to track, or I can pass your details straight to the team.", 'bot');
+        addMsg("Happy to help you get started, tell me a little about what you're looking to track, or I can pass your details straight to the team.", 'bot');
         addCTA('getStarted');
       }
       addLeadCaptureButton('Have the Team Contact Me');
@@ -1012,31 +1012,58 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 // ===== Exit-intent newsletter popup ("Stay in the FleetHive Network") =====
+//
+// Frequency rules (session-scoped, survives internal page navigation because
+// it's sessionStorage-backed rather than a plain JS variable):
+//   - The popup may appear on entry (exit-intent or the long-visit fallback).
+//   - Once shown, it will not show again for at least 4 minutes.
+//   - Navigating between pages never resets that 4-minute timer.
+//   - Once the visitor successfully subscribes to the newsletter, this popup
+//     never appears again for the rest of the session.
+//   - A successful payment or Contact Us submission is allowed to bring the
+//     popup back sooner than the exit-intent trigger normally would (see
+//     window.fhTriggerPopup below), but it still respects the newsletter
+//     "never again" rule and still won't fire more than once every 4 minutes.
 document.addEventListener('DOMContentLoaded', function(){
   var overlay = document.getElementById('exitPopup');
   if(!overlay) return;
-  var STORAGE_KEY = 'fh_exit_popup_seen';
+  var LAST_SHOWN_KEY = 'fh_popup_last_shown_at'; // timestamp (ms) popup was last opened, any trigger
+  var SUBSCRIBED_KEY = 'fh_newsletter_subscribed'; // '1' once newsletter signup succeeds this session
+  var MIN_INTERVAL = 4 * 60 * 1000; // 4 minutes between popup appearances
   var closeBtn = document.getElementById('exitPopupClose');
   var form = document.getElementById('exitPopupForm');
   var pageLoadedAt = Date.now();
-  var MIN_DELAY = 8000;   // don't show immediately on arrival
-  var FALLBACK_DELAY = 45000; // mobile / long-visit fallback since there's no mouse to leave
-  var shown = false;
+  var MIN_DELAY = 8000;        // don't show immediately on arrival
+  var FALLBACK_DELAY = 45000;  // mobile / long-visit fallback since there's no mouse to leave
+  var isOpen = false;
 
-  function alreadySeen(){
-    try { return sessionStorage.getItem(STORAGE_KEY) === '1'; } catch(e){ return false; }
+  function isSubscribed(){
+    try { return sessionStorage.getItem(SUBSCRIBED_KEY) === '1'; } catch(e){ return false; }
   }
-  function markSeen(){
-    try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch(e){}
+  function markSubscribed(){
+    try { sessionStorage.setItem(SUBSCRIBED_KEY, '1'); } catch(e){}
+  }
+  function lastShownAt(){
+    try { return parseInt(sessionStorage.getItem(LAST_SHOWN_KEY) || '0', 10) || 0; } catch(e){ return 0; }
+  }
+  function markShownNow(){
+    try { sessionStorage.setItem(LAST_SHOWN_KEY, String(Date.now())); } catch(e){}
+  }
+  function intervalElapsed(){
+    var last = lastShownAt();
+    return !last || (Date.now() - last) >= MIN_INTERVAL;
   }
   function open(){
-    if(shown || alreadySeen()) return;
+    if(isOpen) return;
+    if(isSubscribed()) return;      // newsletter popup is retired for this session once subscribed
     if(Date.now() - pageLoadedAt < MIN_DELAY) return;
-    shown = true;
+    if(!intervalElapsed()) return;  // respect the 4-minute minimum gap since it last appeared
+    isOpen = true;
+    markShownNow();
     overlay.classList.add('show');
   }
   function close(){
-    markSeen();
+    isOpen = false;
     overlay.classList.remove('show');
   }
 
@@ -1056,14 +1083,26 @@ document.addEventListener('DOMContentLoaded', function(){
       var name = document.getElementById('exitPopupName').value.trim();
       var email = document.getElementById('exitPopupEmail').value.trim();
       if(!email) return;
-      markSeen();
+      markSubscribed();
       overlay.querySelector('.exit-popup').classList.add('submitted');
       fetch('/.netlify/functions/send-newsletter', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ name:name, email:email, page: location.pathname, timestamp: new Date().toLocaleString() })
-      }).catch(function(){ /* best-effort — visitor still sees a thank-you either way */ });
+      }).catch(function(){ /* best-effort, visitor still sees a thank-you either way */ });
       setTimeout(close, 2200);
     });
   }
+
+  // Lets a successful payment or Contact Us submission ask the popup to
+  // reappear (per the brief: those actions "meaningfully changed" the
+  // visitor's interaction, so the usual exit-intent-only trigger doesn't
+  // apply). Still gated by the newsletter-subscribed and 4-minute rules
+  // above, so it can never loop or spam the visitor.
+  window.fhTriggerPopup = function(){
+    if(isSubscribed()) return;
+    if(!intervalElapsed()) return;
+    isOpen = false;
+    open();
+  };
 });

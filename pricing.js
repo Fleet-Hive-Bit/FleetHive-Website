@@ -268,8 +268,8 @@
   });
 
   function addedPlanLabel(entry){
-    if(entry.plan === 'tagplan') return 'Tag Plan — ' + entry.count + ' FleetTag' + (entry.count > 1 ? 's' : '');
-    return PLANS[entry.plan].name + ' Plan — ' + entry.vehicleType + ', ' + entry.vehicleYear;
+    if(entry.plan === 'tagplan') return 'Tag Plan, ' + entry.count + ' FleetTag' + (entry.count > 1 ? 's' : '');
+    return PLANS[entry.plan].name + ' Plan, ' + entry.vehicleType + ', ' + entry.vehicleYear;
   }
   function addedPlanAmount(entry){
     if(entry.plan === 'tagplan') return TAGPLAN_ONE_TIME * entry.count;
@@ -333,7 +333,7 @@
           '<input type="checkbox" id="flexiAgree"><label for="flexiAgree">I understand and agree to the Flexible Payment terms.</label>' +
         '</div>' +
         '<p id="flexiPreview" style="' + (state.flexible ? '' : 'display:none;') + ' font-weight:700; color:var(--heading);">' +
-          'Due today: ' + fmt(split.dueNow) + ' — then ' + fmt(split.monthly) + '/month for 3 months' +
+          'Due today: ' + fmt(split.dueNow) + ', then ' + fmt(split.monthly) + '/month for 3 months' +
           (split.lastMonth !== split.monthly ? ' (final month ' + fmt(split.lastMonth) + ')' : '') + '.' +
         '</p>' +
       '</div>';
@@ -422,7 +422,7 @@
     return Number(active.dataset.val) || 1;
   }
   function subVehCount(){
-    if(state.vehCount === '5+') return null; // custom fleet — quoted separately
+    if(state.vehCount === '5+') return null; // custom fleet, quoted separately
     return Number(state.vehCount) || 1;
   }
   function hardwareAddonsTotal(){
@@ -533,11 +533,11 @@
       html += '<div class="tag-price-breakdown" style="margin-top:14px;">' +
         '<div class="tpb-row tpb-now"><span class="tpb-label">Pay Now</span><span class="tpb-amt">' + fmt(total) + '</span></div>' +
         '<div class="tpb-row tpb-free"><span class="tpb-label">First 3 Months</span><span class="tpb-amt tpb-free-amt">FREE</span></div>' +
-        '<div class="tpb-row tpb-renew"><span class="tpb-label">After 3 Months <span class="tpb-tag tpb-tag-later">Future Renewal</span></span><span class="tpb-amt">' + fmt(TAGPLAN_RENEW_M) + '/mo <span>or ' + fmt(TAGPLAN_RENEW_Y) + '/yr — Save ₦6,000</span></span></div>' +
+        '<div class="tpb-row tpb-renew"><span class="tpb-label">After 3 Months <span class="tpb-tag tpb-tag-later">Future Renewal</span></span><span class="tpb-amt">' + fmt(TAGPLAN_RENEW_M) + '/mo <span>or ' + fmt(TAGPLAN_RENEW_Y) + '/yr, Save ₦6,000</span></span></div>' +
       '</div>';
-      html += '<p class="order-note">Your tracking subscription will be deactivated after the free period if you do not renew — we\'ll notify you before it\'s due.</p>';
+      html += '<p class="order-note">Your tracking subscription will be deactivated after the free period if you do not renew, we\'ll notify you before it\'s due.</p>';
     } else if(addedTagCount > 0){
-      html += '<p class="order-note">The FleetTag' + (addedTagCount > 1 ? 's' : '') + ' added above include' + (addedTagCount > 1 ? '' : 's') + ' 3 months of free tracking. After that, it renews at ' + fmt(TAGPLAN_RENEW_M) + '/month or ' + fmt(TAGPLAN_RENEW_Y) + '/year (future renewal price — not charged today).</p>';
+      html += '<p class="order-note">The FleetTag' + (addedTagCount > 1 ? 's' : '') + ' added above include' + (addedTagCount > 1 ? '' : 's') + ' 3 months of free tracking. After that, it renews at ' + fmt(TAGPLAN_RENEW_M) + '/month or ' + fmt(TAGPLAN_RENEW_Y) + '/year (future renewal price, not charged today).</p>';
     }
     box.innerHTML = html;
     box.dataset.total = total;
@@ -731,7 +731,7 @@
             window.location.href = r.data.authorization_url;
           } else {
             btn.disabled = false; btn.textContent = 'Proceed to Payment';
-            qs('paystackMsg').textContent = 'Payment could not be started. This usually means Paystack has not been configured yet on the server — please use Bank Transfer, or contact FleetHive.';
+            qs('paystackMsg').textContent = 'Payment could not be started. This usually means Paystack has not been configured yet on the server, please use Bank Transfer, or contact FleetHive.';
           }
         }).catch(function(){
           btn.disabled = false; btn.textContent = 'Proceed to Payment';
@@ -757,7 +757,7 @@
               '<div class="order-line"><span>Monthly Installment</span><span>' + fmt(meta.monthlyInstallment) + '/mo for ' + (meta.remainingMonths || 3) + ' months</span></div>';
           }
           wrap.innerHTML =
-            '<div class="result-panel"><div class="rp-icon">🎉</div><h2>Payment Successful. Welcome to FleetHive!</h2>' +
+            '<div class="result-panel"><div class="rp-icon">🎉</div><h2>Payment Successful, Welcome to FleetHive!</h2>' +
             '<p>Your FleetHive ' + (meta.plan || 'order') + ' has been received. For installation requests, our team will contact you within 24 hours. A confirmation email with your order details is on its way to your inbox.</p>' +
             '<div class="rp-details">' +
               '<div class="order-line"><span>Plan</span><span>' + (meta.plan || '—') + '</span></div>' +
@@ -767,6 +767,10 @@
             '</div>' +
             '<a href="index.html" class="btn btn-primary" style="margin-top:18px; justify-content:center;">Continue to FleetHive</a>' +
             '</div>';
+          // Payment is a "meaningfully changed" interaction per the popup
+          // frequency rules — let the newsletter popup become eligible again,
+          // still subject to the 4-minute/newsletter-subscribed guards.
+          if(window.fhTriggerPopup){ setTimeout(window.fhTriggerPopup, 2000); }
         } else {
           wrap.innerHTML = '<div class="result-panel pending"><div class="rp-icon">⏳</div><h2>Payment Not Confirmed</h2><p>We could not confirm this payment. If you were charged, please contact FleetHive support with your reference: ' + reference + '</p></div>';
         }
