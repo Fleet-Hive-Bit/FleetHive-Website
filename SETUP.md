@@ -18,9 +18,13 @@ and the Contact / Become a Partner forms.
 | `_paystack.js` | Shared helper: test-mode guard, webhook signature check, transaction verification, and the idempotent "finalize" logic used by both `paystack-verify.js` and `paystack-webhook.js` | — |
 | `_pricing.js` | Server-side mirror of FleetHive's pricing table, used by `paystack-initialize.js` to independently recompute and verify the order total instead of trusting the browser's number | — |
 | `_store.js` | Persists each order (reference, amount, status, plan/customer metadata) using Netlify Blobs, and makes verification idempotent | — (Netlify Blobs needs no setup/keys) |
+| `_whiteLabelClient.js` | Server-side client for the white-label vehicle-tracking provider (auth/token handling, retries, rate limits, the documented endpoints) — see Part C | `WHITE_LABEL_API_KEY`, `WHITE_LABEL_API_SECRET` |
+| `_deviceAccess.js` | Response normalizers ("Data unavailable" instead of fake data, lock-status mapping) and the vehicle-ownership/IDOR contract used by anything that calls `_whiteLabelClient.js` — see Part C | — |
+| `whitelabel-connection-test.js` | Admin-only connectivity check for the white-label API (see Part C) | `WHITE_LABEL_API_KEY`, `WHITE_LABEL_API_SECRET`, `ADMIN_API_TOKEN` |
 
 All of the email-sending functions share one helper, `_email.js`, so the
-Resend integration only needed to be written once.
+Resend integration only needed to be written once, and every email shares
+one branded HTML template (`renderBrandedEmail` inside `_email.js`).
 
 **None of this is required for the site to work.** Every form falls back to
 a pre-filled `mailto:` link (or a clear on-screen message) if its function
@@ -241,3 +245,96 @@ Bank Transfer needs no extra setup — it already shows FleetHive's account
 details and, when the visitor clicks **I Have Made the Transfer**, submits
 their order to `send-order.js` (Part A) with status `PENDING VERIFICATION`
 for your team to confirm manually.
+
+---
+
+## Part C — White-label vehicle tracking (server-side foundation)
+
+This is the secure foundation for FleetHive's white-label integration with
+the vehicle-tracking provider documented in "API Documentation V3.0.pdf"
+(base URL `https://api.gpsiot.net`). It covers authentication, a reusable
+API client, and response handling — **not** the customer-facing tracking
+dashboard or the admin device-management screens. Those are the Customer
+Portal / Admin Dashboard, which is Prompt 2's scope (see the note at the
+end of this section for why).
+
+Files involved:
+- `netlify/functions/_whiteLabelClient.js` — the only file that knows the
+  provider's base URL, credentials, and documented endpoint shapes.
+  Handles the `/token` exchange, caches the access token in memory for
+  the life of a warm function container, refreshes it automatically
+  before it expires (or immediately on a 401), retries safely on
+  rate-limiting (429, honoring `Retry-After`) and provider 5xx/network
+  errors, and times every request out after 15s.
+- `netlify/functions/_deviceAccess.js` — turns raw provider fields into a
+  safe shape (missing values become `"Data unavailable"`, never a
+  fabricated number), maps lock status (`1`/`0`/`-1` → locked / unlocked /
+  **undetermined**, with `-1` never shown as either), maps provider/
+  network errors to a safe customer-facing message, and defines the
+  Customer → Vehicle → Device ownership contract (see below).
+- `netlify/functions/whitelabel-connection-test.js` — a narrow, token-gated
+  endpoint to confirm the credentials and request flow actually work
+  end-to-end (see "Testing it" below).
+
+### 1. Request provider credentials
+
+Contact the provider (per "API Documentation V3.0.pdf", "Getting
+started") for a **Web API Key** and **Web Secret Key**. FleetHive's
+website code never sees these directly — they only ever live as Netlify
+environment variables.
+
+### 2. Add the environment variables
+
+In Netlify: **Site settings → Environment variables → Add a variable**,
+same as `RESEND_API_KEY`/`PAYSTACK_SECRET_KEY` in Parts A/B.
+
+| Key | Value |
+|---|---|
+| `WHITE_LABEL_API_KEY` | the Web API Key from the provider |
+| `WHITE_LABEL_API_SECRET` | the Web Secret Key from the provider |
+| `WHITE_LABEL_API_BASE_URL` | optional — only set this if the provider ever gives you a different base URL than `https://api.gpsiot.net` |
+| `ADMIN_API_TOKEN` | a long random string you generate yourself (e.g. `openssl rand -hex 32`) — required only for the connection-test endpoint below |
+
+Never commit these values, put them in client-side JS, or paste them into
+a GitHub issue/commit — they belong in Netlify's environment variables
+screen only.
+
+### 3. Testing it
+
+Once the two `WHITE_LABEL_API_*` variables and `ADMIN_API_TOKEN` are set
+and the site is deployed:
+
+```
+curl -H "x-admin-token: <your ADMIN_API_TOKEN>" \
+  https://<your-site>/.netlify/functions/whitelabel-connection-test
+```
+
+A working setup returns `{"ok":true,"message":"White-label API
+authentication and request flow are working.","deviceCount":N}`. A wrong
+or missing token returns 401 without calling the provider at all. A
+misconfigured/rejected credential returns a safe 502 message — never the
+provider's raw error — with the technical detail only in the Netlify
+function logs (credentials/tokens are redacted before anything is
+logged).
+
+### Why this phase stops here (and doesn't ship a tracking dashboard)
+
+The documented endpoints are all wired up and tested in
+`_whiteLabelClient.js` (`GetAllDevice`, `GetOneDevice`,
+`GetResellerDevices`, `CurrentDeviceStatusByImei`,
+`CurrentDeviceLockStatusByImei`, `GetClientDeviceStatusByDateRange` — with
+a server-side batching helper that respects the provider's 2-minute
+range limit — `AssignAsset`, `UnAssignAsset`, `AssignSimCard`,
+`UnAssignSimcard`), but none of them are exposed as public endpoints yet.
+
+That's deliberate, not an oversight: making a vehicle-scoped request safe
+requires proving the requester actually owns that vehicle (the IDOR
+protection in the prompt), and making an assign/unassign request safe
+requires proving the requester is a FleetHive admin. Both of those need a
+real customer/vehicle database and login system, which this codebase
+doesn't have yet — that's the Customer Portal / Admin Dashboard, and it's
+explicitly Prompt 2's job. `_deviceAccess.js` defines the exact contract
+(`resolveOwnedDevice()`, `requireAdmin()`) that Prompt 2 needs to satisfy,
+with the required checks spelled out as TODOs in order, so wiring it up
+is a matter of filling in real database lookups rather than re-deriving
+the ownership model from scratch.

@@ -33,7 +33,13 @@
   --text-primary:#DCE6F5;
   --text-secondary:#B7C4DA;
   --heading:#FFFFFF;
-  --nav-bg-t:rgba(8,24,38,0.72);
+  /* Expanded (top of page): a visibly lighter FleetHive blue tint.
+     Compact (scrolled): a near-opaque deep FleetHive navy. Plain rgba (not
+     gradients) so background-color can cross-fade smoothly between them —
+     the two are deliberately far apart in hue and opacity so the
+     transition reads clearly, not just as a subtle alpha shift. */
+  --nav-bg-t:rgba(63,131,224,0.32);
+  --nav-bg-compact:rgba(4,12,20,0.95);
 }
 
 [data-theme="light"]{
@@ -46,7 +52,12 @@
   --border:rgba(13,33,55,0.12);
   --card-bg:rgba(13,33,55,0.03);
   --card-bg-solid:#FFFFFF;
-  --nav-bg-t:rgba(246,249,254,0.82);
+  /* Light mode keeps dark heading text, so the compact state stays light
+     rather than inverting to navy — but expanded still reads as a
+     noticeably softer, bluer tint than the crisper, more opaque compact
+     state, echoing the same relationship as dark mode. */
+  --nav-bg-t:rgba(111,163,240,0.22);
+  --nav-bg-compact:rgba(255,255,255,0.94);
   --shadow: 0 24px 60px -30px rgba(13,33,55,0.25);
   --glow: 0 0 0 1px rgba(59,125,221,0.18), 0 12px 40px -16px rgba(59,125,221,0.22);
 }
@@ -168,17 +179,47 @@ p{color:var(--text-secondary); font-weight:400;}
   .hero-actions .btn, .final-cta .hero-actions .btn{width:100%;}
 }
 
-/* ---------- HEADER ---------- */
+/* ---------- HEADER ----------
+   Floating pill shell: <header> is the sticky positioning context and
+   supplies the outer gap from the viewport edge; .header-inner is the
+   actual navy card that grows/shrinks + lightens/deepens as the page
+   scrolls. JS (site.js) toggles header.is-compact past a small scroll
+   threshold — everything else here is a pure CSS transition so it still
+   works (instantly) under prefers-reduced-motion. */
 header{
   position:sticky; top:0; z-index:500;
-  background:var(--nav-bg-t); backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
-  transition:background .3s ease, border-color .3s ease;
+  padding:18px 24px 0;
+  transition:padding .45s cubic-bezier(.4,0,.2,1);
 }
-.navbar{display:flex; align-items:center; justify-content:space-between; padding:22px 0;}
+.header-inner{
+  max-width:var(--max); margin:0 auto;
+  background:var(--nav-bg-t); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--border);
+  border-radius:24px;
+  box-shadow:0 24px 50px -28px rgba(0,0,0,0.45);
+  transition:background-color .5s ease, border-color .3s ease, border-radius .45s cubic-bezier(.4,0,.2,1), box-shadow .45s ease;
+}
+header.is-compact{ padding:10px 16px 0; }
+header.is-compact .header-inner{
+  background:var(--nav-bg-compact);
+  border-radius:16px;
+  box-shadow:0 14px 32px -20px rgba(0,0,0,0.55);
+}
+/* .navbar carries the redundant .wrap class from markup for legacy reasons —
+   neutralize .wrap's own max-width/padding here since .header-inner now owns
+   the outer width + gutter, and .navbar supplies its own internal padding. */
+.header-inner .wrap.navbar{max-width:none; padding:0; margin:0;}
+/* Expanded (top-of-page, default): slightly taller, more breathing room
+   around the logo. Compact (once scrolled): slightly shorter/tighter. The
+   two paddings are kept clearly apart so the size change reads as
+   intentional rather than incidental. */
+.navbar{display:flex; align-items:center; justify-content:space-between; padding:23px 26px; transition:padding .45s cubic-bezier(.4,0,.2,1);}
+header.is-compact .navbar{ padding:10px 20px; }
 .logo{display:flex; align-items:center; gap:10px;}
-.logo-icon-img{width:30px; height:30px; object-fit:contain;}
-.logo-text{font-weight:800; font-size:18px; color:var(--heading); letter-spacing:-0.01em;}
+.logo-icon-img{width:30px; height:30px; object-fit:contain; transition:width .35s ease, height .35s ease;}
+header.is-compact .logo-icon-img{ width:24px; height:24px; }
+.logo-text{font-weight:800; font-size:18px; color:var(--heading); letter-spacing:-0.01em; transition:font-size .35s ease;}
+header.is-compact .logo-text{ font-size:15.5px; }
 .logo-text .hive{color:var(--sky);}
 .nav-links{display:flex; align-items:center; gap:6px;}
 .nav-links a{font-size:14px; font-weight:600; color:var(--text-secondary); padding:9px 14px; border-radius:8px;}
@@ -190,7 +231,7 @@ header{
 .mobile-panel{display:none;}
 .mobile-panel.open{
   display:flex; flex-direction:column; gap:2px;
-  position:fixed; inset:78px 0 0 0; background:var(--page-bg-deep); z-index:480; padding:26px 24px; overflow-y:auto;
+  position:fixed; inset:90px 0 0 0; background:var(--page-bg-deep); z-index:480; padding:26px 24px; overflow-y:auto;
   /* Bree (left) and WhatsApp (right) float above this menu (z-index 600) and are
      never hidden, so the menu keeps extra bottom padding to scroll its last links
      (incl. mp-actions/Login) clear of those two fixed icons instead of being
@@ -231,6 +272,8 @@ header{
 @media (max-width:400px){
   .nav-actions{ gap:6px; }
   .logo-text{ font-size:15px; }
+  header{ padding:12px 12px 0; }
+  header.is-compact{ padding:8px 8px 0; }
 }
 
 /* ---------- SIDE SECTION INDICATOR ---------- */
@@ -774,9 +817,11 @@ footer{
 
 /* ---------- Mobile spacing improvements ---------- */
 @media (max-width:640px){
-  .navbar{ padding:16px 4px; }
+  .navbar{ padding:16px 14px; }
+  header.is-compact .navbar{ padding:9px 12px; }
   .wrap{ padding:0 22px; }
   .logo-icon-img{ width:32px; height:32px; }
+  header.is-compact .logo-icon-img{ width:24px; height:24px; }
   .logo-text{ font-size:17px; }
   section{ padding:64px 0; }
   .sec-head{ margin-bottom:36px; }
@@ -963,21 +1008,94 @@ footer{
 .founder-signoff strong{display:block; color:var(--heading); font-size:14.5px; margin-bottom:2px;}
 @media (max-width:860px){ .founder-block{grid-template-columns:1fr; gap:26px;} }
 
-/* ---------- About — Leadership (hover glow) ---------- */
-.leader-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:32px; max-width:560px; margin:0 auto;}
-.leader-card{text-align:center;}
-.leader-photo{
-  border-radius:18px; overflow:hidden; border:1px solid var(--border); background:var(--card-bg);
-  aspect-ratio:1/1; transition:transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+/* ---------- About — Meet the Team ----------
+   Horizontally-scrollable row of cards. The photo fills the whole card;
+   the name/role/toggle bar is a translucent panel pinned to the card's
+   bottom edge and always visible. Clicking "+" reveals a short bio that
+   grows UPWARD from behind that bottom bar: the description lives inside
+   the same panel but is placed visually above the name/role bar using
+   flex `order` (DOM order stays name-first for screen readers/tab order;
+   only the visual stacking flips). Because the panel is bottom-anchored
+   and the card itself clips overflow, opening a card only grows the
+   panel within the fixed-height photo — it never resizes the card or
+   pushes page content. Each card's .is-open state is independent, set by
+   site.js with no shared accordion. The panel's color inverts against the
+   page (light page -> deep navy glass; dark page -> light glass, see the
+   [data-theme="light"] overrides below) so it always reads clearly, and
+   stays translucent enough that the photo shows through behind it. */
+.team-scroll{
+  display:flex; gap:20px; overflow-x:auto; padding:4px 4px 10px;
+  scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; scrollbar-width:none;
 }
-.leader-photo img{width:100%; height:100%; object-fit:cover; object-position:top center; display:block;}
-.leader-card:hover .leader-photo, .leader-card.touched .leader-photo{
-  transform:translateY(-4px) scale(1.02); border-color:var(--sky);
-  box-shadow:0 0 0 1px rgba(111,163,240,0.35), 0 20px 46px -18px rgba(59,125,221,0.55);
+.team-scroll::-webkit-scrollbar{ display:none; }
+.team-card{
+  position:relative; flex:0 0 78%; scroll-snap-align:start;
+  aspect-ratio:4/5; border-radius:22px; overflow:hidden;
+  background:var(--navy-deep); border:1px solid var(--border); box-shadow:var(--shadow);
 }
-.leader-name{font-weight:700; color:var(--heading); font-size:14.5px; margin-top:16px;}
-.leader-role{font-size:12.5px; color:var(--silver); margin-top:2px;}
-@media (max-width:520px){ .leader-grid{gap:18px;} }
+.team-card-media{ position:absolute; inset:0; }
+.team-card-media img{ width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+.team-card-panel{
+  position:absolute; left:0; right:0; bottom:0; max-height:82%;
+  display:flex; flex-direction:column; overflow:hidden;
+  padding:14px 18px; border-radius:0 0 22px 22px;
+  background:rgba(255,255,255,0.88);
+  backdrop-filter:blur(14px) saturate(140%); -webkit-backdrop-filter:blur(14px) saturate(140%);
+  transition:background-color .3s ease;
+}
+.team-card-top{ order:2; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.team-card-name{ font-weight:800; color:#0D2137; font-size:15.5px; letter-spacing:-0.01em; }
+.team-card-role{ font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:#2F6FCB; margin-top:2px; }
+.team-card-toggle{
+  flex:0 0 auto; width:32px; height:32px; border-radius:50%;
+  background:rgba(13,33,55,0.08); border:1px solid rgba(13,33,55,0.16);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:background .25s ease, border-color .25s ease;
+}
+.team-card-toggle:hover{ background:rgba(13,33,55,0.14); border-color:rgba(13,33,55,0.3); }
+.team-toggle-icon{ position:relative; width:13px; height:13px; }
+.team-toggle-icon::before, .team-toggle-icon::after{
+  content:""; position:absolute; background:#0D2137; border-radius:2px;
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.team-toggle-icon::before{ width:13px; height:2px; top:5.5px; left:0; }
+.team-toggle-icon::after{ width:2px; height:13px; top:0; left:5.5px; }
+.team-card.is-open .team-toggle-icon::after{ transform:scaleY(0); }
+/* order:1 puts this ABOVE the name/role bar visually, so growing it from
+   0fr->1fr makes the whole bottom-anchored panel's top edge rise — the
+   "slides up" reveal — while the name/role bar underneath never moves. */
+.team-card-desc{
+  order:1; display:grid; grid-template-rows:0fr;
+  transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1);
+}
+.team-card-desc-inner{ overflow:hidden; }
+.team-card-desc-inner p{
+  padding-bottom:12px; margin:0; font-size:13px; line-height:1.6; color:#334155;
+  opacity:0; transform:translateY(8px); transition:opacity .3s ease .05s, transform .35s ease .05s;
+}
+.team-card.is-open .team-card-desc{ grid-template-rows:1fr; }
+.team-card.is-open .team-card-desc-inner p{ opacity:1; transform:translateY(0); }
+
+/* Light page -> deep navy glass panel with light text (inverted so the
+   panel always contrasts with the page behind the card, not just the
+   photo). */
+[data-theme="light"] .team-card-panel{ background:rgba(13,33,55,0.86); }
+[data-theme="light"] .team-card-name{ color:#FFFFFF; }
+[data-theme="light"] .team-card-role{ color:#9FC3F5; }
+[data-theme="light"] .team-card-desc-inner p{ color:#DCE6F5; }
+[data-theme="light"] .team-card-toggle{ background:rgba(255,255,255,0.14); border-color:rgba(255,255,255,0.32); }
+[data-theme="light"] .team-card-toggle:hover{ background:rgba(255,255,255,0.22); }
+[data-theme="light"] .team-toggle-icon::before,
+[data-theme="light"] .team-toggle-icon::after{ background:#FFFFFF; }
+
+@media (min-width:700px){
+  .team-card{ flex:0 0 calc(33.333% - 14px); scroll-snap-align:none; }
+  .team-scroll{ overflow-x:visible; padding:4px 0 10px; }
+}
+@media (max-width:520px){
+  .team-card{ flex-basis:84%; }
+  .team-card-panel{ padding:12px 16px 14px; }
+}
 
 /* ---------- About — Testimonials grid ---------- */
 .testi-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
@@ -1325,10 +1443,23 @@ footer{
 }
 .exit-popup input:focus{ border-color:var(--sky); }
 .exit-popup .btn{ width:100%; margin-top:4px; padding:13px 20px; font-size:12.5px; }
+/* Secondary "I've already subscribed" action — deliberately plain-text so it
+   never competes visually with the primary Subscribe button above it. */
+.exit-popup-secondary{
+  display:block; width:100%; margin-top:12px; padding:4px; background:none; border:none;
+  font-family:inherit; font-size:12px; font-weight:600; color:var(--text-secondary);
+  text-decoration:underline; text-underline-offset:3px; text-align:center; cursor:pointer;
+  transition:color .2s ease;
+}
+.exit-popup-secondary:hover, .exit-popup-secondary:focus-visible{ color:var(--sky); }
 .exit-popup-success{ display:none; text-align:center; padding:8px 0 4px; }
 .exit-popup.submitted .exit-popup-form{ display:none; }
 .exit-popup.submitted .exit-popup-success{ display:block; }
 .exit-popup-success h4{ padding-right:0; }
+.exit-popup-dismiss-success{ display:none; text-align:center; padding:18px 0 4px; }
+.exit-popup-dismiss-success h4{ padding-right:0; margin-bottom:0; }
+.exit-popup.dismissed .exit-popup-form{ display:none; }
+.exit-popup.dismissed .exit-popup-dismiss-success{ display:block; }
 @media (max-width:480px){ .exit-popup{ padding:24px 20px 20px; } }
 
 /* ==========================================================

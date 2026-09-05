@@ -36,6 +36,44 @@ document.addEventListener('DOMContentLoaded', function(){
   if(t2) t2.addEventListener('click', fhToggleTheme);
 });
 
+// ===== Header: expanded (top of page) <-> compact (scrolled) =====
+// Pure state-toggle: past SCROLL_THRESHOLD the header gets .is-compact and
+// CSS (style.css, "HEADER" block) handles the actual size/color/radius
+// interpolation as a transition, so this stays cheap on scroll.
+(function(){
+  var header = document.querySelector('header');
+  if(!header) return;
+  var SCROLL_THRESHOLD = 24;
+  var ticking = false;
+  function applyState(){
+    var compact = window.scrollY > SCROLL_THRESHOLD;
+    header.classList.toggle('is-compact', compact);
+    ticking = false;
+  }
+  function onScroll(){
+    if(!ticking){
+      window.requestAnimationFrame(applyState);
+      ticking = true;
+    }
+  }
+  applyState();
+  window.addEventListener('scroll', onScroll, {passive:true});
+})();
+
+// ===== Meet the Team — expand/collapse ("+" -> "-") =====
+document.addEventListener('DOMContentLoaded', function(){
+  var toggles = document.querySelectorAll('[data-team-toggle]');
+  toggles.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('[data-team-card]');
+      if(!card) return;
+      var willOpen = !card.classList.contains('is-open');
+      card.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', String(willOpen));
+    });
+  });
+});
+
 // ===== Reveal on scroll =====
 document.addEventListener('DOMContentLoaded', function(){
   var els = document.querySelectorAll('.reveal, .reveal-stagger');
@@ -1013,51 +1051,82 @@ document.addEventListener('DOMContentLoaded', function(){
 
 // ===== Exit-intent newsletter popup ("Stay in the FleetHive Network") =====
 //
-// Frequency rules (session-scoped, survives internal page navigation because
-// it's sessionStorage-backed rather than a plain JS variable):
+// Frequency rules (site-wide, localStorage-backed so the preference survives
+// page navigation, refreshes, AND the visitor closing the tab and coming
+// back later — not just the current session):
 //   - The popup may appear on entry (exit-intent or the long-visit fallback).
-//   - Once shown, it will not show again for at least 4 minutes.
+//   - Once shown, it will not show again for at least 4 minutes, and that
+//     re-prompt only ever applies to visitors who have neither subscribed
+//     nor said they already have.
 //   - Navigating between pages never resets that 4-minute timer.
-//   - Once the visitor successfully subscribes to the newsletter, this popup
-//     never appears again for the rest of the session.
+//   - Once the visitor successfully subscribes, OR clicks "I've already
+//     subscribed", this popup never appears again for that visitor,
+//     anywhere on the site, on any future visit.
 //   - A successful payment or Contact Us submission is allowed to bring the
 //     popup back sooner than the exit-intent trigger normally would (see
 //     window.fhTriggerPopup below), but it still respects the newsletter
 //     "never again" rule and still won't fire more than once every 4 minutes.
+//   - It also won't fire on top of the mobile menu, the Bree chat panel, or
+//     while the visitor is actively typing into another form on the page.
 document.addEventListener('DOMContentLoaded', function(){
   var overlay = document.getElementById('exitPopup');
   if(!overlay) return;
+  var popupEl = overlay.querySelector('.exit-popup');
   var LAST_SHOWN_KEY = 'fh_popup_last_shown_at'; // timestamp (ms) popup was last opened, any trigger
-  var SUBSCRIBED_KEY = 'fh_newsletter_subscribed'; // '1' once newsletter signup succeeds this session
+  var SUBSCRIBED_KEY = 'fh_newsletter_subscribed'; // '1' once newsletter signup succeeds
+  var ALREADY_KEY = 'fh_newsletter_already_subscribed'; // '1' once visitor says they're already on the list
   var MIN_INTERVAL = 4 * 60 * 1000; // 4 minutes between popup appearances
   var closeBtn = document.getElementById('exitPopupClose');
   var form = document.getElementById('exitPopupForm');
+  var alreadyBtn = document.getElementById('exitPopupAlready');
   var pageLoadedAt = Date.now();
   var MIN_DELAY = 8000;        // don't show immediately on arrival
   var FALLBACK_DELAY = 45000;  // mobile / long-visit fallback since there's no mouse to leave
   var isOpen = false;
 
-  function isSubscribed(){
-    try { return sessionStorage.getItem(SUBSCRIBED_KEY) === '1'; } catch(e){ return false; }
+  // Reads/writes prefer localStorage (persists across visits); if it's
+  // unavailable (private browsing etc.) fall back to sessionStorage so the
+  // popup still behaves sensibly for the current visit.
+  function store(){
+    try { localStorage.setItem('__fh_test__','1'); localStorage.removeItem('__fh_test__'); return localStorage; }
+    catch(e){ return sessionStorage; }
   }
-  function markSubscribed(){
-    try { sessionStorage.setItem(SUBSCRIBED_KEY, '1'); } catch(e){}
+  var db = store();
+  function getFlag(key){ try { return db.getItem(key) === '1'; } catch(e){ return false; } }
+  function setFlag(key){ try { db.setItem(key, '1'); } catch(e){} }
+
+  function isRetired(){
+    return getFlag(SUBSCRIBED_KEY) || getFlag(ALREADY_KEY);
   }
+  function markSubscribed(){ setFlag(SUBSCRIBED_KEY); }
+  function markAlreadySubscribed(){ setFlag(ALREADY_KEY); }
   function lastShownAt(){
-    try { return parseInt(sessionStorage.getItem(LAST_SHOWN_KEY) || '0', 10) || 0; } catch(e){ return 0; }
+    try { return parseInt(db.getItem(LAST_SHOWN_KEY) || '0', 10) || 0; } catch(e){ return 0; }
   }
   function markShownNow(){
-    try { sessionStorage.setItem(LAST_SHOWN_KEY, String(Date.now())); } catch(e){}
+    try { db.setItem(LAST_SHOWN_KEY, String(Date.now())); } catch(e){}
   }
   function intervalElapsed(){
     var last = lastShownAt();
     return !last || (Date.now() - last) >= MIN_INTERVAL;
   }
+  // Don't interrupt: the mobile menu, the Bree chat panel, or a visitor who
+  // is mid-way through typing into some other field on the page.
+  function otherUiIsBusy(){
+    var mobileOpen = document.querySelector('.mobile-panel.open');
+    if(mobileOpen) return true;
+    var bree = document.getElementById('breePanel');
+    if(bree && bree.classList.contains('open')) return true;
+    var active = document.activeElement;
+    if(active && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName) && !overlay.contains(active)) return true;
+    return false;
+  }
   function open(){
     if(isOpen) return;
-    if(isSubscribed()) return;      // newsletter popup is retired for this session once subscribed
+    if(isRetired()) return;         // popup is retired for this visitor, permanently
     if(Date.now() - pageLoadedAt < MIN_DELAY) return;
     if(!intervalElapsed()) return;  // respect the 4-minute minimum gap since it last appeared
+    if(otherUiIsBusy()) return;     // never stack on top of another modal or active form
     isOpen = true;
     markShownNow();
     overlay.classList.add('show');
@@ -1084,7 +1153,7 @@ document.addEventListener('DOMContentLoaded', function(){
       var email = document.getElementById('exitPopupEmail').value.trim();
       if(!email) return;
       markSubscribed();
-      overlay.querySelector('.exit-popup').classList.add('submitted');
+      popupEl.classList.add('submitted');
       fetch('/.netlify/functions/send-newsletter', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
@@ -1094,13 +1163,23 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
+  // "I've already subscribed" — a simple, permanent opt-out. No extra input,
+  // no redirect, no second modal: just a quiet confirmation, then close.
+  if(alreadyBtn){
+    alreadyBtn.addEventListener('click', function(){
+      markAlreadySubscribed();
+      popupEl.classList.add('dismissed');
+      setTimeout(close, 1300);
+    });
+  }
+
   // Lets a successful payment or Contact Us submission ask the popup to
   // reappear (per the brief: those actions "meaningfully changed" the
   // visitor's interaction, so the usual exit-intent-only trigger doesn't
-  // apply). Still gated by the newsletter-subscribed and 4-minute rules
+  // apply). Still gated by the newsletter-retired and 4-minute rules
   // above, so it can never loop or spam the visitor.
   window.fhTriggerPopup = function(){
-    if(isSubscribed()) return;
+    if(isRetired()) return;
     if(!intervalElapsed()) return;
     isOpen = false;
     open();

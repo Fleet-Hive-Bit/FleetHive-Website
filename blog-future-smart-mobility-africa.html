@@ -19,6 +19,7 @@
 
 <!-- ===================== HEADER ===================== -->
 <header>
+  <div class="header-inner">
   <nav class="wrap navbar">
     <a href="index.html" class="logo">
       <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
@@ -42,6 +43,7 @@
       <button class="mobile-toggle" id="mobileToggleBtn" onclick="fhToggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </nav>
+  </div>
 </header>
 
 <div class="mobile-panel" id="mp">
@@ -197,10 +199,14 @@
       <input type="text" id="exitPopupName" placeholder="Full name" autocomplete="name">
       <input type="email" id="exitPopupEmail" placeholder="Email address" autocomplete="email" required>
       <button type="submit" class="btn btn-primary">Get Updates</button>
+      <button type="button" class="exit-popup-secondary" id="exitPopupAlready">I've already subscribed</button>
     </form>
     <div class="exit-popup-success">
       <h4>You're on the list.</h4>
       <p>Thanks for joining the FleetHive network, watch your inbox for updates.</p>
+    </div>
+    <div class="exit-popup-dismiss-success">
+      <h4>You're all set.</h4>
     </div>
   </div>
 </div>

@@ -19,6 +19,7 @@
 
 <!-- ===================== HEADER ===================== -->
 <header>
+  <div class="header-inner">
   <nav class="wrap navbar">
     <a href="index.html" class="logo">
       <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
@@ -42,6 +43,7 @@
       <button class="mobile-toggle" id="mobileToggleBtn" onclick="fhToggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </nav>
+  </div>
 </header>
 
 <div class="mobile-panel" id="mp">
@@ -155,24 +157,77 @@
   </div>
 </section>
 
-<!-- ===================== THE TEAM BEHIND FLEETHIVE ===================== -->
+<!-- ===================== MEET THE TEAM ===================== -->
 <section class="section-deep" id="leadership">
   <div class="wrap">
     <div class="sec-head center reveal" style="margin-left:auto;margin-right:auto;">
       <span class="eyebrow">Leadership</span>
-      <h2>The team behind FleetHive</h2>
+      <h2>Meet the team behind FleetHive</h2>
     </div>
-    <div class="leader-grid reveal-stagger">
-      <div class="leader-card">
-        <div class="leader-photo"><img src="assets/ceo.png" alt="Victor Shinegba"></div>
-        <div class="leader-name">Victor Shinegba</div>
-        <div class="leader-role">Founder &amp; CEO</div>
-      </div>
-      <div class="leader-card">
-        <div class="leader-photo"><img src="assets/coo.png" alt="Oluwatomi Adeife"></div>
-        <div class="leader-name">Oluwatomi Adeife</div>
-        <div class="leader-role">COO</div>
-      </div>
+  </div>
+  <div class="wrap">
+    <div class="team-scroll reveal-stagger">
+
+      <article class="team-card" data-team-card>
+        <div class="team-card-media"><img src="assets/ceo.png" alt="Victor Shinegba, Founder and CEO of FleetHive" loading="lazy"></div>
+        <div class="team-card-panel">
+          <div class="team-card-top">
+            <div>
+              <div class="team-card-name">Victor Shinegba</div>
+              <div class="team-card-role">Founder &amp; CEO</div>
+            </div>
+            <button type="button" class="team-card-toggle" data-team-toggle aria-expanded="false" aria-controls="team-desc-ceo" aria-label="Show more about Victor Shinegba, Founder and CEO">
+              <span class="team-toggle-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="team-card-desc" id="team-desc-ceo">
+            <div class="team-card-desc-inner">
+              <p>As Founder &amp; CEO, Victor is the visionary behind FleetHive — setting the company's direction, shaping product vision and driving the strategy behind its growth and execution.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="team-card" data-team-card>
+        <div class="team-card-media"><img src="assets/coo.png" alt="Adeife Olawatomi Adeife, COO of FleetHive" loading="lazy"></div>
+        <div class="team-card-panel">
+          <div class="team-card-top">
+            <div>
+              <div class="team-card-name">Adeife Olawatomi Adeife</div>
+              <div class="team-card-role">COO</div>
+            </div>
+            <button type="button" class="team-card-toggle" data-team-toggle aria-expanded="false" aria-controls="team-desc-coo" aria-label="Show more about Adeife Olawatomi Adeife, COO">
+              <span class="team-toggle-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="team-card-desc" id="team-desc-coo">
+            <div class="team-card-desc-inner">
+              <p>As COO, Adeife translates FleetHive's strategy into day-to-day execution — overseeing operations, internal coordination and customer experience as the business grows.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="team-card" data-team-card>
+        <div class="team-card-media"><img src="assets/ld.png" alt="Babashola Nelson, Lead Designer at FleetHive" loading="lazy"></div>
+        <div class="team-card-panel">
+          <div class="team-card-top">
+            <div>
+              <div class="team-card-name">Babashola Nelson</div>
+              <div class="team-card-role">Lead Designer</div>
+            </div>
+            <button type="button" class="team-card-toggle" data-team-toggle aria-expanded="false" aria-controls="team-desc-ld" aria-label="Show more about Babashola Nelson, Lead Designer">
+              <span class="team-toggle-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="team-card-desc" id="team-desc-ld">
+            <div class="team-card-desc-inner">
+              <p>As Lead Designer, Babashola shapes FleetHive's visual and product experience — bringing consistency to the interface and building design systems for intuitive digital experiences.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
     </div>
   </div>
 </section>
@@ -273,10 +328,14 @@
       <input type="text" id="exitPopupName" placeholder="Full name" autocomplete="name">
       <input type="email" id="exitPopupEmail" placeholder="Email address" autocomplete="email" required>
       <button type="submit" class="btn btn-primary">Get Updates</button>
+      <button type="button" class="exit-popup-secondary" id="exitPopupAlready">I've already subscribed</button>
     </form>
     <div class="exit-popup-success">
       <h4>You're on the list.</h4>
       <p>Thanks for joining the FleetHive network, watch your inbox for updates.</p>
+    </div>
+    <div class="exit-popup-dismiss-success">
+      <h4>You're all set.</h4>
     </div>
   </div>
 </div>
