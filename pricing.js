@@ -78,6 +78,13 @@
     if(cat === 'heavy') return table.heavy || 0;
     return table[year] || 0;
   }
+  // Prime is only available for vehicles from 2006 onward (§10). Centralized
+  // here so every form that lets someone pick Prime + a vehicle year — the
+  // subscription form and now the Fleet Tag form — enforces the exact same
+  // rule instead of duplicating the '2000-2005' check inline.
+  function isPrimeYearInvalid(plan, year){
+    return plan === 'prime' && year === '2000-2005';
+  }
 
   // ---------------- Plan selection ----------------
   window.selectPlan = function(plan){
@@ -102,6 +109,7 @@
     renderFlexiBox();
     renderAddPlanOptions();
     checkPrimeYearRule();
+    if(plan === 'tagplan'){ checkTagPrimeYearRule(); renderTagPriceIntro(); }
     updateSummary();
 
     qs('order-flow').scrollIntoView({ behavior:'smooth', block:'start' });
@@ -174,15 +182,81 @@
     var warn = qs('primeYearWarn');
     if(!warn) return false;
     var year = qs('subVehicleYear') ? qs('subVehicleYear').value : '';
-    var blocked = (state.plan === 'prime' && year === '2000-2005');
+    var blocked = isPrimeYearInvalid(state.plan, year);
     warn.style.display = blocked ? '' : 'none';
     return blocked;
+  }
+  // Same rule, applied to the Fleet Tag form's own plan/vehicle-year pickers
+  // (independent of state.plan, which is always 'tagplan' while this form
+  // is showing — the plan that matters here is the one chosen *inside* the
+  // Fleet Tag form for pricing purposes).
+  function checkTagPrimeYearRule(){
+    var warn = qs('tagPrimeYearWarn');
+    if(!warn) return false;
+    var blocked = isPrimeYearInvalid(tagSelectedPlan(), qs('tagVehicleYear') ? qs('tagVehicleYear').value : '');
+    warn.style.display = blocked ? '' : 'none';
+    return blocked;
+  }
+  function tagSelectedPlan(){
+    var active = document.querySelector('#tagPlanRow .choice-pill.active');
+    return active ? active.dataset.val : '';
+  }
+
+  // Replaces the old static "₦35,000 per FleetTag" header box. The correct
+  // FleetTag price depends on vehicle type, vehicle year and the selected
+  // plan (§5/§7) — it cannot be shown at all until those are chosen, so this
+  // renders a prompt instead of a (wrong) flat number until they are.
+  function renderTagPriceIntro(){
+    var box = qs('tagPriceIntro');
+    if(!box) return;
+    var tPlan = tagSelectedPlan();
+    var tType = qs('tagVehicleType') ? qs('tagVehicleType').value : '';
+    var tYear = qs('tagVehicleYear') ? qs('tagVehicleYear').value : '';
+    var yearReady = tType && (vehicleCategory(tType) !== 'year' || tYear);
+    if(!tPlan || !yearReady){
+      box.innerHTML = '<p class="form-help">Select a plan and vehicle below to see your FleetTag pricing.</p>';
+      return;
+    }
+    if(isPrimeYearInvalid(tPlan, tYear)){
+      box.innerHTML = '<p class="form-help">Prime is available for vehicles from 2006 upward. Please choose Lite or Pro, or select a different vehicle year.</p>';
+      return;
+    }
+    var yearAmt = vehiclePrice(tPlan, tType, tYear);
+    var initial = yearAmt + TAGPLAN_ONE_TIME;
+    box.innerHTML =
+      '<div class="tag-price-breakdown">' +
+        '<div class="tpb-row"><span class="tpb-label">' + PLANS[tPlan].name + ' Plan Amount <span class="tpb-tag tpb-tag-later">Year-Based</span></span><span class="tpb-amt">' + fmt(yearAmt) + ' <span>per FleetTag</span></span></div>' +
+        '<div class="tpb-row"><span class="tpb-label">FleetTag Device + Setup</span><span class="tpb-amt">' + fmt(TAGPLAN_ONE_TIME) + ' <span>per FleetTag</span></span></div>' +
+        '<div class="tpb-row tpb-now"><span class="tpb-label">Initial One-Time Cost <span class="tpb-tag">Pay Now</span></span><span class="tpb-amt">' + fmt(initial) + ' <span>per FleetTag</span></span></div>' +
+        '<div class="tpb-row tpb-free"><span class="tpb-label">First 3 Months Tracking</span><span class="tpb-amt tpb-free-amt">FREE</span></div>' +
+        '<div class="tpb-row tpb-renew"><span class="tpb-label">After Your Free Period <span class="tpb-tag tpb-tag-later">Future Renewal</span></span><span class="tpb-amt">' + fmt(TAGPLAN_RENEW_M) + '/mo <span>or ' + fmt(TAGPLAN_RENEW_Y) + '/yr, Save ₦6,000</span></span></div>' +
+      '</div>';
   }
 
   document.addEventListener('DOMContentLoaded', function(){
     var vType = qs('subVehicleType'), vYear = qs('subVehicleYear');
     if(vType) vType.addEventListener('change', function(){ checkPrimeYearRule(); updateSummary(); });
     if(vYear) vYear.addEventListener('change', function(){ checkPrimeYearRule(); updateSummary(); });
+
+    // Fleet Tag form's own plan + vehicle type/year (§5–§9): these drive the
+    // year-based amount that gets added on top of the flat FleetTag
+    // device/setup cost, exactly like the subscription forms — never the
+    // monthly subscription price on its own.
+    var tagPlanRow = qs('tagPlanRow');
+    if(tagPlanRow){
+      tagPlanRow.addEventListener('click', function(e){
+        var btn = e.target.closest('.choice-pill');
+        if(!btn) return;
+        tagPlanRow.querySelectorAll('.choice-pill').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        checkTagPrimeYearRule();
+        renderTagPriceIntro();
+        updateSummary();
+      });
+    }
+    var tagVType = qs('tagVehicleType'), tagVYear = qs('tagVehicleYear');
+    if(tagVType) tagVType.addEventListener('change', function(){ checkTagPrimeYearRule(); renderTagPriceIntro(); updateSummary(); });
+    if(tagVYear) tagVYear.addEventListener('change', function(){ checkTagPrimeYearRule(); renderTagPriceIntro(); updateSummary(); });
 
     var countRow = qs('subVehCountRow');
     if(countRow){
@@ -292,6 +366,16 @@
     if(planVal === 'tagplan'){
       html +=
         '<div class="form-grid">' +
+          '<div class="form-group full"><label class="form-label">Plan for this FleetTag*</label>' +
+            '<div class="choice-row" id="' + prefix + 'ApTagPlanRow">' +
+              '<button type="button" class="choice-pill" data-val="lite">Lite</button>' +
+              '<button type="button" class="choice-pill" data-val="pro">Pro</button>' +
+              '<button type="button" class="choice-pill" data-val="prime">Prime</button>' +
+            '</div></div>' +
+          '<div class="form-group"><label class="form-label">Vehicle Type*</label>' +
+            '<select class="form-select" id="' + prefix + 'ApTagVehicleType">' + vehicleTypeOptionsHtml('') + '</select></div>' +
+          '<div class="form-group"><label class="form-label">Vehicle Year*</label>' +
+            '<select class="form-select" id="' + prefix + 'ApTagVehicleYear">' + vehicleYearOptionsHtml('') + '</select></div>' +
           '<div class="form-group full">' +
             '<label class="form-label">Number of FleetTags*</label>' +
             '<div class="choice-row" id="' + prefix + 'ApTagCountRow">' + countChoiceRowHtml('tagcount', 'FleetTag', '1') + '</div>' +
@@ -357,6 +441,16 @@
       });
     });
 
+    var tagPlanRow2 = qs(prefix + 'ApTagPlanRow');
+    if(tagPlanRow2){
+      tagPlanRow2.addEventListener('click', function(e){
+        var btn = e.target.closest('.choice-pill');
+        if(!btn) return;
+        tagPlanRow2.querySelectorAll('.choice-pill').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    }
+
     var sameRow = qs(prefix + 'ApInstallSameRow');
     if(sameRow){
       sameRow.addEventListener('click', function(e){
@@ -387,6 +481,18 @@
           entry.count = (tagVal === '5+')
             ? Math.max(5, Number(qs(prefix + 'ApTagCountCustom').value) || 5)
             : Number(tagVal);
+          var tagPlanActive = panel.querySelector('#' + prefix + 'ApTagPlanRow .choice-pill.active');
+          entry.tagPlan = tagPlanActive ? tagPlanActive.dataset.val : '';
+          entry.vehicleType = qs(prefix + 'ApTagVehicleType').value;
+          entry.vehicleYear = qs(prefix + 'ApTagVehicleYear').value;
+          if(!entry.tagPlan || !entry.vehicleType || (vehicleCategory(entry.vehicleType) === 'year' && !entry.vehicleYear)){
+            alert('Please select a plan, vehicle type and year for this FleetTag before adding it.');
+            return;
+          }
+          if(isPrimeYearInvalid(entry.tagPlan, entry.vehicleYear)){
+            alert('Prime is available for vehicles from 2006 upward. Please choose Lite or Pro, or select a different vehicle year for this FleetTag.');
+            return;
+          }
         } else {
           entry.vehicleType = qs(prefix + 'ApVehicleType').value;
           entry.vehicleYear = qs(prefix + 'ApVehicleYear').value;
@@ -431,14 +537,20 @@
   });
 
   function addedPlanLabel(entry){
-    if(entry.plan === 'tagplan') return 'Tag Plan, ' + entry.count + ' FleetTag' + (entry.count > 1 ? 's' : '');
+    if(entry.plan === 'tagplan'){
+      var tagPlanName = PLANS[entry.tagPlan] ? PLANS[entry.tagPlan].name : entry.tagPlan;
+      return 'Tag Plan (' + tagPlanName + ', ' + entry.vehicleType + ', ' + entry.vehicleYear + '), ' + entry.count + ' FleetTag' + (entry.count > 1 ? 's' : '');
+    }
     var isCustomFleet = entry.count === '5+';
     var countLabel = isCustomFleet ? ' · 5+ vehicles (custom quote)' : (Number(entry.count) > 1 ? ' · ' + entry.count + ' vehicles' : '');
     var installLabel = entry.installSame === false ? ' · custom installation' : '';
     return PLANS[entry.plan].name + ' Plan, ' + entry.vehicleType + ', ' + entry.vehicleYear + countLabel + installLabel;
   }
   function addedPlanAmount(entry){
-    if(entry.plan === 'tagplan') return TAGPLAN_ONE_TIME * entry.count;
+    if(entry.plan === 'tagplan'){
+      var yearAmt = isPrimeYearInvalid(entry.tagPlan, entry.vehicleYear) ? 0 : vehiclePrice(entry.tagPlan, entry.vehicleType, entry.vehicleYear);
+      return (TAGPLAN_ONE_TIME + yearAmt) * entry.count;
+    }
     var sub = state.billing === 'annual' ? PLANS[entry.plan].y : PLANS[entry.plan].m;
     if(entry.count === '5+') return sub; // custom fleet — device/install quoted separately by the team
     var device = vehiclePrice(entry.plan, entry.vehicleType, entry.vehicleYear);
@@ -608,7 +720,17 @@
   function computeSubtotal(){
     var total = 0;
     if(state.plan === 'tagplan'){
-      total += TAGPLAN_ONE_TIME * tagCount();
+      var n = tagCount();
+      var tPlan = tagSelectedPlan();
+      var tType = qs('tagVehicleType') ? qs('tagVehicleType').value : '';
+      var tYear = qs('tagVehicleYear') ? qs('tagVehicleYear').value : '';
+      total += TAGPLAN_ONE_TIME * n;
+      // §5/§7: the Fleet Tag price must include the same year-based amount
+      // Lite/Pro/Prime use — never just the flat device/setup cost, and
+      // never the plan's monthly subscription figure.
+      if(tPlan && tType && (vehicleCategory(tType) !== 'year' || tYear) && !isPrimeYearInvalid(tPlan, tYear)){
+        total += vehiclePrice(tPlan, tType, tYear) * n;
+      }
       if(state.hiveCredits > 0) total += state.hiveCredits;
     } else if(state.plan) {
       var p = PLANS[state.plan];
@@ -636,6 +758,16 @@
     if(state.plan === 'tagplan'){
       var n = tagCount();
       var tagLabel = n + ' FleetTag' + (n > 1 ? 's' : '');
+      var tPlan = tagSelectedPlan();
+      var tType = qs('tagVehicleType') ? qs('tagVehicleType').value : '';
+      var tYear = qs('tagVehicleYear') ? qs('tagVehicleYear').value : '';
+      if(tPlan && tType && (vehicleCategory(tType) !== 'year' || tYear) && !isPrimeYearInvalid(tPlan, tYear)){
+        var yearAmt = vehiclePrice(tPlan, tType, tYear);
+        if(yearAmt){
+          lines.push([PLANS[tPlan].name + ' Plan Amount, Year-Based (' + tType + ', ' + tYear + ', ' + tagLabel + ')', fmt(yearAmt * n)]);
+          total += yearAmt * n;
+        }
+      }
       lines.push(['FleetTag Device + 3 Months Free Tracking (' + tagLabel + ')', fmt(TAGPLAN_DEVICE_PORTION * n)]);
       lines.push(['Technical Setup &amp; Configuration (' + tagLabel + ')', fmt(TAGPLAN_SETUP_PORTION * n)]);
       total += TAGPLAN_ONE_TIME * n;
@@ -673,6 +805,11 @@
     var addedTagCount = 0;
     state.addedPlans.forEach(function(entry){
       if(entry.plan === 'tagplan'){
+        var addedYearAmt = isPrimeYearInvalid(entry.tagPlan, entry.vehicleYear) ? 0 : vehiclePrice(entry.tagPlan, entry.vehicleType, entry.vehicleYear);
+        if(addedYearAmt){
+          var addedTagPlanName = PLANS[entry.tagPlan] ? PLANS[entry.tagPlan].name : entry.tagPlan;
+          lines.push(['Additional: ' + addedTagPlanName + ' Plan Amount, Year-Based (' + entry.vehicleType + ', ' + entry.vehicleYear + ', ' + entry.count + ')', fmt(addedYearAmt * entry.count)]);
+        }
         lines.push(['Additional: FleetTag Device + 3 Months Free Tracking (' + entry.count + ')', fmt(TAGPLAN_DEVICE_PORTION * entry.count)]);
         lines.push(['Additional: Technical Setup &amp; Configuration (' + entry.count + ')', fmt(TAGPLAN_SETUP_PORTION * entry.count)]);
         addedTagCount += entry.count;
@@ -754,6 +891,9 @@
         state: qs('tagState').value, city: qs('tagCity').value, houseNo: qs('tagHouseNo').value,
         street: qs('tagStreet').value, landmark: qs('tagLandmark').value,
         tagCount: tagCount(),
+        tagPlan: tagSelectedPlan(),
+        vehicleType: qs('tagVehicleType') ? qs('tagVehicleType').value : '',
+        vehicleYear: qs('tagVehicleYear') ? qs('tagVehicleYear').value : '',
         tagUse: (function(){
           var active = document.querySelector('#tagUseRow .choice-pill.active');
           if(active && active.dataset.val === 'Other') return qs('tagUseCustom').value || 'Other';
@@ -777,8 +917,13 @@
       alert('Prime is available for vehicles from 2006 upward. Please choose Lite or Pro, or select a different vehicle year.');
       return false;
     }
+    if(state.plan === 'tagplan' && isPrimeYearInvalid(cust.tagPlan, cust.vehicleYear)){
+      alert('Prime is available for vehicles from 2006 upward. Please choose Lite or Pro, or select a different vehicle year for your FleetTag.');
+      return false;
+    }
     var required = state.plan === 'tagplan'
-      ? [cust.surname, cust.firstName, cust.phone, cust.email, cust.state, cust.landmark]
+      ? [cust.surname, cust.firstName, cust.phone, cust.email, cust.state, cust.landmark, cust.tagPlan, cust.vehicleType]
+          .concat(vehicleCategory(cust.vehicleType || '') === 'year' ? [cust.vehicleYear] : [])
       : [cust.surname, cust.firstName, cust.phone, cust.email, cust.address, cust.vehicleType, cust.installCity, cust.installOption, cust.installDate, cust.installTime]
           .concat(vehicleCategory(cust.vehicleType || '') === 'year' ? [cust.vehicleYear] : []);
     if(required.some(function(v){ return !v; })){
@@ -815,6 +960,7 @@
       phone: cust.phone, whatsapp: cust.whatsapp, email: cust.email,
       state: cust.state, city: cust.city, houseNo: cust.houseNo, street: cust.street, landmark: cust.landmark,
       tagCount: cust.tagCount, tagUse: cust.tagUse,
+      tagPlan: cust.tagPlan ? PLANS[cust.tagPlan].name : null,
       address: cust.address, vehicleType: cust.vehicleType, vehicleYear: cust.vehicleYear, vehCount: cust.vehCount,
       fleetNote: cust.fleetNote, installCity: cust.installCity, installOption: cust.installOption,
       installDate: cust.installDate, installTime: cust.installTime,
@@ -863,7 +1009,7 @@
       SOFTWARE_ADDONS.forEach(function(a){ if(state.softwareAddons[a.id]) softwareAddonIds.push(a.id); });
       var addedPlansData = state.addedPlans.map(function(entry){
         return entry.plan === 'tagplan'
-          ? { plan:'tagplan', count: entry.count }
+          ? { plan:'tagplan', count: entry.count, tagPlan: entry.tagPlan, vehicleType: entry.vehicleType, vehicleYear: entry.vehicleYear }
           : { plan: entry.plan, vehicleType: entry.vehicleType, vehicleYear: entry.vehicleYear, count: entry.count, billing: state.billing };
       });
 
@@ -872,7 +1018,7 @@
         customerName: [cust.surname, cust.firstName].filter(Boolean).join(' '), phone: cust.phone,
         totalAmount: total, flexible: state.flexible,
         vehicleType: cust.vehicleType || null, vehicleYear: cust.vehicleYear || null, vehCount: cust.vehCount || null,
-        tagCount: cust.tagCount || null, tagUse: cust.tagUse || null,
+        tagCount: cust.tagCount || null, tagUse: cust.tagUse || null, tagPlan: cust.tagPlan || null,
         location: [cust.city || cust.installCity, cust.state].filter(Boolean).join(', ') || cust.address || null,
         addons: payload.addons || null, addedPlans: payload.addedPlans || null,
         hardwareAddonIds: hardwareAddonIds, softwareAddonIds: softwareAddonIds, addedPlansData: addedPlansData,

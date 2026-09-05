@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fleet Intelligence — FleetHive</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0D2137">
+<meta name="description" content="Live vehicle tracking, status and history for your FleetHive fleet.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+  <nav class="wrap navbar">
+    <a href="index.html" class="logo">
+      <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
+      <span class="logo-text">FLEET<span class="hive">HIVE</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="portal.html">Portal</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+        <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
+      </button>
+      <a href="portal.html" class="btn btn-outline" style="padding:11px 22px; font-size:12px;">Back to Portal</a>
+      <button class="mobile-toggle" id="mobileToggleBtn" onclick="fhToggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  </div>
+</header>
+
+<div class="mobile-panel" id="mp">
+  <a href="index.html">Home</a>
+  <a href="portal.html">Portal</a>
+  <div class="mp-actions">
+    <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle light/dark mode" style="width:46px;height:46px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ===================== Checking session ===================== -->
+<section id="fiChecking" class="page-hero">
+  <div class="wrap reveal in">
+    <span class="eyebrow">Fleet Intelligence</span>
+    <h1>Loading…</h1>
+  </div>
+</section>
+
+<!-- ===================== Dashboard ===================== -->
+<section id="fiDash" class="fi-dash" style="display:none;">
+  <div class="wrap fi-wrap">
+
+    <div class="fi-topbar">
+      <div>
+        <span class="eyebrow">Fleet Intelligence</span>
+        <h1 id="fiHeading">Your Fleet</h1>
+      </div>
+      <div class="fi-topbar-actions">
+        <label class="fi-search" for="fiSearch">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" id="fiSearch" placeholder="Search vehicles…" aria-label="Search your vehicles" autocomplete="off">
+        </label>
+        <button class="btn btn-outline fi-refresh-btn" id="fiRefreshAll" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v5h-5"/></svg>
+          <span>Refresh</span>
+        </button>
+      </div>
+    </div>
+
+    <p id="fiLiveRegion" class="sr-only" role="status" aria-live="polite"></p>
+
+    <div id="fiListLoading" class="portal-skel-row">
+      <div class="portal-skel-card"></div>
+      <div class="portal-skel-card"></div>
+      <div class="portal-skel-card"></div>
+    </div>
+
+    <div id="fiEmpty" class="portal-empty" style="display:none;">
+      <p>No vehicles are connected to your FleetHive account yet.</p>
+      <a href="contact.html" class="btn btn-outline">Contact FleetHive</a>
+    </div>
+
+    <div id="fiLoadError" class="portal-empty" style="display:none;">
+      <p>We're unable to load your vehicles right now. Please try again.</p>
+      <button class="btn btn-outline" id="fiLoadRetry" type="button">Try Again</button>
+    </div>
+
+    <div id="fiLayout" class="fi-layout reveal" style="display:none;">
+
+      <!-- Vehicle list -->
+      <aside class="fi-panel fi-area-list" aria-label="Your vehicles">
+        <h2 class="fi-panel-title">Vehicles <span id="fiVehicleCount" class="fi-count-pill">0</span></h2>
+        <div id="fiVehicleList" class="fi-vehicle-list" role="list"></div>
+        <p id="fiSearchEmpty" class="fi-muted-note" style="display:none;">No vehicles match your search.</p>
+      </aside>
+
+      <!-- Quick status + location (appears above the map on mobile) -->
+      <div class="fi-panel fi-area-top" id="fiTopPanel">
+        <div id="fiTopEmpty" class="fi-detail-empty">
+          <p>Select a vehicle to view its live status.</p>
+        </div>
+        <div id="fiTopBody" style="display:none;"></div>
+      </div>
+
+      <!-- Map -->
+      <div class="fi-panel fi-area-map">
+        <div id="fiMap" class="fi-map" aria-label="Vehicle location map"></div>
+      </div>
+
+      <!-- Full detail: ignition, speed, odometer, battery, lock, tabs -->
+      <div class="fi-panel fi-area-detail" id="fiDetailPanel">
+        <div id="fiDetailEmpty" class="fi-detail-empty">
+          <p>Vehicle details, trip history and device info will appear here once you select a vehicle.</p>
+        </div>
+        <div id="fiDetailBody" style="display:none;"></div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="site.js"></script>
+<script src="fleet-intelligence.js"></script>
+</body>
+</html>

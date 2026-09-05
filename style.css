@@ -409,19 +409,45 @@ section{padding:100px 0; position:relative;}
   position:absolute; inset:0; z-index:0; pointer-events:none;
   background-image:linear-gradient(180deg, var(--page-bg-deep) 0%, rgba(8,24,38,0.72) 55%, var(--page-bg-deep) 100%), url('assets/is-bg.png');
   background-size:cover; background-position:80% 30%;
-  opacity:0.18;
+  opacity:0.16;
+  transition:opacity .3s ease;
 }
+/* Light mode used to sit at 0.55 opacity here, which let the photo
+   overshadow the card text above it. Brought down to the same subtle
+   baseline as dark mode so the image reads as background texture in
+   both themes, not as a competing visual. The card-surface overlay
+   below (.sol-card::before) is what actually protects text contrast —
+   this section-wide layer only needs to stay "slightly visible". */
 [data-theme="light"] .sol-bg-installer{
-  background-image:linear-gradient(180deg, var(--page-bg-deep) 0%, rgba(237,243,252,0.32) 55%, var(--page-bg-deep) 100%), url('assets/is-bg.png');
-  opacity:0.55;
+  background-image:linear-gradient(180deg, var(--page-bg-deep) 0%, rgba(237,243,252,0.4) 55%, var(--page-bg-deep) 100%), url('assets/is-bg.png');
+  opacity:0.16;
 }
-@media (max-width:760px){ .sol-bg-installer{ opacity:0.16; background-position:70% 20%; } }
-@media (max-width:760px){ [data-theme="light"] .sol-bg-installer{ opacity:0.32; } }
+@media (max-width:760px){ .sol-bg-installer{ opacity:0.14; background-position:70% 20%; } }
+@media (max-width:760px){ [data-theme="light"] .sol-bg-installer{ opacity:0.14; } }
 .sol-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; position:relative; z-index:2;}
 .sol-card{
   background:var(--card-bg); border:1px solid var(--border); border-radius:18px; padding:28px;
   transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease; position:relative; overflow:hidden;
 }
+/* Card-surface overlay: sits between the section background image and
+   the card's text/icon content (see z-index on the child rule below).
+   Uses the existing --card-bg-solid token (already used by price-card,
+   numbers-panel, mock-panel etc.) at high opacity so each card reads as
+   a near-solid FleetHive surface — text/icons stay clearly dominant —
+   while the photo is still faintly recognizable through it and fully
+   visible in the gaps around/between cards. rgba fallback first for
+   browsers without color-mix() support. */
+.sol-card::before{
+  content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:rgba(19,42,68,0.86);
+  background:color-mix(in srgb, var(--card-bg-solid) 86%, transparent);
+  transition:background .3s ease;
+}
+[data-theme="light"] .sol-card::before{
+  background:rgba(255,255,255,0.92);
+  background:color-mix(in srgb, var(--card-bg-solid) 92%, transparent);
+}
+.sol-card > *{ position:relative; z-index:1; }
 .sol-bg-tag{
   position:absolute; inset:0; z-index:0; pointer-events:none;
   background-image:url('assets/ft-bg.png'); background-size:cover; background-position:center;
@@ -1547,4 +1573,305 @@ footer{
 
 @media (max-width:640px){
   .compare-table th, .compare-table td{ padding:12px 14px; font-size:12.5px; }
+}
+
+/* ==========================================================
+   CUSTOMER PORTAL — Prompt 2A.1
+   Reuses existing tokens (--card-bg, --card-bg-solid, --border,
+   --heading, --text-secondary, --sky, --grad) and the existing
+   .form-section/.btn/.page-hero system. No independent theme.
+   ========================================================== */
+
+.portal-stat-row{ display:flex; flex-wrap:wrap; gap:14px; margin:18px 0; }
+.portal-stat{
+  background:var(--card-bg-solid); border:1px solid var(--border); border-radius:14px;
+  padding:16px 20px; min-width:120px; text-align:center;
+}
+.portal-stat-num{ display:block; font-size:26px; font-weight:800; color:var(--sky); }
+.portal-stat-label{ display:block; font-size:12px; color:var(--text-secondary); margin-top:4px; }
+
+.portal-vehicle-grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; margin-top:16px;
+}
+.portal-vehicle-card{
+  background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:20px;
+  transition:transform .25s ease, border-color .25s ease;
+}
+.portal-vehicle-card:hover{ transform:translateY(-3px); border-color:rgba(111,163,240,0.4); }
+.portal-vehicle-card:active{ transform:translateY(-1px); }
+.portal-vehicle-card h4{ font-size:15.5px; color:var(--heading); margin-bottom:4px; }
+.portal-vehicle-plate{ font-size:12.5px; color:var(--sky); font-weight:700; letter-spacing:0.03em; margin-bottom:8px; }
+.portal-vehicle-status{ font-size:12px; color:var(--text-secondary); line-height:1.5; }
+.portal-vehicle-status-row{ display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--heading); margin-bottom:6px; }
+.portal-vehicle-meta{ font-size:11.5px; color:var(--text-secondary); display:flex; flex-wrap:wrap; gap:8px 10px; margin-bottom:10px; }
+.portal-vehicle-meta span{ white-space:nowrap; }
+.portal-vehicle-link{ font-size:12px; font-weight:700; color:var(--sky); text-decoration:none; display:inline-flex; align-items:center; gap:4px; transition:gap .2s ease; }
+.portal-vehicle-link:hover{ gap:7px; }
+@media (prefers-reduced-motion: reduce){
+  .portal-vehicle-card{ transition:none; }
+  .portal-vehicle-card:hover{ transform:none; }
+}
+
+.portal-empty{
+  border:1px dashed var(--border); border-radius:16px; padding:32px 24px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+}
+.portal-empty p{ font-size:14px; color:var(--text-secondary); max-width:360px; }
+
+/* Skeleton loading state — plain CSS opacity pulse, no animation library */
+.portal-skel-row{ display:flex; flex-wrap:wrap; gap:16px; margin-top:16px; }
+.portal-skel-card{
+  flex:1 1 220px; height:96px; border-radius:16px; background:var(--card-bg-solid);
+  border:1px solid var(--border); animation:portalPulse 1.4s ease-in-out infinite;
+}
+@keyframes portalPulse{ 0%,100%{ opacity:0.55; } 50%{ opacity:1; } }
+
+/* Subscription panel (Prompt 2B.1 §1/§13) — current plan / status /
+   billing facts + recent payment history. Reuses .fi-badge/.fi-dot for
+   status (defined in the Fleet Intelligence block below) rather than a
+   second badge system. */
+.portal-sub-facts{ display:flex; flex-direction:column; gap:10px; margin:14px 0 4px; }
+.portal-sub-fact{
+  display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+  padding-bottom:10px; border-bottom:1px solid var(--border); font-size:13px;
+}
+.portal-sub-fact:last-child{ border-bottom:none; padding-bottom:0; }
+.portal-sub-fact span{ color:var(--text-secondary); }
+.portal-sub-fact strong{ color:var(--heading); font-size:13.5px; text-align:right; }
+
+.portal-pay-history{ display:flex; flex-direction:column; gap:8px; }
+.portal-pay-row{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:10px 12px; border:1px solid var(--border); border-radius:11px;
+  background:var(--card-bg); font-size:12.5px;
+}
+.portal-pay-row-main{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.portal-pay-row-plan{ color:var(--heading); font-weight:700; }
+.portal-pay-row-date{ color:var(--text-secondary); font-size:11.5px; }
+.portal-pay-row-amt{ font-weight:800; color:var(--sky); white-space:nowrap; }
+.portal-pay-row-amt.failed{ color:var(--danger); }
+
+@media (max-width:640px){
+  .portal-vehicle-grid{ grid-template-columns:1fr; }
+  .portal-stat-row{ gap:10px; }
+  .portal-stat{ min-width:0; flex:1 1 calc(50% - 10px); padding:14px; }
+  .portal-sub-fact{ flex-direction:column; align-items:flex-start; gap:2px; }
+  .portal-sub-fact strong{ text-align:left; }
+  .portal-pay-row{ flex-wrap:wrap; }
+}
+
+/* ==========================================================
+   FLEET INTELLIGENCE — Prompt 2A.2
+   Reuses the same tokens/system as the Customer Portal section
+   above (--card-bg, --card-bg-solid, --border, --heading,
+   --text-secondary, --sky, --success, --warning, --danger).
+   ========================================================== */
+
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+  clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+.fi-dash{ padding:32px 0 80px; }
+.fi-wrap{ max-width:1400px; }
+
+.fi-topbar{
+  display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px;
+  margin-bottom:24px;
+}
+.fi-topbar h1{ font-size:26px; margin:2px 0 0; }
+.fi-topbar-actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+.fi-search{
+  display:flex; align-items:center; gap:8px; background:var(--card-bg-solid);
+  border:1px solid var(--border); border-radius:12px; padding:9px 14px;
+}
+.fi-search svg{ width:16px; height:16px; color:var(--text-secondary); flex-shrink:0; }
+.fi-search input{
+  border:0; background:transparent; outline:none; color:var(--heading); font-size:13.5px; width:180px;
+  font-family:inherit;
+}
+.fi-refresh-btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 16px; font-size:12.5px; }
+.fi-refresh-btn svg{ width:14px; height:14px; }
+
+/* ---- Layout grid: list | top(status+location) | map | detail ---- */
+.fi-layout{
+  display:grid; gap:18px;
+  grid-template-columns:1fr;
+  grid-template-areas:"list" "top" "map" "detail";
+}
+.fi-panel{
+  background:var(--card-bg); border:1px solid var(--border); border-radius:18px; padding:20px;
+}
+.fi-area-list{ grid-area:list; }
+.fi-area-top{ grid-area:top; }
+.fi-area-map{ grid-area:map; padding:0; overflow:hidden; }
+.fi-area-detail{ grid-area:detail; }
+
+.fi-panel-title{
+  font-size:14px; color:var(--heading); display:flex; align-items:center; gap:8px; margin-bottom:14px;
+}
+.fi-count-pill{
+  font-size:11.5px; font-weight:700; color:var(--sky); background:rgba(111,163,240,0.12);
+  border-radius:999px; padding:2px 9px;
+}
+
+/* ---- Vehicle list ---- */
+.fi-vehicle-list{ display:flex; flex-direction:column; gap:10px; max-height:520px; overflow-y:auto; }
+.fi-vehicle-item{
+  display:block; width:100%; text-align:left; background:var(--card-bg-solid); border:1px solid var(--border);
+  border-radius:14px; padding:13px 15px; cursor:pointer; transition:border-color .2s ease, transform .2s ease;
+  font-family:inherit;
+}
+.fi-vehicle-item:hover{ border-color:rgba(111,163,240,0.4); }
+.fi-vehicle-item.is-selected{ border-color:var(--sky); box-shadow:0 0 0 1px var(--sky) inset; }
+.fi-vehicle-item:focus-visible{ outline:2px solid var(--sky); outline-offset:2px; }
+.fi-vehicle-item-main{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:6px; }
+.fi-vehicle-name{ font-size:14px; font-weight:700; color:var(--heading); }
+.fi-vehicle-plate{ font-size:11.5px; font-weight:700; color:var(--sky); letter-spacing:0.02em; white-space:nowrap; }
+.fi-vehicle-item-status{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--text-secondary); margin-bottom:6px; }
+.fi-vehicle-item-meta{ display:flex; gap:14px; font-size:11.5px; color:var(--text-secondary); flex-wrap:wrap; }
+.fi-muted-note{ font-size:12.5px; color:var(--text-secondary); text-align:center; padding:12px 0 0; }
+
+/* ---- Status dots / badges (color is never the only indicator — always
+   paired with text, per §20) ---- */
+.fi-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; display:inline-block; }
+.fi-dot-success{ background:var(--success); }
+.fi-dot-danger{ background:var(--danger); }
+.fi-dot-warning{ background:var(--warning); }
+.fi-dot-info{ background:var(--sky); }
+.fi-dot-muted{ background:var(--text-secondary); opacity:0.6; }
+
+/* Subtle "live" pulse — only ever applied to a dot representing a
+   confirmed online status (never a loading/unknown/offline state), so it
+   never implies live data that isn't actually live. */
+.fi-dot-pulse{ position:relative; }
+.fi-dot-pulse::after{
+  content:''; position:absolute; inset:-4px; border-radius:50%;
+  background:var(--success); opacity:0.5; animation:fiDotPulse 2.2s ease-out infinite;
+}
+@keyframes fiDotPulse{ 0%{ transform:scale(0.6); opacity:0.55; } 100%{ transform:scale(1.9); opacity:0; } }
+@media (prefers-reduced-motion: reduce){ .fi-dot-pulse::after{ animation:none; display:none; } }
+
+.fi-badge-row{ display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 14px; }
+.fi-badge{
+  display:inline-flex; align-items:center; font-size:11.5px; font-weight:700; letter-spacing:0.02em;
+  padding:5px 11px; border-radius:999px; border:1px solid var(--border);
+}
+.fi-badge-success{ color:var(--success); background:rgba(16,185,129,0.12); border-color:rgba(16,185,129,0.3); }
+.fi-badge-danger{ color:var(--danger); background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.3); }
+.fi-badge-warning{ color:var(--warning); background:rgba(245,158,11,0.12); border-color:rgba(245,158,11,0.3); }
+.fi-badge-info{ color:var(--sky); background:rgba(111,163,240,0.12); border-color:rgba(111,163,240,0.3); }
+.fi-badge-muted{ color:var(--text-secondary); background:rgba(148,163,184,0.1); }
+
+/* ---- Top panel (status + location) ---- */
+.fi-detail-empty{ display:flex; align-items:center; justify-content:center; min-height:80px; text-align:center; }
+.fi-detail-empty p{ font-size:13px; color:var(--text-secondary); max-width:320px; }
+.fi-area-top h3{ font-size:16px; margin-bottom:8px; }
+.fi-location{ font-size:13px; color:var(--text-secondary); }
+.fi-note{ font-size:12.5px; color:var(--text-secondary); margin-top:8px; }
+.fi-note-error{ color:var(--danger); }
+.fi-unavailable{ color:var(--text-secondary); font-style:italic; }
+
+/* ---- Map ---- */
+.fi-map{ width:100%; height:280px; }
+.fi-map-marker-wrap{ background:transparent; border:none; }
+.fi-map-marker{
+  display:block; width:16px; height:16px; border-radius:50%; border:3px solid #fff;
+  box-shadow:0 1px 6px rgba(0,0,0,0.5);
+}
+.fi-map-marker.fi-badge-success, .fi-map-marker.fi-dot-success{ background:var(--success); }
+.fi-map-marker.fi-badge-danger, .fi-map-marker.fi-dot-danger{ background:var(--danger); }
+.fi-map-marker.fi-dot-info{ background:var(--sky); }
+.fi-map-marker.fi-dot-muted{ background:var(--text-secondary); }
+
+/* ---- Detail panel: tabs, fact grid, history ---- */
+.fi-tabs{ display:flex; gap:6px; border-bottom:1px solid var(--border); margin-bottom:16px; }
+.fi-tab{
+  background:transparent; border:0; border-bottom:2px solid transparent; padding:9px 4px; margin-right:14px;
+  font-size:12.5px; font-weight:700; color:var(--text-secondary); cursor:pointer; font-family:inherit;
+}
+.fi-tab:hover{ color:var(--heading); }
+.fi-tab.is-active{ color:var(--sky); border-bottom-color:var(--sky); }
+.fi-tab:focus-visible{ outline:2px solid var(--sky); outline-offset:2px; }
+
+.fi-fact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; }
+.fi-fact-grid dt{ font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary); margin-bottom:3px; }
+.fi-fact-grid dd{ font-size:14px; color:var(--heading); font-weight:600; }
+
+.fi-history-form{ margin-bottom:14px; }
+.fi-history-fields{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+.fi-history-fields label{ font-size:11.5px; color:var(--text-secondary); display:flex; flex-direction:column; gap:5px; flex:1 1 160px; }
+.fi-history-fields input{
+  background:var(--card-bg-solid); border:1px solid var(--border); border-radius:10px; padding:9px 10px;
+  color:var(--heading); font-family:inherit; font-size:13px;
+}
+.fi-history-results{ margin-top:10px; }
+.fi-history-list{ display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; }
+.fi-history-list li{
+  display:flex; justify-content:space-between; gap:10px; font-size:12.5px; color:var(--text-secondary);
+  border-bottom:1px solid var(--border); padding-bottom:8px; flex-wrap:wrap;
+}
+.fi-history-time{ font-weight:700; color:var(--heading); }
+
+/* ---- Responsive: 320 / 360 / 375 / 390 / 414 / 430 all covered by this
+   single-column stacked layout; tablet/desktop switch to the 3-column
+   grid below. Order matches §18: Vehicle, Status, Location, Map,
+   Ignition, Speed, Last update. ---- */
+@media (min-width: 900px){
+  .fi-layout{
+    grid-template-columns:280px 1fr 340px;
+    grid-template-rows:auto 1fr;
+    grid-template-areas:
+      "list top detail"
+      "list map detail";
+  }
+  .fi-area-detail{ max-height:none; }
+  .fi-vehicle-list{ max-height:560px; }
+  .fi-map{ height:100%; min-height:360px; }
+  .fi-search input{ width:220px; }
+}
+
+@media (max-width:480px){
+  .fi-topbar h1{ font-size:21px; }
+  .fi-search input{ width:120px; }
+  .fi-panel{ padding:16px; }
+  .fi-fact-grid{ grid-template-columns:1fr 1fr; gap:10px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .fi-vehicle-item{ transition:none; }
+}
+
+/* ===================== Admin — Device Management (Prompt 2B.2) ===================== */
+.admin-table-wrap{ overflow-x:auto; margin-top:14px; border:1px solid var(--border); border-radius:14px; }
+.admin-table{ width:100%; border-collapse:collapse; min-width:640px; font-size:13.5px; }
+.admin-table th{
+  text-align:left; padding:12px 14px; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;
+  color:var(--text-secondary); border-bottom:1px solid var(--border); background:rgba(111,163,240,0.04);
+}
+.admin-table td{ padding:12px 14px; border-bottom:1px solid var(--border); color:var(--heading); vertical-align:middle; }
+.admin-table tr:last-child td{ border-bottom:none; }
+.admin-row-btn{ padding:7px 14px; font-size:12px; }
+
+.admin-audit-list{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
+.admin-audit-row{
+  padding:10px 14px; border:1px solid var(--border); border-radius:10px; font-size:13px; color:var(--heading);
+  background:rgba(111,163,240,0.03);
+}
+
+.admin-modal-overlay{
+  position:fixed; inset:0; background:rgba(6,14,24,0.6); backdrop-filter:blur(3px);
+  display:flex; align-items:center; justify-content:center; z-index:999; padding:18px;
+}
+.admin-modal{
+  background:var(--card-bg); border:1px solid var(--border); border-radius:18px; padding:26px;
+  max-width:440px; width:100%; box-shadow:var(--shadow); max-height:86vh; overflow-y:auto;
+}
+.admin-modal h4{ font-size:16px; color:var(--heading); margin-bottom:14px; }
+.admin-modal-actions{ display:flex; gap:10px; margin-top:18px; justify-content:flex-end; }
+.admin-modal-actions .btn{ padding:10px 20px; font-size:13px; }
+
+@media (max-width:640px){
+  .admin-modal-actions .btn{ flex:1; justify-content:center; }
 }

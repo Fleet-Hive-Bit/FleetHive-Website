@@ -97,6 +97,6 @@ window.BREE_KB = {
     partnerApply: 'partners.html#partner-application',
     contact: 'contact.html',
     blog: 'blog.html',
-    login: 'https://app.fleethive.in'
+    login: 'login.html'
   }
 };

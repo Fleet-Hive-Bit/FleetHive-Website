@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Device Management — FleetHive</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0D2137">
+<meta name="description" content="FleetHive admin — device management.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+  <div class="header-inner">
+  <nav class="wrap navbar">
+    <a href="index.html" class="logo">
+      <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
+      <span class="logo-text">FLEET<span class="hive">HIVE</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="portal.html">Portal</a>
+      <a href="admin.html" class="active-link">Admin</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+        <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
+      </button>
+      <button class="btn btn-outline" id="logoutBtn" style="padding:11px 22px; font-size:12px;">Log Out</button>
+      <button class="mobile-toggle" id="mobileToggleBtn" onclick="fhToggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  </div>
+</header>
+
+<div class="mobile-panel" id="mp">
+  <a href="index.html">Home</a>
+  <a href="portal.html">Portal</a>
+  <a href="admin.html">Admin</a>
+  <div class="mp-actions">
+    <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle light/dark mode" style="width:46px;height:46px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5A9 9 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>
+    </button>
+    <button class="btn btn-primary" id="logoutBtnMobile" style="flex:1; justify-content:center;">Log Out</button>
+  </div>
+</div>
+
+<!-- ===================== ADMIN: checking / denied ===================== -->
+<section id="adminChecking" class="page-hero">
+  <div class="wrap reveal in">
+    <span class="eyebrow">FleetHive Admin</span>
+    <h1>Checking access…</h1>
+  </div>
+</section>
+
+<section id="adminDenied" class="page-hero" style="display:none;">
+  <div class="wrap reveal in">
+    <span class="eyebrow">FleetHive Admin</span>
+    <h1>Administrator access required</h1>
+    <p class="lead">Your FleetHive account doesn't have admin access. If you believe this is a mistake, contact whoever manages the FleetHive deployment.</p>
+    <div class="hero-actions"><a href="portal.html" class="btn btn-outline">Back to Portal</a></div>
+  </div>
+</section>
+
+<!-- ===================== ADMIN: signed in as admin ===================== -->
+<section id="adminWelcome" class="page-hero" style="display:none;">
+  <div class="bg-pattern bg-dots page-hero-bg"></div>
+  <div class="wrap reveal in">
+    <span class="eyebrow">FleetHive Admin</span>
+    <h1>Device Management</h1>
+    <p class="lead">Discover provider devices, map them to FleetHive vehicles, and review every mapping on the platform.</p>
+  </div>
+</section>
+
+<section id="adminBody" style="display:none;">
+  <div class="wrap">
+
+    <!-- ============ Device Discovery ============ -->
+    <div class="form-section">
+      <h3>Discover Devices</h3>
+      <p class="form-intro">Devices available under FleetHive's reseller account. Optionally narrow to one White-Label Client ID.</p>
+      <div class="form-grid cols-3" style="align-items:end; margin-bottom:18px;">
+        <div>
+          <label class="form-label">White-Label Client ID <span class="opt">(optional)</span></label>
+          <input type="text" class="form-input" id="devClientIdFilter" placeholder="Leave blank for all devices">
+        </div>
+        <div>
+          <button class="btn btn-outline" id="devDiscoverBtn" style="width:100%; justify-content:center;">Discover Devices</button>
+        </div>
+        <div></div>
+      </div>
+
+      <div id="devLoading" class="portal-skel-row" style="display:none;">
+        <div class="portal-skel-card"></div>
+        <div class="portal-skel-card"></div>
+        <div class="portal-skel-card"></div>
+      </div>
+      <div id="devError" class="portal-empty" style="display:none;">
+        <p id="devErrorText">Unable to retrieve devices right now.</p>
+        <button class="btn btn-outline" id="devRetry">Try Again</button>
+      </div>
+      <div id="devEmpty" class="portal-empty" style="display:none;">
+        <p>No devices found for that scope.</p>
+      </div>
+      <div class="admin-table-wrap" id="devTableWrap" style="display:none;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Device ID</th><th>IMEI</th><th>Serial No.</th><th>Assigned Asset</th><th>Last GPS</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="devTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============ Create Vehicle ============ -->
+    <div class="form-section">
+      <h3>Create a Vehicle for a Customer</h3>
+      <p class="form-intro">A vehicle must exist under a FleetHive customer before a device can be mapped to it.</p>
+      <div class="form-grid cols-3">
+        <div>
+          <label class="form-label">Customer</label>
+          <input type="text" class="form-input" id="custSearchInput" placeholder="Search by name or email">
+          <select class="form-select" id="custSelect" style="margin-top:8px;"><option value="">Search above, then choose…</option></select>
+        </div>
+        <div>
+          <label class="form-label">Vehicle Name/Label</label>
+          <input type="text" class="form-input" id="vehLabelInput" placeholder="e.g. Toyota Camry">
+        </div>
+        <div>
+          <label class="form-label">Plate Number <span class="opt">(optional)</span></label>
+          <input type="text" class="form-input" id="vehPlateInput" placeholder="e.g. ABC-123-XY">
+        </div>
+      </div>
+      <div class="form-grid cols-3">
+        <div>
+          <label class="form-label">Make <span class="opt">(optional)</span></label>
+          <input type="text" class="form-input" id="vehMakeInput" placeholder="e.g. Toyota">
+        </div>
+        <div>
+          <label class="form-label">Model <span class="opt">(optional)</span></label>
+          <input type="text" class="form-input" id="vehModelInput" placeholder="e.g. Camry">
+        </div>
+        <div style="display:flex; align-items:end;">
+          <button class="btn btn-primary" id="vehCreateBtn" style="width:100%; justify-content:center;">Create Vehicle</button>
+        </div>
+      </div>
+      <p id="vehCreateMsg" style="font-size:13px; margin-top:6px;"></p>
+    </div>
+
+    <!-- ============ Mapping Review ============ -->
+    <div class="form-section">
+      <h3>Device Mapping</h3>
+      <p class="form-intro" id="mapIntro">Loading vehicle mappings…</p>
+
+      <div id="mapLoading" class="portal-skel-row">
+        <div class="portal-skel-card"></div>
+        <div class="portal-skel-card"></div>
+      </div>
+      <div id="mapError" class="portal-empty" style="display:none;">
+        <p>Unable to load vehicle mappings right now.</p>
+        <button class="btn btn-outline" id="mapRetry">Try Again</button>
+      </div>
+      <div id="mapEmpty" class="portal-empty" style="display:none;"><p>No vehicles have been created yet.</p></div>
+
+      <div class="admin-table-wrap" id="mapTableWrap" style="display:none;">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Vehicle</th><th>Customer</th><th>Status</th><th>Device / IMEI</th><th></th></tr>
+          </thead>
+          <tbody id="mapTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============ Audit Log ============ -->
+    <div class="form-section">
+      <h3>Recent Admin Activity</h3>
+      <div id="auditEmpty" class="portal-empty" style="display:none;"><p>No admin actions recorded yet.</p></div>
+      <div id="auditList" class="admin-audit-list"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== Assign / Confirm Modal ===================== -->
+<div class="admin-modal-overlay" id="modalOverlay" style="display:none;">
+  <div class="admin-modal" id="modalBox" role="dialog" aria-modal="true">
+    <h4 id="modalTitle">Confirm</h4>
+    <div id="modalBody"></div>
+    <div class="admin-modal-actions">
+      <button class="btn btn-outline" id="modalCancelBtn">Cancel</button>
+      <button class="btn btn-primary" id="modalConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand" style="max-width:300px;">
+        <div class="logo">
+          <img src="assets/logo.png" alt="FleetHive logo" class="logo-icon-img">
+          <span class="logo-text">FLEET<span class="hive">HIVE</span></span>
+        </div>
+        <p>Mobility intelligence, simplified.</p>
+      </div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 FleetHive Innovation Ltd. All rights reserved.</span></div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

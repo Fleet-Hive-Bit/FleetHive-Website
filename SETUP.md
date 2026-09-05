@@ -21,6 +21,8 @@ and the Contact / Become a Partner forms.
 | `_whiteLabelClient.js` | Server-side client for the white-label vehicle-tracking provider (auth/token handling, retries, rate limits, the documented endpoints) — see Part C | `WHITE_LABEL_API_KEY`, `WHITE_LABEL_API_SECRET` |
 | `_deviceAccess.js` | Response normalizers ("Data unavailable" instead of fake data, lock-status mapping) and the vehicle-ownership/IDOR contract used by anything that calls `_whiteLabelClient.js` — see Part C | — |
 | `whitelabel-connection-test.js` | Admin-only connectivity check for the white-label API (see Part C) | `WHITE_LABEL_API_KEY`, `WHITE_LABEL_API_SECRET`, `ADMIN_API_TOKEN` |
+| `vehicle-status.js` | Fleet Intelligence dashboard — current status + lock status for one of the signed-in customer's own vehicles (Prompt 2A.2) | same as `_whiteLabelClient.js` |
+| `vehicle-trip-history.js` | Fleet Intelligence dashboard — trip history for one vehicle, batched server-side to respect the provider's 2-minute-per-request limit (Prompt 2A.2) | same as `_whiteLabelClient.js` |
 
 All of the email-sending functions share one helper, `_email.js`, so the
 Resend integration only needed to be written once, and every email shares
@@ -338,3 +340,48 @@ explicitly Prompt 2's job. `_deviceAccess.js` defines the exact contract
 with the required checks spelled out as TODOs in order, so wiring it up
 is a matter of filling in real database lookups rather than re-deriving
 the ownership model from scratch.
+
+*(Update — Prompt 2B.2: `resolveOwnedDevice()`'s customer-facing side has
+been wired up since Prompt 2A.1/2A.2. `requireAdmin()` is now wired up too
+— see Part D below.)*
+
+## Part D — Admin Dashboard (Device Management)
+
+`admin.html`/`admin.js` and the `admin-*.js` Netlify Functions
+(`admin-customers`, `admin-vehicles`, `admin-devices`,
+`admin-device-assign`, `admin-device-unassign`, `admin-audit-log`) are the
+admin tooling referenced above. There is still only **one** FleetHive
+login — admin is a flag on top of an ordinary FleetHive account, not a
+second account system.
+
+### 1. Add the environment variable
+
+| Key | Value |
+|---|---|
+| `ADMIN_EMAILS` | comma-separated list of FleetHive account emails that should have admin access, e.g. `ops@fleethive.in,victor@fleethive.in` |
+
+Whoever should be an admin needs to first register/log in normally at
+`login.html` with that email — `ADMIN_EMAILS` is checked against the
+signed-in session's email on every admin request, it doesn't create the
+account for you.
+
+### 2. Using it
+
+Once `ADMIN_EMAILS` includes your account's email, sign in and open
+`admin.html` (also linked from the Portal's nav once you're recognized as
+an admin). From there you can:
+
+- **Discover devices** — reseller-wide by default, or scoped to one
+  White-Label Client ID.
+- **Create a vehicle** for a FleetHive customer (a prerequisite — nothing
+  else in FleetHive today creates a vehicle record).
+- **Assign** a discovered device to a vehicle (asks for the vehicle, the
+  White-Label Client ID, and the provider's Asset ID, then confirms
+  before calling the provider).
+- **Unassign** a mapped device from the mapping-review table (with a
+  confirmation prompt).
+- **Review** every vehicle's mapping status and recent admin activity
+  (audit log).
+
+Revoking admin access is just removing the email from `ADMIN_EMAILS` and
+redeploying — no data migration, no stored role to clean up.

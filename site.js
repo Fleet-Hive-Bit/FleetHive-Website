@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function(){
     howItWorks: {label:'How FleetHive Works', href: DEST.howItWorks || 'how-it-works.html'},
     contact:    {label:'Contact an Agent',    href: DEST.contact    || 'contact.html'},
     whatsapp:   {label:'WhatsApp Us',         href: WA_BASE},
-    login:      {label:'Login',               href: DEST.login      || 'https://app.fleethive.in'}
+    login:      {label:'Login',               href: DEST.login      || 'login.html'}
   };
   // Renders a real CTA button (never a fabricated link) from the registry above.
   function addCTA(key, opts){
