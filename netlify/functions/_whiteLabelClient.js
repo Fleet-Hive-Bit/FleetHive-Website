@@ -296,6 +296,21 @@ async function getResellerDevices() {
   return request('GET', '/api/Asset/GetResellerDevices');
 }
 
+// POST /api/Client/GetAllClients
+//
+// Returns every client (i.e. every white-label sub-account) under
+// FleetHive's reseller account, as { ClientId, vCompanyName } pairs per
+// the doc. This is reseller-wide, same admin-only sensitivity as
+// getResellerDevices() above — it's the only documented way to go from a
+// human-readable client/company name back to the opaque ClientId the
+// other Asset/* endpoints require, so admin-client-lookup.js uses it to
+// let an admin search by name instead of needing to already know the ID.
+async function getAllClients({ includeMiniresellerClients } = {}) {
+  return request('POST', '/api/Client/GetAllClients', {
+    body: { IncludeMiniresellerClients: includeMiniresellerClients !== false },
+  });
+}
+
 // GET /api/InputStatus/GetClientDeviceStatusByDateRange
 //
 // NB: the documentation specifies method GET with a JSON request body,
@@ -422,6 +437,7 @@ module.exports = {
   getAllDevices,
   getOneDevice,
   getResellerDevices,
+  getAllClients,
   getClientDeviceStatusByDateRange,
   getClientDeviceStatusByDateRangeBatched,
   assignAsset,
