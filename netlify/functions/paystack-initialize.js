@@ -17,6 +17,7 @@
 const { getSecretKey } = require('./_paystack');
 const { saveOrder } = require('./_store');
 const { computeExpectedTotal } = require('./_pricing');
+const { requireSession } = require('./_auth');
 
 exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') {
@@ -81,6 +82,20 @@ exports.handler = async function (event) {
 
   const amountKobo = Math.round(amount * 100);
 
+  // Checkout itself stays open to anyone (§2 — don't touch the existing
+  // Paystack flow) — but if the person placing this order happens to be
+  // signed in to the Customer Portal, resolve that from the session cookie
+  // (never from anything the browser's JSON body claims) so the order can
+  // show up in their Portal's subscription view. A failure here must never
+  // block a legitimate anonymous checkout.
+  let customerId = null;
+  try {
+    const session = await requireSession(event);
+    if (session) customerId = session.customer.id;
+  } catch (e) {
+    console.error('paystack-initialize: session lookup failed (continuing as guest checkout):', e.message);
+  }
+
   try {
     const res = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
@@ -115,6 +130,7 @@ exports.handler = async function (event) {
       expectedAmountKobo: amountKobo,
       currency: currency || 'NGN',
       customerEmail: email,
+      customerId: customerId || null,
       metadata: metadata || {},
     });
 

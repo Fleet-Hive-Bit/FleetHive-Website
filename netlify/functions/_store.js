@@ -52,7 +52,24 @@ async function saveOrder(reference, data) {
   if (!s || !reference) return false;
   try {
     const existing = (await getOrder(reference)) || {};
-    await s.setJSON(reference, { ...existing, ...data, reference, updatedAt: new Date().toISOString() });
+    const merged = { ...existing, ...data, reference, updatedAt: new Date().toISOString() };
+    await s.setJSON(reference, merged);
+    // If this order is (now) associated with a signed-in FleetHive customer,
+    // keep the customer -> references index up to date so the Portal's
+    // subscription view (Prompt 2B.1 §1) can find their orders without
+    // scanning every order in the store. Only ever written from a
+    // customerId the server itself resolved from the session — never from
+    // anything the browser sent directly (see paystack-initialize.js).
+    const customerId = merged.customerId;
+    if (customerId) {
+      const indexKey = `custorders:${customerId}`;
+      let refs = [];
+      try { refs = (await s.get(indexKey, { type: 'json' })) || []; } catch (e) { refs = []; }
+      if (refs.indexOf(reference) === -1) {
+        refs.push(reference);
+        await s.setJSON(indexKey, refs);
+      }
+    }
     return true;
   } catch (e) {
     console.error('_store.saveOrder failed:', e.message);
@@ -60,4 +77,25 @@ async function saveOrder(reference, data) {
   }
 }
 
-module.exports = { getOrder, saveOrder };
+// Returns every order on record for a given FleetHive customer id, most
+// recent first. Only orders that were initialized while the customer was
+// signed in (so paystack-initialize.js could resolve customerId server-side)
+// appear here — anonymous/pre-login checkouts made with the same email are
+// not retroactively linked, since there is no verified server-side fact
+// tying that historical order to this account.
+async function getOrdersForCustomer(customerId) {
+  const s = store();
+  if (!s || !customerId) return [];
+  try {
+    const refs = (await s.get(`custorders:${customerId}`, { type: 'json' })) || [];
+    const orders = await Promise.all(refs.map((ref) => getOrder(ref)));
+    return orders
+      .filter(Boolean)
+      .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+  } catch (e) {
+    console.error('_store.getOrdersForCustomer failed:', e.message);
+    return [];
+  }
+}
+
+module.exports = { getOrder, saveOrder, getOrdersForCustomer };

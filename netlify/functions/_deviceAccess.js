@@ -14,17 +14,23 @@
 //      vehicle-scoped provider call is made.
 //
 // IMPORTANT — about part 2:
-// FleetHive doesn't yet have a customer/vehicle database or a login
-// system in this codebase (Prompt 1A only covered the marketing site).
-// Building a real `resolveOwnedDevice()` requires that database, which is
-// explicitly out of scope here — Prompt 1B's own STOP CONDITION says the
-// full Customer Portal belongs to Prompt 2, and this file's job is to
-// define the exact contract/shape that portal must satisfy, so wiring it
-// up later is a matter of filling in real lookups where marked below
-// rather than re-deriving the ownership model from scratch.
+// Prompt 1B left `resolveOwnedDevice()`/`requireAdmin()` throwing
+// NotImplementedError because FleetHive had no customer/vehicle database
+// or login system yet. Prompt 2A.1 adds exactly that (_auth.js + _db.js —
+// FleetHive's own session system and a Blobs-backed customer/vehicle
+// store), so both functions below are now wired to real lookups instead
+// of TODOs. Every one of the 5 checks in Prompt 1B §9 is still
+// represented, in order, and every caller in this codebase already goes
+// through this single function, so nothing else had to change.
 //
-// Every one of the 5 checks in Prompt 1B §9 is represented as an explicit
-// step here, in order, so Prompt 2 can't accidentally skip one.
+// Update — Prompt 2B.2: the admin linking tool referenced below now
+// exists (admin-devices.js / admin-vehicles.js / admin-device-assign.js /
+// admin-device-unassign.js, gated by requireAdminSession() at the bottom
+// of this file). `resolveOwnedDevice()` itself is unchanged — it already
+// correctly finds a vehicle once one is linked; Prompt 2B.2 is what
+// actually creates that link. A customer with no admin-assigned device
+// yet still legitimately sees an empty vehicle list / "not yet linked"
+// state, which is the honest state, not a bug.
 
 // ---------------------------- Normalizers --------------------------------
 
@@ -164,6 +170,9 @@ class NotImplementedError extends Error {
 // codebase already goes through this single function, so nothing else
 // needs to change.
 async function resolveOwnedDevice(authContext, vehicleId) {
+  // Step 1 — the session/user must be valid. authContext is expected to
+  // come from _auth.js's requireSession(), never from browser-supplied
+  // fields, so authContext.userId here is already server-verified.
   if (!authContext || !authContext.userId) {
     throw new OwnershipError('Authentication required.', 401);
   }
@@ -171,43 +180,150 @@ async function resolveOwnedDevice(authContext, vehicleId) {
     throw new OwnershipError('A vehicle must be specified.', 400);
   }
 
-  // TODO (Prompt 2): step 1 — look up the session/user record for
-  //   authContext.userId; throw OwnershipError(401) if it doesn't resolve.
-  // TODO (Prompt 2): step 2 — confirm the FleetHive account is active;
-  //   throw OwnershipError(403) if suspended/cancelled.
-  // TODO (Prompt 2): step 3 — confirm the user's role/permissions allow
-  //   viewing vehicles at all; throw OwnershipError(403) otherwise.
-  // TODO (Prompt 2): step 4 — look up `vehicleId` in FleetHive's own
-  //   vehicles table scoped to authContext.userId's account; throw
-  //   OwnershipError(404) if it doesn't belong to them. This is the actual
-  //   IDOR check — vehicleId must be resolved against the account, never
-  //   trusted as already-verified because the browser sent it.
-  // TODO (Prompt 2): step 5 — read that vehicle's stored white-label
-  //   ClientID / DeviceId / IMEI (set when the vehicle was linked to a
-  //   device — see AssignAsset in _whiteLabelClient.js) and return them:
-  //   return { clientId, deviceId, imeiNumber };
+  // Step 2 — the account must be active. FleetHive doesn't yet have a
+  // suspend/cancel flag on the customer record (no admin tool creates one
+  // yet), so every account with a valid session is currently treated as
+  // active. Adding that flag later is a one-line check here.
 
-  throw new NotImplementedError(
-    'Vehicle ownership resolution requires the FleetHive customer/vehicle database, which is part of the Customer Portal (Prompt 2).'
-  );
+  // Step 3 — permission to view vehicles at all. Every authenticated
+  // FleetHive customer may view their own vehicles; there is no separate
+  // role system yet (see requireAdmin() below for the admin-only gate).
+
+  // Step 4 — the actual IDOR check. _db.js's key layout
+  // (veh:<customerId>:<vehicleId>) means this lookup is scoped to
+  // authContext.userId's own records by construction — it is not
+  // possible for this call to return a vehicle belonging to a different
+  // customer, no matter what vehicleId the browser sent.
+  const db = require('./_db');
+  const vehicle = await db.getVehicleForCustomer(authContext.userId, vehicleId);
+  if (!vehicle) {
+    throw new OwnershipError('That vehicle could not be found on your account.', 404);
+  }
+
+  // Step 5 — only now resolve the white-label identifiers, strictly from
+  // the record just retrieved (never from the browser).
+  if (!vehicle.whiteLabelClientId || !vehicle.whiteLabelDeviceId) {
+    throw new NotImplementedError(
+      'This vehicle has not yet been linked to a tracking device. Linking vehicles to devices is an admin-only capability not yet built (Prompt 2A.2).'
+    );
+  }
+  return {
+    clientId: vehicle.whiteLabelClientId,
+    deviceId: vehicle.whiteLabelDeviceId,
+    imeiNumber: vehicle.imei,
+  };
 }
 
 // Same shape of gate for the admin-only device-management operations in
 // Prompt 1B §13/§14 (AssignAsset/UnAssignAsset/AssignSimCard/
-// UnAssignSimcard). Throws until FleetHive has real admin authentication;
-// every admin-facing function in this codebase must call this first.
+// UnAssignSimcard). FleetHive customer accounts created in Prompt 2A.1
+// have no role field and no admin dashboard exists to grant one, so this
+// still correctly refuses everyone — that's the honest state until an
+// admin tool exists (out of scope for 2A.1), not a leftover TODO.
 function requireAdmin(authContext) {
   if (!authContext || !authContext.userId) {
     throw new OwnershipError('Authentication required.', 401);
   }
-  // TODO (Prompt 2): replace with a real role/permission check against
-  //   FleetHive's user records, e.g.:
-  //   if (!authContext.roles || !authContext.roles.includes('admin')) {
-  //     throw new OwnershipError('Administrator access required.', 403);
-  //   }
-  throw new NotImplementedError(
-    'Admin authorization requires FleetHive\'s user/role system, which is part of the Customer Portal (Prompt 2).'
+  if (!authContext.roles || !authContext.roles.includes('admin')) {
+    throw new OwnershipError('Administrator access required.', 403);
+  }
+}
+
+// Prompt 2B.2: the one place every admin-* endpoint resolves "who is
+// asking, and are they an admin" — combining _auth.js's real session
+// lookup (never anything from the request itself) with the ADMIN_EMAILS
+// check, then the same requireAdmin() gate every other admin-only code
+// path already used. Throws OwnershipError (401 if signed out at all, 403
+// if signed in but not an admin) so callers can just try/catch once.
+async function requireAdminSession(event) {
+  const { requireSession, authContextFromSession } = require('./_auth');
+  const session = await requireSession(event);
+  if (!session) {
+    throw new OwnershipError('Authentication required.', 401);
+  }
+  const authContext = authContextFromSession(session);
+  requireAdmin(authContext);
+  return { session, authContext };
+}
+
+// ------------------- Customer-friendly status translation ------------------
+// Prompt 2A.2 §7: translate the documented provider fields into
+// FleetHive's customer-facing language (Moving/Parked, Ignition On/Off,
+// Online/Offline). This never infers a state from a field that isn't the
+// documented source for it — e.g. §7 explicitly forbids assuming a
+// vehicle is moving just because lat/lon are present, so motion always
+// comes from MotionState, never from the coordinates. Any provider value
+// this doesn't recognize is shown as-is rather than guessed at.
+
+// How long since the provider's own utc_date before FleetHive labels a
+// vehicle "Offline" instead of "Online" (§8: don't show fake "Live" data
+// for a device that hasn't recently reported). This is a display
+// threshold applied to the real timestamp the provider returned — it
+// never substitutes a fabricated timestamp or reading.
+const STALE_AFTER_MS = 20 * 60 * 1000;
+
+function parseProviderDate(value) {
+  if (!value || value === UNAVAILABLE) return null;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+function deriveOnlineState(utcDate) {
+  const parsed = parseProviderDate(utcDate);
+  if (!parsed) return { state: 'unknown', label: 'Unavailable' };
+  const ageMs = Date.now() - parsed.getTime();
+  if (ageMs <= STALE_AFTER_MS) return { state: 'online', label: 'Online' };
+  return { state: 'offline', label: 'Offline' };
+}
+
+function deriveMotionLabel(motionState) {
+  if (motionState === UNAVAILABLE || motionState === null || motionState === undefined || motionState === '') {
+    return { state: 'unknown', label: 'Unavailable' };
+  }
+  const raw = String(motionState).trim().toLowerCase();
+  if (['1', 'true', 'moving', 'motion', 'driving', 'running'].includes(raw)) {
+    return { state: 'moving', label: 'Moving' };
+  }
+  if (['0', 'false', 'idle', 'parked', 'stopped', 'stationary'].includes(raw)) {
+    return { state: 'parked', label: 'Parked' };
+  }
+  // A documented value this mapping doesn't recognize yet — show the
+  // provider's own text rather than silently guessing Moving/Parked.
+  return { state: 'unknown', label: String(motionState) };
+}
+
+function deriveIgnitionLabel(ignitionState) {
+  if (ignitionState === UNAVAILABLE || ignitionState === null || ignitionState === undefined || ignitionState === '') {
+    return { state: 'unknown', label: 'Unavailable' };
+  }
+  const raw = String(ignitionState).trim().toLowerCase();
+  if (['1', 'true', 'on', 'ignition on'].includes(raw)) return { state: 'on', label: 'Ignition On' };
+  if (['0', 'false', 'off', 'ignition off'].includes(raw)) return { state: 'off', label: 'Ignition Off' };
+  return { state: 'unknown', label: String(ignitionState) };
+}
+
+function hasCoordinates(normalizedStatus) {
+  return (
+    normalizedStatus &&
+    normalizedStatus.lat !== UNAVAILABLE &&
+    normalizedStatus.lon !== UNAVAILABLE &&
+    !Number.isNaN(Number(normalizedStatus.lat)) &&
+    !Number.isNaN(Number(normalizedStatus.lon))
   );
+}
+
+// Combines the pieces above into the one object the frontend renders from.
+function deriveFriendlyStatus(normalizedStatus) {
+  const online = deriveOnlineState(normalizedStatus.utcDate);
+  const motion = deriveMotionLabel(normalizedStatus.motionState);
+  const ignition = deriveIgnitionLabel(normalizedStatus.ignitionState);
+  return {
+    online,
+    motion,
+    ignition,
+    isStale: online.state === 'offline',
+    hasCoordinates: hasCoordinates(normalizedStatus),
+  };
 }
 
 module.exports = {
@@ -216,8 +332,10 @@ module.exports = {
   normalizeLockStatus,
   normalizeDeviceRecord,
   getFriendlyErrorMessage,
+  deriveFriendlyStatus,
   OwnershipError,
   NotImplementedError,
   resolveOwnedDevice,
   requireAdmin,
+  requireAdminSession,
 };
