@@ -84,6 +84,35 @@
     });
   }
 
+  // --------------------------- Client name lookup -----------------------------
+  // Provider ClientIds are opaque (e.g. "RGU2Ag=="), not something an admin
+  // can guess. This searches /api/Client/GetAllClients (via
+  // admin-client-lookup.js) by company name so the admin can find the right
+  // ClientId without needing it handed to them separately.
+  function clientResultRow(c) {
+    return '<div class="admin-autocomplete-item" data-client-id="' + escapeHtml(c.clientId) + '">' +
+      escapeHtml(c.companyName) + '<span style="color:var(--text-secondary); font-size:12px; margin-left:8px;">' + escapeHtml(c.clientId) + '</span></div>';
+  }
+
+  function searchClientsByName(q) {
+    var resultsEl = document.getElementById('clientNameResults');
+    if (!q || !q.trim()) { resultsEl.style.display = 'none'; resultsEl.innerHTML = ''; return; }
+    apiFetch('/.netlify/functions/admin-client-lookup?q=' + encodeURIComponent(q.trim()))
+      .then(function (data) {
+        var clients = data.clients || [];
+        if (!clients.length) {
+          resultsEl.innerHTML = '<div class="admin-autocomplete-item admin-autocomplete-empty">No matching clients found.</div>';
+        } else {
+          resultsEl.innerHTML = clients.map(clientResultRow).join('');
+        }
+        resultsEl.style.display = '';
+      })
+      .catch(function (err) {
+        resultsEl.innerHTML = '<div class="admin-autocomplete-item admin-autocomplete-empty">' + escapeHtml(err.message || 'Unable to search clients right now.') + '</div>';
+        resultsEl.style.display = '';
+      });
+  }
+
   // ------------------------------- Devices -----------------------------------
   var lastDiscoveredDevices = [];
 
@@ -317,6 +346,26 @@
 
         document.getElementById('devDiscoverBtn').addEventListener('click', discoverDevices);
         document.getElementById('devRetry').addEventListener('click', discoverDevices);
+
+        var clientNameInput = document.getElementById('clientNameSearchInput');
+        var clientSearchTimer = null;
+        clientNameInput.addEventListener('input', function () {
+          clearTimeout(clientSearchTimer);
+          var val = clientNameInput.value;
+          clientSearchTimer = setTimeout(function () { searchClientsByName(val); }, 250);
+        });
+        document.getElementById('clientNameResults').addEventListener('click', function (e) {
+          var item = e.target.closest('[data-client-id]');
+          if (!item) return;
+          document.getElementById('devClientIdFilter').value = item.getAttribute('data-client-id');
+          document.getElementById('clientNameResults').style.display = 'none';
+          clientNameInput.value = '';
+        });
+        document.addEventListener('click', function (e) {
+          if (!e.target.closest('#clientNameSearchInput') && !e.target.closest('#clientNameResults')) {
+            document.getElementById('clientNameResults').style.display = 'none';
+          }
+        });
         document.getElementById('mapRetry').addEventListener('click', function () { loadMappingData(); });
         document.getElementById('vehCreateBtn').addEventListener('click', createVehicle);
 

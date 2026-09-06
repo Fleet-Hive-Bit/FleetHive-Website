@@ -1854,6 +1854,20 @@ footer{
 .admin-table tr:last-child td{ border-bottom:none; }
 .admin-row-btn{ padding:7px 14px; font-size:12px; }
 
+.admin-autocomplete{
+  position:absolute; top:100%; left:0; right:0; margin-top:4px; z-index:20;
+  background:var(--card-bg-solid); border:1px solid var(--border); border-radius:11px;
+  box-shadow:var(--shadow); max-height:220px; overflow-y:auto;
+}
+.admin-autocomplete-item{
+  padding:10px 14px; font-size:13.5px; color:var(--heading); cursor:pointer;
+  border-bottom:1px solid var(--border);
+}
+.admin-autocomplete-item:last-child{ border-bottom:none; }
+.admin-autocomplete-item:hover{ background:rgba(111,163,240,0.08); }
+.admin-autocomplete-empty{ color:var(--text-secondary); cursor:default; }
+.admin-autocomplete-empty:hover{ background:none; }
+
 .admin-audit-list{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
 .admin-audit-row{
   padding:10px 14px; border:1px solid var(--border); border-radius:10px; font-size:13px; color:var(--heading);

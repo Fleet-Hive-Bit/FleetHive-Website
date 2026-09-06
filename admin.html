@@ -88,6 +88,17 @@
     <div class="form-section">
       <h3>Discover Devices</h3>
       <p class="form-intro">Devices available under FleetHive's reseller account. Optionally narrow to one White-Label Client ID.</p>
+
+      <div class="form-grid cols-3" style="align-items:end; margin-bottom:10px;">
+        <div style="position:relative;">
+          <label class="form-label">Find Client ID by name</label>
+          <input type="text" class="form-input" id="clientNameSearchInput" placeholder="e.g. Owoeye" autocomplete="off">
+          <div id="clientNameResults" class="admin-autocomplete" style="display:none;"></div>
+        </div>
+        <div></div>
+        <div></div>
+      </div>
+
       <div class="form-grid cols-3" style="align-items:end; margin-bottom:18px;">
         <div>
           <label class="form-label">White-Label Client ID <span class="opt">(optional)</span></label>
