@@ -29,19 +29,37 @@ try {
   getStore = null;
 }
 
+// Netlify is supposed to auto-inject the siteID/token needed by Blobs into
+// every function's environment. In practice this has been unreliable on
+// some freshly Git-linked sites (matches multiple unresolved reports from
+// other developers on Netlify's own forums as of mid-2026), causing
+// MissingBlobsEnvironmentError even on a correctly configured deploy. As a
+// robust fallback, we explicitly pass siteID/token from our own env vars
+// (BLOBS_SITE_ID / BLOBS_TOKEN, set in Site configuration > Environment
+// variables) whenever they're present, rather than depending solely on
+// auto-injection. If those env vars are absent, we still fall back to
+// calling getStore with just the name, so this doesn't break anything for
+// standard sites where auto-injection does work.
+function storeOptions(name) {
+  const siteID = process.env.BLOBS_SITE_ID;
+  const token = process.env.BLOBS_TOKEN;
+  if (siteID && token) return { name, siteID, token };
+  return name;
+}
+
 function customersStore() {
   if (!getStore) return null;
-  try { return getStore('fleethive-customers'); }
+  try { return getStore(storeOptions('fleethive-customers')); }
   catch (e) { console.error('Blobs (customers) unavailable:', e.message); return null; }
 }
 function vehiclesStore() {
   if (!getStore) return null;
-  try { return getStore('fleethive-vehicles'); }
+  try { return getStore(storeOptions('fleethive-vehicles')); }
   catch (e) { console.error('Blobs (vehicles) unavailable:', e.message); return null; }
 }
 function sessionsStore() {
   if (!getStore) return null;
-  try { return getStore('fleethive-sessions'); }
+  try { return getStore(storeOptions('fleethive-sessions')); }
   catch (e) { console.error('Blobs (sessions) unavailable:', e.message); return null; }
 }
 // Prompt 2B.2 — admin device-mapping audit trail. Kept as its own Blobs
@@ -49,7 +67,7 @@ function sessionsStore() {
 // data, so it can never be returned by a customer-facing lookup.
 function auditStore() {
   if (!getStore) return null;
-  try { return getStore('fleethive-auditlog'); }
+  try { return getStore(storeOptions('fleethive-auditlog')); }
   catch (e) { console.error('Blobs (auditlog) unavailable:', e.message); return null; }
 }
 
